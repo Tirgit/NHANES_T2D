@@ -1,0 +1,242 @@
+###LOAD LIBRARIES
+library(Matrix)
+library(MASS)
+###set working directory
+setwd("/Users/med-tv_/Documents/Projects/DPP_NMR_lipidomics/")
+
+#define matrix X_hat with given n sample size and correlation matrix
+n <- 3000
+x <- read.csv("DPPcsv.csv", header = F, sep = ";")
+corr_matrix <- Matrix(as.matrix(x))
+#find nearest possible positive definitive matrix
+pd_corr_matrix <- nearPD(corr_matrix, keepDiag=T, conv.tol = 1e-7, corr=T)
+M <- ncol(pd_corr_matrix$mat)
+mu <- rep(0,M)
+stddev <- rep(1,M)
+covMat <- stddev %*% t(stddev) * pd_corr_matrix$mat
+X_hat <- mvrnorm(n=n, mu=mu, Sigma=covMat, empirical=TRUE) # Simulated values
+#check correlation structure of matrix X_hat
+cor(X_hat)
+
+#simulation follow-up variables with given correlation to baseline variable
+rho   <- 0.8
+theta <- acos(rho)
+colnum <- ncol(X_hat)
+X_hat_newvars <- matrix(data=NA, ncol=colnum , nrow=n)
+#loop to simulate "follow-up" variable pairs for variables in X_hat with given rho = 0.8
+for(i in 1:colnum) {
+  x1 <- X_hat[,i]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  X_hat_newvars[,i] <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+}
+
+#add PPD and PPD follow up variables with rho = 0.8 to LDL-C
+  x1 <- X_hat[,2]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  ppd0 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+
+  x1 <- ppd0                                       # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  ppd1 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+
+  #add ApoB and ApoB follow up variables with rho = 0.8 to LDL-C
+  x1 <- X_hat[,2]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  apob0 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  x1 <- apob0                                       # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  apob1 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  #add ApoA1 and ApoA1 follow up variables with rho = 0.8 to HDL-C
+  x1 <- X_hat[,1]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  apoa10 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  x1 <- apoa10                                       # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  apoa11 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  #add TRL TG and TRL TG follow up variables with rho = 0.8 to TOTAL TRL
+  x1 <- X_hat[,5]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  trl_tg0 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  x1 <- trl_tg0                                       # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  trl_tg1 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  #add TRL chol and TRL chol follow up variables with rho = 0.8 to TOTAL TRL
+  x1 <- X_hat[,5]                                 # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  trl_c0 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  x1 <- trl_c0                                       # fixed given data
+  x2 <- rnorm(n, mean = 0, sd = 1)                # new random data
+  X <- cbind(x1, x2)                              # matrix
+  Xctr <- scale(X, center=TRUE, scale=FALSE)      # centered columns (mean 0)
+  Id <- diag(n)                                   # identity matrix
+  Q <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))           # QR-decomposition, just matrix Q
+  P <- tcrossprod(Q)                              # projection onto space defined by x1
+  x2o <- (Id-P) %*% Xctr[ , 2]                    # x2ctr made orthogonal to x1ctr
+  Xc2  <- cbind(Xctr[ , 1], x2o)                  # bind to matrix
+  Y <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))       # scale columns to length 1
+  trl_c1 <- Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+  
+  
+X <- as.data.frame(cbind(X_hat, X_hat_newvars, ppd0, ppd1, apob0, apob1, apoa10, apoa11, trl_tg0, trl_tg1, trl_c0, trl_c1))
+varnames <- c("hdl0","ldl0","tc0","tg0","trltotal0","trl_vl0","trl_l0","trl_m0","trl_s0","trl_vs0","ldltotal0","ldl_l0","ldl_m0","ldl_s0","hdltotal0","hdl_l0","hdl_m0","hdl_s0","H7P0","H6P0","H5P0","H4P0","H3P0","H2P0","H1P0","trlsize0","ldlsize0","hdlsize0", "hdl1","ldl1","tc1","tg1","trltotal1","trl_vl1","trl_l1","trl_m1","trl_s1","trl_vs1","ldltotal1","ldl_l1","ldl_m1","ldl_s1","hdltotal1","hdl_l1","hdl_m1","hdl_s1","H7P1","H6P1","H5P1","H4P1","H3P1","H2P1","H1P1","trlsize1","ldlsize1","hdlsize1", "ppd0", "ppd1", "apob0", "apob1", "apoa10", "apoa11", "trl_tg0", "trl_tg1", "trl_c0", "trl_c1")
+names(X) <- varnames
+
+
+###ADD FURTHER VARIABLES OF INTEREST, ACCORDING TO:
+#The Diabetes Prevention Program, Baseline characteristics of the randomized cohort
+#The Diabetes Prevention Program Research Group et al.
+#Diabetes Care. 2000 Nov; 23(11): 1619???1629.
+age <- rnorm(n, mean = 51, sd = 10.7)
+ethnicity <- sample(1:5, n, replace=TRUE, prob=c(0.55, 0.2, 0.16, 0.05, 0.04) )
+#caucasian, african-american, hispanic, american indian, asian american
+female <- rbinom(n, 1, 0.68)
+bmi <- rnorm(n, mean = 34, sd = 6.7)
+fasting_glu <- rnorm(n, mean = 6, sd = 0.5)
+IG_RAT <- rnorm(n, mean = 10, sd = 3)
+ogtt_glu <- rnorm(n, mean = 7.2, sd = 0.5)
+syst_bp <- rnorm(n, mean = 130, sd = 25)
+hba1c <- rnorm(n, mean = 5.9, sd = 0.5)
+IFI <- rnorm(n, mean = 0.6, sd = 0.5)
+waist <- rnorm(n, mean = 95, sd = 14)
+
+#other NMR features at bl and yr1
+Val <- rnorm(n, mean = 0, sd = 2)
+Leu <- rnorm(n, mean = 1, sd = 2)
+Ileu <- rnorm(n, mean = 2, sd = 2)
+Ala <- rnorm(n, mean = 3, sd = 2)
+GlycA <- rnorm(n, mean = 4, sd = 2)
+Ctr <- rnorm(n, mean = 5, sd = 2)
+KetBod <- rnorm(n, mean = 6, sd = 2)
+B_HB <- rnorm(n, mean = 7, sd = 2)
+AcAc <- rnorm(n, mean = 8, sd = 2)
+Acetone <- rnorm(n, mean = 9, sd = 2)
+Glycine <- rnorm(n, mean = 10, sd = 2)
+Val1 <- rnorm(n, mean = 0, sd = 2)
+Leu1 <- rnorm(n, mean = 1, sd = 2)
+Ileu1 <- rnorm(n, mean = 2, sd = 2)
+Ala1 <- rnorm(n, mean = 3, sd = 2)
+GlycA1 <- rnorm(n, mean = 4, sd = 2)
+Ctr1 <- rnorm(n, mean = 5, sd = 2)
+KetBod1 <- rnorm(n, mean = 6, sd = 2)
+B_HB1 <- rnorm(n, mean = 7, sd = 2)
+AcAc1 <- rnorm(n, mean = 8, sd = 2)
+Acetone1 <- rnorm(n, mean = 9, sd = 2)
+Glycine1 <- rnorm(n, mean = 10, sd = 2)
+
+#never, former, current
+t2d_hist <- rbinom(n, 1, 0.68)
+#for males
+gdm_hist <- rbinom(n, 1, 0.08)
+treatment_arm <- sample(1:3, n, replace=TRUE, prob=c(0.33, 0.33, 0.33) )
+bp_med <- rbinom(n, 1, 0.1)
+lipid_med <- rbinom(n, 1, 0.1)
+t2d_short <- rbinom(n, 1, 0.2)
+#3.2 years T2D incidence (600 cases)
+t2d_long <- rbinom(n, 1, 0.5)
+#15 years T2D incidence (1550 cases)
+
+###CREATE MATRIX WITH NO MISSINGNESS
+###MERGE ALL VARIABLES
+data <- as.data.frame(cbind(X, age, ethnicity, female, treatment_arm, bmi, waist, fasting_glu, ogtt_glu, IG_RAT, hba1c, IFI, syst_bp, t2d_hist, gdm_hist, bp_med, lipid_med, t2d_short, t2d_long, Val, Leu, Ileu, Ala, GlycA, Ctr, KetBod, B_HB, AcAc, Acetone, Glycine, Val1, Leu1, Ileu1, Ala1, GlycA1, Ctr1, KetBod1, B_HB1, AcAc1, Acetone1, Glycine1))
+
+#add time var
+data$timeshort <- rnorm(nrow(data), 20, 5)
+data$timeshort[data$t2d_short == 0] <- 38
+
+data$timelong <- rnorm(nrow(data), 90, 25)
+data$timelong[data$t2d_long == 0] <- 180
+
+summary(data$timelong)
+
+#add PATID
+data$PATID <- 1:nrow(data)
+
+###SAVE DATASET
+saveRDS(data, file = "DPP_for_analysis.rds")

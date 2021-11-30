@@ -1,0 +1,978 @@
+###LOAD LIBRARIES
+library(caret)
+library(pROC)
+library(dplyr)
+library(e1071)
+library(ranger)
+library(kernlab)
+library(nnet)
+library(neuralnet)
+library(doParallel)
+library(gbm)
+library(MLmetrics)
+library(devtools)
+library(onehot)
+library(survival)
+library(rms)
+library(Hmisc)
+library(ggplot2)
+
+
+# corenum <- detectCores()
+# registerDoParallel(cores = corenum)
+
+
+###set working directory
+# setwd("/Users/med-tv_/Documents/Projects/DPP_NMR_lipidomics/Data")
+
+###LOAD DATASET AND VARIABLE VECTORS
+# df_imputed_all <- readRDS("DPP_simulated_imputed_dataset.rds")
+# this is to make the outcome correlated to some variables, only to be run in the simulated data
+# df_imputed_all$t2d_short[df_imputed_all$treatment_arm == 1 & df_imputed_all$IG_RAT > 8] <- "1"
+# df_imputed_all$t2d_short[df_imputed_all$treatment_arm == 2 & df_imputed_all$bmi > 31] <- "1"
+# df_imputed_all$t2d_short[df_imputed_all$treatment_arm == 3 & df_imputed_all$age > 55] <- "1"
+
+
+######################################################################
+######################################################################
+########################## DATA CLEANING #############################
+######################################################################
+######################################################################
+
+
+###########################data preparation###########################
+
+# GC: import DPP dataset from SAS library
+library(RODBC)
+myconn <-odbcConnect("DPP Share",believeNRows = FALSE)
+df <- sqlQuery(myconn, "select * from O141PUBS.LTF225_2", as.is=TRUE)
+odbcCloseAll()
+
+# create change of lipids (year1-baseline) variables
+df <- df %>%
+  mutate(
+    timeshort = diabvdpp,
+    timelong = diabvos
+  )
+
+
+# read in Tibor's imputed dataset from Step1
+#df_impute <- readRDS("DPP_simulated_imputed_dataset.rds")  
+
+
+# GC: we use GWAS genomic principal components, then remove vars that are not in df_impute from df.
+#df <- df %>%
+#  select(names(df_impute), -c(c1,c2,c3,c4)) # GC: remove PC for now since they have too many missing values.
+
+
+# GC: convert char "treatment_arm" in df to numeric in order to match the corresponding variable in df_impute
+df$treatment_arm <- recode(df$treatment_arm, "Placebo"=1, "Lifestyle"=2, "Metformin"=3)
+
+
+# GC: Use unimputed data instead of imputed data
+df_imputed_all <- df
+
+############################################################################
+
+
+# removal of total variables at this stage
+droptotals <- c("hdltotal0", "ldltotal0", "trltotal0", "hdltotal1", "ldltotal1", "trltotal1")
+df_imputed_all <- df_imputed_all %>%
+  dplyr::select(-droptotals)
+
+# GC: they are all numeric in Tibor's imputed dataset whereas they are supposed to be factors (they have been converted in Step1_data_QC line158-165)
+df_imputed_all$t2d_short <- as.factor(df_imputed_all$t2d_short)
+df_imputed_all$t2d_long <- as.factor(df_imputed_all$t2d_long)
+df_imputed_all$female <- as.factor(df_imputed_all$female)
+df_imputed_all$ethnicity <- as.factor(df_imputed_all$ethnicity)
+df_imputed_all$t2d_hist <- as.factor(df_imputed_all$t2d_hist)
+df_imputed_all$gdm_hist <- as.factor(df_imputed_all$gdm_hist)
+df_imputed_all$bp_med <- as.factor(df_imputed_all$bp_med)
+df_imputed_all$lipid_med <- as.factor(df_imputed_all$lipid_med)
+df_imputed_all$treatment_arm <- as.factor(df_imputed_all$treatment_arm)
+
+# define lipids
+#standard
+base_stand_lipids <- c("tg0", "tc0", "ldl0", "hdl0")
+followup_stand_lipids <- c("tg1", "tc1", "ldl1", "hdl1")
+change_stand_lipids <- c("tg_d", "tc_d", "ldl_d", "hdl_d")
+
+#NMR
+base_nmr <- c("apob0", "apoa10", "hdl_l0", "hdl_m0", "hdl_s0", "H7P0", "H6P0", "H5P0", "H4P0", "H3P0", "H2P0", "H1P0", "ldl_l0", "ldl_m0", "ldl_s0", "trl_vl0", "trl_l0", "trl_m0", "trl_s0", "trl_vs0", "hdlsize0", "ldlsize0", "trlsize0", "trl_tg0", "trl_c0", "ppd0", "Val", "Leu", "Ileu", "Ala", "GlycA", "Ctr", "KetBod", "B_HB", "AcAc", "Acetone", "Glycine")
+followup_nmr <- c("apob1", "apoa11", "hdl_l1", "hdl_m1", "hdl_s1", "H7P1", "H6P1", "H5P1", "H4P1", "H3P1", "H2P1", "H1P1", "ldl_l1", "ldl_m1", "ldl_s1", "trl_vl1", "trl_l1", "trl_m1", "trl_s1", "trl_vs1", "hdlsize1", "ldlsize1", "trlsize1", "trl_tg1", "trl_c1", "ppd1", "Val1", "Leu1", "Ileu1", "Ala1", "GlycA1", "Ctr1", "KetBod1", "B_HB1", "AcAc1", "Acetone1", "Glycine1")
+change_nmr <- c("apob_d", "apoa1_d", "hdl_l_d", "hdl_m_d", "hdl_s_d", "H7P_d", "H6P_d", "H5P_d", "H4P_d", "H3P_d", "H2P_d", "H1P_d", "ldl_l_d", "ldl_m_d", "ldl_s_d", "trl_vl_d", "trl_l_d", "trl_m_d", "trl_s_d", "trl_vs_d", "hdlsize_d", "ldlsize_d", "trlsize_d", "trl_tg_d", "trl_c_d", "ppd_d", "Val_d", "Leu_d", "Ileu_d", "Ala_d", "GlycA_d", "Ctr_d", "KetBod_d", "B_HB_d", "AcAc_d", "Acetone_d", "Glycine_d")
+
+# Jinxi: remove change variables from select
+# df_imputed <- df_imputed_all %>%
+#   dplyr::select(names(df_imputed_all), -c(followup_nmr, change_nmr, followup_stand_lipids, change_stand_lipids))
+# df_imputed <- df_imputed_all %>%
+#    dplyr::select(names(df_imputed_all), -c(followup_nmr, followup_stand_lipids))
+
+# define models
+#defining Model 1 - LIPID ONLY MODEL
+model1 <- c("age", "treatment_arm", "female", "ethnicity", base_stand_lipids, "lipid_med") 
+
+#defining Model 2 - LIPID + NMR ONLY MODEL
+model2 <- c(model1, "apob0", "apoa10", "hdl_l0", "hdl_m0", "hdl_s0", "H7P0", "H6P0", "H5P0", "H4P0", "H3P0", "H2P0", "H1P0", "ldl_l0", "ldl_m0", "ldl_s0", "trl_vl0", "trl_l0", "trl_m0", "trl_s0", "trl_vs0", "hdlsize0", "ldlsize0", "trlsize0", "trl_tg0", "trl_c0", "ppd0")
+
+#defining Model 3 - GLUCOSE MODEL / BASE MODEL
+model3 <- c("age", "fasting_glu", "hba1c", "treatment_arm", "female", "ethnicity") 
+
+#defining Model 4 - CLINICAL MODEL
+model4 <- c(model3, "bmi", "waist", "syst_bp", "t2d_hist", "gdm_hist", "bp_med")
+
+#defining Model 5 - LIPID MODEL
+model5 <- c(model3, base_stand_lipids, "lipid_med")
+
+#defining Model 6, - LIPID + NMR LIPID MODEL
+model6 <- c(model3, base_stand_lipids, "lipid_med", "apob0", "apoa10", "hdl_l0", "hdl_m0", "hdl_s0", "H7P0", "H6P0", "H5P0", "H4P0", "H3P0", "H2P0", "H1P0", "ldl_l0", "ldl_m0", "ldl_s0", "trl_vl0", "trl_l0", "trl_m0", "trl_s0", "trl_vs0", "hdlsize0", "ldlsize0", "trlsize0", "trl_tg0", "trl_c0", "ppd0")
+
+#defining Model 7a, NMR BASELINE MODEL
+model7a <- c(model5, base_nmr)
+
+#defining Model 8 - NMR + CLINICAL MODEL
+model8 <- c(model7a,  "bmi", "waist", "syst_bp", "t2d_hist", "gdm_hist", "bp_med")
+
+#defining Model 9 - DPP MODEL
+model9 <- c(model4, "ogtt_glu", "IG_RAT", "IFI")
+
+# Jinxi: Remove female from model 4,8 and 9 (due to GDM coding female is redundant)
+model4 <- setdiff(model4,'female')
+model8 <- setdiff(model8,'female')
+model9 <- setdiff(model9,'female')
+
+
+#defining outcomes and all factors
+outcomes <- c("t2d_short", "t2d_long")
+all_factors <- c("treatment_arm", "female", "ethnicity", "t2d_hist", "gdm_hist", "bp_med", "lipid_med")
+
+# Jinxi:  remove unnecessary variables
+keep.list <- unique(c('timeshort', 't2d_short', 'timelong', 't2d_long',
+                     model1, model2, model3, model4, model5, model6, model7a, model8, model9,
+                     'PATID'))
+
+df_imputed <- df_imputed_all[,keep.list]
+
+
+### I. PREPROCESSING FOR ML
+# 1. removal of unnecessary variables
+
+# Assign gdm_hist category to males / first adding other level to factor
+levels(df_imputed$gdm_hist) <- c(levels(df_imputed$gdm_hist),"2")
+# Assign new level to all males (coded as female == 0)
+df_imputed$gdm_hist[df_imputed$female == 1] <- "2"
+
+levels(df_imputed$t2d_short) <- c("no", "yes")
+levels(df_imputed$t2d_long) <- c("no", "yes")
+levels(df_imputed$ethnicity) <- c("white", "black", "hisp", "asian", "amind")
+levels(df_imputed$female) <- c("male", "female")
+levels(df_imputed$t2d_hist) <- c("no", "yes")
+levels(df_imputed$gdm_hist) <- c("no", "yes", "not_applicable")
+levels(df_imputed$bp_med) <- c("no", "yes")
+levels(df_imputed$lipid_med) <- c("no", "yes")
+levels(df_imputed$treatment_arm) <- c("placebo", "metformin", "lifestyle")
+
+# Jinxi: check na counts 
+na_count <-sapply(df_imputed , function(y) sum(is.na(y)))
+na_count <- data.frame(na_count)
+
+# GC: remove rows with missing values
+df_imputed <- tidyr::drop_na(df_imputed)
+
+# 2. removal of near zero variance variables
+nzv <- nearZeroVar(df_imputed)
+if (length(nzv) > 0) {
+  filteredDescr <- df_imputed[, -nzv] 
+} else {
+  filteredDescr <- df_imputed
+}
+dim(df_imputed)
+dim(filteredDescr)
+
+# GC: print covariates that were removed
+x1 <- setdiff(colnames(df_imputed), colnames(filteredDescr))
+print(paste("Removing covariates due to near zero variance:", paste(x1, collapse = ", ")))
+
+# 3. removal of linear dependencies
+filteredDescr <- data.matrix(filteredDescr, rownames.force = NA)
+comboInfo <- findLinearCombos(filteredDescr)
+if (length(comboInfo$remove) > 0) {
+  filteredDescr_l <- filteredDescr[, -comboInfo$remove] 
+} else {
+  filteredDescr_l <- filteredDescr
+}
+dim(filteredDescr)
+dim(filteredDescr_l)
+
+x2 <- setdiff(colnames(filteredDescr), colnames(filteredDescr_l))
+print(paste("Removing covariates due to linear dependency:", paste(x2, collapse = ", ")))
+
+
+# 4. removal of highly correlated features for baseline and for baseline+change
+filteredDescr_0 <- filteredDescr[, model7a]
+descrCor_0 <-  cor(filteredDescr_0)
+highlyCor_0 <- findCorrelation(descrCor_0, cutoff = .6)
+if (length(highlyCor_0) > 0) {
+  filteredDescr2_0 <- filteredDescr_0[, -highlyCor_0]
+} else {
+  filteredDescr2_0 <- filteredDescr_0
+} 
+dim(filteredDescr_0)
+dim(filteredDescr2_0)
+
+# GC: print covariates that were removed
+x3 <- setdiff(colnames(filteredDescr_0), colnames(filteredDescr2_0))
+print(paste("Removing covariates due to high correlations (baseline + change data):", paste(x3, collapse = ", ")))
+
+# GC: combine all removed covariates together
+x <- c(x1, x2, x3)
+
+# updating model2 vector since highly correlated covariates x were removed
+model2 <- setdiff(model2, x)
+# updating model6 vector since highly correlated covariates x were removed
+model6 <- setdiff(model6, x)
+# updating model7a vector since highly correlated covariates x were removed
+model7a <- setdiff(model7a, x)
+# updating model7 vector since highly correlated covariates x were removed
+model8 <- setdiff(model8, x)
+
+#combine filtered data
+filtered <- as.data.frame(filteredDescr)
+
+filtered$t2d_short <- as.factor(filtered$t2d_short)
+filtered$t2d_long <- as.factor(filtered$t2d_long)
+filtered$female <- as.factor(filtered$female)
+filtered$ethnicity <- as.factor(filtered$ethnicity)
+filtered$t2d_hist <- as.factor(filtered$t2d_hist)
+filtered$gdm_hist <- as.factor(filtered$gdm_hist)
+filtered$bp_med <- as.factor(filtered$bp_med)
+filtered$lipid_med <- as.factor(filtered$lipid_med)
+filtered$treatment_arm <- as.factor(filtered$treatment_arm)
+levels(filtered$t2d_short) <- c("no", "yes")
+levels(filtered$t2d_long) <- c("no", "yes")
+levels(filtered$ethnicity) <- c("white", "black", "hisp", "asian", "amind")
+levels(filtered$female) <- c("male", "female")
+levels(filtered$t2d_hist) <- c("no", "yes")
+levels(filtered$gdm_hist) <- c("no", "yes", "not_applicable")
+levels(filtered$bp_med) <- c("no", "yes")
+levels(filtered$lipid_med) <- c("no", "yes")
+levels(filtered$treatment_arm) <- c("placebo", "metformin", "lifestyle")
+
+# 5. definition of formulae
+formula_1_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model1), collapse = "+")))
+formula_2_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model2), collapse = "+")))
+formula_3_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model3), collapse = "+")))
+formula_4_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model4), collapse = "+")))
+formula_5_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model5), collapse = "+")))
+formula_6_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model6), collapse = "+")))
+formula_7a_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model7a), collapse = "+")))
+formula_8_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model8), collapse = "+")))
+formula_9_short <- as.formula(paste0("as.factor(t2d_short)~",paste0(c(model9), collapse = "+")))
+
+formula_1_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model1), collapse = "+")))
+formula_2_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model2), collapse = "+")))
+formula_3_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model3), collapse = "+")))
+formula_4_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model4), collapse = "+")))
+formula_5_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model5), collapse = "+")))
+formula_6_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model6), collapse = "+")))
+formula_7a_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model7a), collapse = "+")))
+formula_8_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model8), collapse = "+")))
+formula_9_long <- as.formula(paste0("as.factor(t2d_long)~",paste0(c(model9), collapse = "+")))
+
+cox_1_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model1), collapse = "+")))
+cox_2_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model2), collapse = "+")))
+cox_3_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model3), collapse = "+")))
+cox_4_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model4), collapse = "+")))
+cox_5_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model5), collapse = "+")))
+cox_6_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model6), collapse = "+")))
+cox_7a_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model7a), collapse = "+")))
+cox_8_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model8), collapse = "+")))
+cox_9_short <- as.formula(paste0("survival::Surv(timeshort, t2d_short) ~",paste0(c(model9), collapse = "+")))
+
+cox_1_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model1), collapse = "+")))
+cox_2_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model2), collapse = "+")))
+cox_3_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model3), collapse = "+")))
+cox_4_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model4), collapse = "+")))
+cox_5_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model5), collapse = "+")))
+cox_6_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model6), collapse = "+")))
+cox_7a_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model7a), collapse = "+")))
+cox_8_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model8), collapse = "+")))
+cox_9_long <- as.formula(paste0("survival::Surv(timelong, t2d_long) ~",paste0(c(model9), collapse = "+")))
+
+MLmodel_short <- list(formula_1_short, formula_2_short, formula_3_short, formula_4_short, formula_5_short, formula_6_short, formula_7a_short, formula_8_short, formula_9_short)
+MLmodel_long <- list(formula_1_long, formula_2_long, formula_3_long, formula_4_long, formula_5_long, formula_6_long, formula_7a_long, formula_8_long, formula_9_long)
+Coxmodel_short <- list(cox_1_short, cox_2_short, cox_3_short, cox_4_short, cox_5_short, cox_6_short, cox_7a_short, cox_8_short, cox_9_short)
+Coxmodel_long <- list(cox_1_long, cox_2_long, cox_3_long, cox_4_long, cox_5_long, cox_6_long, cox_7a_long, cox_8_long, cox_9_long)
+
+
+
+# --------------------------------  Jinxi: check vif ----------------------------------------------------#
+# 
+# library(car)
+# #
+# MLmodel_short[[4]]
+# fit.1 = glm(MLmodel_short[[4]],family = binomial(link = "logit") ,data = df_imputed)
+# car::vif(fit.1)
+# 
+# # drop H3P0
+# fit.2 =update(fit.1, formula=drop.terms(fit.1$terms, grep( "H3P0", attr(fit.1$terms, "term.labels") ), keep.response=TRUE)  )
+# car::vif(fit.2)
+
+#-----------------------------------------------------------------------------------------------------#
+
+######################################################################
+######################################################################
+###################### COMPARING ML MODELS ###########################
+######################################################################
+######################################################################
+
+
+# 7a. creating 5 folds for outer CV loop, T2D SHORT TERM
+#this means we will have 5 different splits of the data, 80%-20%
+#80% will be used as a training+validation set, 20% will be used as test set
+#the outer CV loop ensures that ALL data will be utilized as test sets
+
+set.seed(2785200)
+k <- 5
+folds <- createFolds(filtered$t2d_short, k = k, list = TRUE, returnTrain = FALSE)
+#table of diabetes status per folds
+sapply(folds, function(i) table(filtered$t2d_short[i]))
+
+# Matthews correlation coefficient function
+MCC_maker <- function(x) {
+  TN <- as.numeric(x[1])
+  TP <- as.numeric(x[4])
+  FP <- as.numeric(x[2])
+  FN <- as.numeric(x[3])
+  numerator <- (TP*TN)-(FP*FN)
+  denominator <- sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN))
+  if (denominator == 0) {
+    value <- 0
+  } else {
+    value <- numerator/denominator
+  }
+  print(value)
+}
+
+# caret MCC function
+MCC_func <- function(data, lev = NULL, model = NULL) {
+  cmat <- caret::confusionMatrix(data$pred, data$obs, mode = "everything")
+  MCC_val <- MCC_maker(cmat$table)
+  c(MCC_cv = MCC_val)
+}
+
+# specifying GBM grid search parameteres
+gbm_grid <- expand.grid(n.trees = (1:30)*50, 
+                        interaction.depth = c(1, 2, 4),            
+                        shrinkage = c(0.001, 0.05, 0.1),
+                        n.minobsinnode = 20)
+# specifying RF grid search parameteres
+rf_grid <- expand.grid(mtry = c(2, 3, 4, 5),
+                       splitrule = c("gini", "extratrees"),
+                       min.node.size = c(1, 3, 5))
+# specifying SVM grid search parameteres
+svm_l_grid <- expand.grid(cost =c(0.01,0.1,2^c(0:5)))
+svm_p_grid <- expand.grid(degree = (2:5),
+                          scale = c(0.1, 0.01, 0.005, 0.001),
+                          C = c(0.01,0.1,2^c(0:5)))
+svm_r_grid <- expand.grid(sigma = 2^c(-25, -20, -15,-10, -5, 0),
+                          C = c(0.01,0.1,2^c(0:5)))
+# specifying ANN grid search parameteres
+ann_grid <- expand.grid(size = (2:15),
+                        decay = c(0.01,0.1,1,3,5,10,20))
+
+# CV framework specifying framework
+fit_control <- trainControl(## 5-fold CV
+  method = "cv",
+  number = 5,
+  classProbs = TRUE,
+  summaryFunction = MCC_func)
+
+
+for (m in 1:9) {
+  
+  #creating empty lists for the collection of results
+  glm_MCC <- list()
+  gbm_MCC <- list()
+  rf_MCC <- list()
+  svm_linear_MCC <- list()
+  svm_polynomial_MCC <- list()
+  svm_radial_MCC <- list()
+  ann_MCC <- list()
+  cox_MCC <- list()
+  glm_ROC <- list()
+  gbm_ROC <- list()
+  rf_ROC <- list()
+  svm_linear_ROC <- list()
+  svm_polynomial_ROC <- list()
+  svm_radial_ROC <- list()
+  ann_ROC <- list()
+  cox_ROC <- list()
+  grid_best <- list()
+  
+  ### II. MODELS
+
+  #outer CV loop
+  for (i in 1:k) {
+    
+    training <- filtered[-folds[[i]],]
+    testing <- filtered[folds[[i]],]
+    
+    #downsampling training to achieve class balance
+    training <- downSample(x = training,
+                           y = training$t2d_short)
+    training <- training[,-ncol(training)]
+    
+    #normalization of training set and using those stats to normalize the test set
+    nums <- unlist(lapply(training, is.numeric))  
+    training_nums <- training[,nums]
+    testing_nums <- testing[,nums]
+    training_scaled <- as.data.frame(scale(training_nums, center = T, scale = T))
+    training_scaled_all <- cbind(treatment_arm = training$treatment_arm, training[,outcomes],training[,all_factors],training_scaled)
+    testing_scaled <- as.data.frame(scale(testing_nums, center = colMeans(training_nums), 
+                                          scale = sqrt(diag(var(training_nums)))))
+    testing_scaled_all <- cbind(treatment_arm = testing$treatment_arm, testing[,outcomes],testing[,all_factors],testing_scaled)
+    training <- training_scaled_all
+    testing <- testing_scaled_all
+    
+    #running GLM using 5-fold CV, using grid search
+    glm_fit <- train(as.formula(MLmodel_short[[m]]), 
+                     data = training, 
+                     method = "glm",
+                     trControl = fit_control,
+                     family = "binomial",
+                     metric = "MCC_cv")
+
+    # predict the outcome on a test set
+    glm_pred <- predict(glm_fit, testing, type = "raw")
+    
+    method_prob <- predict(glm_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    glm_ROC[[i]] <- method_ROC$ci[2]
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(glm_pred, testing$t2d_short, mode = "everything")
+    
+    #GLM collect results
+    glm_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- GLM Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running SGB using 5-fold CV, using grid search
+    gbm_fit <- train(as.formula(MLmodel_short[[m]]), 
+                     data = training, 
+                     method = "gbm",
+                     trControl = fit_control,
+                     tuneGrid = gbm_grid,
+                     verbose = F,
+                     metric = "MCC_cv")
+    
+    grid_best[[i]] <- gbm_fit$bestTune
+    
+    # predict the outcome on a test set
+    gbm_pred <- predict(gbm_fit, testing, type = "raw")
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(gbm_pred, testing$t2d_short, mode = "everything")
+    
+    method_prob <- predict(gbm_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    gbm_ROC[[i]] <- method_ROC$ci[2]
+    
+    #GBM collect results
+    gbm_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- GBM Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running RF using repeated 5-fold CV, using grid search
+    rf_fit <- train(as.formula(MLmodel_short[[m]]), 
+                    data = training, 
+                    method = "ranger",
+                    trControl = fit_control,
+                    tuneGrid = rf_grid,
+                    verbose = F,
+                    metric = "MCC_cv")
+    
+    grid_best[[i+5]] <- rf_fit$bestTune
+    
+    # predict the outcome on a test set
+    rf_pred <- predict(rf_fit, testing, type = "raw")
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(rf_pred, testing$t2d_short, mode = "everything")
+    
+    method_prob <- predict(rf_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    rf_ROC[[i]] <- method_ROC$ci[2]
+    
+    #RF collect results
+    rf_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- RF Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running SVM with various kernels using repeated 5-fold CV, using grid search
+    svm_l_fit <- train(as.formula(MLmodel_short[[m]]), 
+                       data = training, 
+                       method = "svmLinear2",
+                       trControl = fit_control,
+                       tuneGrid = svm_l_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+10]] <- svm_l_fit$bestTune
+    
+    svm_p_fit <- train(as.formula(MLmodel_short[[m]]), 
+                       data = training, 
+                       method = "svmPoly",
+                       trControl = fit_control,
+                       tuneGrid = svm_p_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+15]] <- svm_p_fit$bestTune
+    
+    svm_r_fit <- train(as.formula(MLmodel_short[[m]]), 
+                       data = training, 
+                       method = "svmRadial",
+                       trControl = fit_control,
+                       tuneGrid = svm_r_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+20]] <- svm_r_fit$bestTune
+    
+    
+    # predict the outcome on a test set
+    svm_l_pred <- predict(svm_l_fit, testing, type = "raw")
+    svm_p_pred <- predict(svm_p_fit, testing, type = "raw")
+    svm_r_pred <- predict(svm_r_fit, testing, type = "raw")
+    
+    method_prob <- predict(svm_l_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    svm_linear_ROC[[i]] <- method_ROC$ci[2]
+    
+    method_prob <- predict(svm_p_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    svm_polynomial_ROC[[i]] <- method_ROC$ci[2]
+    
+    method_prob <- predict(svm_r_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    svm_radial_ROC[[i]] <- method_ROC$ci[2]
+    
+    #SVM compare predicted outcome and true outcome, extract outcome
+    confmat <- caret::confusionMatrix(svm_l_pred, testing$t2d_short, mode = "everything")
+    svm_linear_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    confmat <- caret::confusionMatrix(svm_p_pred, testing$t2d_short, mode = "everything")
+    svm_polynomial_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    confmat <- caret::confusionMatrix(svm_r_pred, testing$t2d_short, mode = "everything")
+    svm_radial_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    print(paste(m, "- SVM Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running ANN using repeated 5-fold CV, using grid search)
+    ann_fit <- train(as.formula(MLmodel_short[[m]]), 
+                     data = training, 
+                     method = "nnet",
+                     trControl = fit_control,
+                     tuneGrid = ann_grid,
+                     verbose = F,
+                     metric = "MCC_cv")
+    
+    grid_best[[i+25]] <- ann_fit$bestTune
+    
+    # predict the outcome on a test set
+    ann_pred <- predict(ann_fit, testing, type = "raw")
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(ann_pred, testing$t2d_short, mode = "everything")
+    
+    method_prob <- predict(ann_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_short,
+                      levels=rev(levels(testing$t2d_short)),
+                      ci=T)
+    ann_ROC[[i]] <- method_ROC$ci[2]
+    
+    #ANN collect results
+    ann_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- ANN Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    # further modification to the dataset for COX
+    training$t2d_short <- as.numeric(training$t2d_short ) - 1
+    testing$t2d_short <- as.numeric(testing$t2d_short ) - 1
+    
+    fit <- rms::cph(Coxmodel_short[[m]], data=training, x=TRUE, y=TRUE, surv=TRUE, time.inc=max(filtered$timeshort))
+    estimates <- rms::survest(fit,newdata = testing, times=max(filtered$timeshort))$surv
+    cox_ROC[[i]] <- as.numeric(Hmisc::rcorr.cens(x=estimates,S = survival::Surv(testing$timeshort, testing$t2d_short))[1])
+    
+    cox_pred <- numeric(length(estimates))
+    cox_real <- numeric(length(estimates))
+    cox_pred[estimates<0.5] <- 1 #predict "yes" if probability < 0.5 (similar to predict() for GLM)
+    cox_real[testing$t2d_short == 1] <- 1
+    cox_pred <- as.factor(cox_pred)
+    cox_real <- as.factor(cox_real)
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(cox_pred, cox_real, mode = "everything")
+    
+    #collect results
+    cox_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    print(paste(m, "- COX Iteration", i, "of", k, "completed", sep=" "))
+    
+  }
+  
+  # COLLECTION OF RESULTS
+  MCClists <- c(glm_MCC, gbm_MCC, rf_MCC,
+                svm_linear_MCC, svm_polynomial_MCC,
+                svm_radial_MCC, ann_MCC, cox_MCC)
+  
+  ROClists <- c(glm_ROC, gbm_ROC, rf_ROC,
+                svm_linear_ROC, svm_polynomial_ROC,
+                svm_radial_ROC, ann_ROC, cox_ROC)
+  
+  df <- data.frame(MCC = unlist(MCClists), ROC = unlist(ROClists))
+  
+  df$Method <- c(rep("GLM", 5),
+                 rep("GBM", 5),
+                 rep("RF", 5),
+                 rep("SVM linear", 5),
+                 rep("SVM polynomial", 5),
+                 rep("SVM radial", 5),
+                 rep("ANN", 5),
+                 rep("COX", 5))
+  
+  df$Method <- factor(df$Method, levels = c("GLM", "GBM", "RF",
+                                            "SVM linear", "SVM polynomial",
+                                            "SVM radial", "ANN", "COX"))
+  
+  filename <- paste("MCC_ROC_stats_short_", m, "_r06.rds", sep="")
+  #filename <- paste("P:/Staff/Guannan/LTF225/MCC_ROC_stats_short_", m, "_r06.rds", sep="")
+  saveRDS(df, filename)
+  
+  filename <- "gridsearch_shortT2D_r06.rds"
+  #filename <- "P:/Staff/Guannan/LTF225/gridsearch_shortT2D_r06.rds"
+  saveRDS(grid_best, filename)
+  
+}
+
+
+------------------------------------------------------------------------------------------------------
+  
+  
+# 7b. creating 5 folds for outer CV loop, T2D long TERM
+
+set.seed(2785200)
+k <- 5
+folds <- createFolds(filtered$t2d_long, k = k, list = TRUE, returnTrain = FALSE)
+#table of diabetes status per folds
+sapply(folds, function(i) table(filtered$t2d_long[i]))
+
+
+for (m in 1:9) {
+  
+  #creating empty lists for the collection of results
+  glm_MCC <- list()
+  gbm_MCC <- list()
+  rf_MCC <- list()
+  svm_linear_MCC <- list()
+  svm_polynomial_MCC <- list()
+  svm_radial_MCC <- list()
+  ann_MCC <- list()
+  cox_MCC <- list()
+  glm_ROC <- list()
+  gbm_ROC <- list()
+  rf_ROC <- list()
+  svm_linear_ROC <- list()
+  svm_polynomial_ROC <- list()
+  svm_radial_ROC <- list()
+  ann_ROC <- list()
+  cox_ROC <- list()
+  
+  #Jinxi : add grid_best
+  grid_best <- list()
+  
+  ### II. MODELS
+  for (i in 1:k) {
+    
+    training <- filtered[-folds[[i]],]
+    testing <- filtered[folds[[i]],]
+    
+    #downsampling training to achieve class balance
+    training <- downSample(x = training,
+                           y = training$t2d_long)
+    training <- training[,-ncol(training)]
+    
+    #normalization of training set and using those stats to normalize the test set
+    nums <- unlist(lapply(training, is.numeric))  
+    training_nums <- training[,nums]
+    testing_nums <- testing[,nums]
+    training_scaled <- as.data.frame(scale(training_nums, center = T, scale = T))
+    training_scaled_all <- cbind(treatment_arm = training$treatment_arm, training[,outcomes],training[,all_factors],training_scaled)
+    testing_scaled <- as.data.frame(scale(testing_nums, center = colMeans(training_nums), 
+                                          scale = sqrt(diag(var(training_nums)))))
+    testing_scaled_all <- cbind(treatment_arm = testing$treatment_arm, testing[,outcomes],testing[,all_factors],testing_scaled)
+    training <- training_scaled_all
+    testing <- testing_scaled_all
+    
+    #running logistic regression using 5-fold CV, using grid search
+    glm_fit <- train(as.formula(MLmodel_long[[m]]), 
+                     data = training, 
+                     method = "glm",
+                     trControl = fit_control,
+                     family = "binomial",
+                     metric = "MCC_cv")
+    
+    # predict the outcome on a test set
+    glm_pred <- predict(glm_fit, testing, type = "raw")
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(glm_pred, testing$t2d_long, mode = "everything")
+    
+    method_prob <- predict(glm_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    glm_ROC[[i]] <- method_ROC$ci[2]
+    
+    #collect results
+    glm_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- GLM Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running Stochastic Gradient Boosting using 5-fold CV, using grid search
+    gbm_fit <- train(as.formula(MLmodel_long[[m]]), 
+                     data = training, 
+                     method = "gbm",
+                     trControl = fit_control,
+                     tuneGrid = gbm_grid,
+                     verbose = F,
+                     metric = "MCC_cv")
+    
+    grid_best[[i]] <- gbm_fit$bestTune
+    
+    # predict the outcome on a test set
+    gbm_pred <- predict(gbm_fit, testing, type = "raw")
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(gbm_pred, testing$t2d_long, mode = "everything")
+    
+    method_prob <- predict(gbm_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    gbm_ROC[[i]] <- method_ROC$ci[2]
+    
+    #collect results
+    gbm_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- GBM Iteration", i, "of", k, "completed", sep=" "))
+    
+
+    #running RF using repeated 5-fold CV, using grid search
+    rf_fit <- train(as.formula(MLmodel_long[[m]]), 
+                    data = training, 
+                    method = "ranger",
+                    trControl = fit_control,
+                    tuneGrid = rf_grid,
+                    verbose = F,
+                    metric = "MCC_cv")
+    
+    grid_best[[i+5]] <- rf_fit$bestTune
+    
+    # predict the outcome on a test set
+    rf_pred <- predict(rf_fit, testing, type = "raw")
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(rf_pred, testing$t2d_long, mode = "everything")
+    
+    method_prob <- predict(rf_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    rf_ROC[[i]] <- method_ROC$ci[2]
+    
+    #collect results
+    rf_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- RF Iteration", i, "of", k, "completed", sep=" "))
+    
+
+    #running SVM with various kernels using repeated 5-fold CV, using grid search
+    svm_l_fit <- train(as.formula(MLmodel_long[[m]]), 
+                       data = training, 
+                       method = "svmLinear2",
+                       trControl = fit_control,
+                       tuneGrid = svm_l_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+10]] <- svm_l_fit$bestTune
+    
+    svm_p_fit <- train(as.formula(MLmodel_long[[m]]), 
+                       data = training, 
+                       method = "svmPoly",
+                       trControl = fit_control,
+                       tuneGrid = svm_p_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+15]] <- svm_p_fit$bestTune
+    
+    svm_r_fit <- train(as.formula(MLmodel_long[[m]]), 
+                       data = training, 
+                       method = "svmRadial",
+                       trControl = fit_control,
+                       tuneGrid = svm_r_grid,
+                       verbose = F,
+                       metric = "MCC_cv")
+    
+    grid_best[[i+20]] <- svm_r_fit$bestTune
+    
+    # predict the outcome on a test set
+    svm_l_pred <- predict(svm_l_fit, testing, type = "raw")
+    svm_p_pred <- predict(svm_p_fit, testing, type = "raw")
+    svm_r_pred <- predict(svm_r_fit, testing, type = "raw")
+    
+    method_prob <- predict(svm_l_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    svm_linear_ROC[[i]] <- method_ROC$ci[2]
+    
+    method_prob <- predict(svm_p_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    svm_polynomial_ROC[[i]] <- method_ROC$ci[2]
+    
+    method_prob <- predict(svm_r_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    svm_radial_ROC[[i]] <- method_ROC$ci[2]
+    
+    # compare predicted outcome and true outcome, extract results
+    confmat <- caret::confusionMatrix(svm_l_pred, testing$t2d_long, mode = "everything")
+    svm_linear_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    confmat <- caret::confusionMatrix(svm_p_pred, testing$t2d_long, mode = "everything")
+    svm_polynomial_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    confmat <- caret::confusionMatrix(svm_r_pred, testing$t2d_long, mode = "everything")
+    svm_radial_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    print(paste(m, "- SVM Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    #running ANN using repeated 5-fold CV, using grid search
+    ann_fit <- train(as.formula(MLmodel_long[[m]]), 
+                     data = training, 
+                     method = "nnet",
+                     trControl = fit_control,
+                     tuneGrid = ann_grid,
+                     verbose = F,
+                     metric = "MCC_cv")
+    
+    grid_best[[i+25]] <- ann_fit$bestTune
+    
+    
+    # predict the outcome on a test set
+    ann_pred <- predict(ann_fit, testing, type = "raw")
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(ann_pred, testing$t2d_long, mode = "everything")
+    
+    method_prob <- predict(ann_fit, testing, type = "prob")
+    method_ROC <- roc(predictor=method_prob$yes,
+                      response=testing$t2d_long,
+                      levels=rev(levels(testing$t2d_long)),
+                      ci=T)
+    ann_ROC[[i]] <- method_ROC$ci[2]
+    
+    #collect results
+    ann_MCC[[i]] <- MCC_maker(confmat$table)
+    print(paste(m, "- ANN Iteration", i, "of", k, "completed", sep=" "))
+    
+    
+    # further modification to data for COX
+    training$t2d_long <- as.numeric(training$t2d_long ) - 1
+    testing$t2d_long <- as.numeric(testing$t2d_long ) - 1
+    
+    fit <- rms::cph(Coxmodel_long[[m]], data=training, x=TRUE, y=TRUE, surv=TRUE, time.inc=max(filtered$timelong))
+    estimates <- rms::survest(fit,newdata = testing, times=max(filtered$timelong))$surv
+    cox_ROC[[i]] <- as.numeric(Hmisc::rcorr.cens(x=estimates,S = survival::Surv(testing$timelong, testing$t2d_long))[1])
+    
+    cox_pred <- numeric(length(estimates))
+    cox_real <- numeric(length(estimates))
+    cox_pred[estimates<0.5] <- 1 #predict "yes" if probability < 0.5 (similar to GLM)
+    cox_real[testing$t2d_long == 1] <- 1
+    cox_pred <- as.factor(cox_pred)
+    cox_real <- as.factor(cox_real)
+    
+    # compare predicted outcome and true outcome
+    confmat <- caret::confusionMatrix(cox_pred, cox_real, mode = "everything")
+    
+    #collect results
+    cox_MCC[[i]] <- MCC_maker(confmat$table)
+    
+    print(paste(m, "- COX Iteration", i, "of", k, "completed", sep=" "))
+    
+  }
+  
+  # collection of results
+  MCClists <- c(glm_MCC, gbm_MCC, rf_MCC,
+                svm_linear_MCC, svm_polynomial_MCC,
+                svm_radial_MCC, ann_MCC, cox_MCC)
+  
+  ROClists <- c(glm_ROC, gbm_ROC, rf_ROC,
+                svm_linear_ROC, svm_polynomial_ROC,
+                svm_radial_ROC, ann_ROC, cox_ROC)
+  
+  df <- data.frame(MCC = unlist(MCClists), ROC = unlist(ROClists))
+  
+  df$Method <- c(rep("GLM", 5),
+                 rep("GBM", 5),
+                 rep("RF", 5),
+                 rep("SVM linear", 5),
+                 rep("SVM polynomial", 5),
+                 rep("SVM radial", 5),
+                 rep("ANN", 5),
+                 rep("COX", 5))
+  
+  df$Method <- factor(df$Method, levels = c("GLM", "GBM", "RF",
+                                            "SVM linear", "SVM polynomial",
+                                            "SVM radial", "ANN", "COX"))
+  
+  
+  filename <- paste("MCC_ROC_stats_long_", m, "_r06.rds", sep="")
+  #filename <- paste("P:/Staff/Guannan/LTF225/MCC_ROC_stats_long_", m, "_r06.rds", sep="")
+  saveRDS(df, filename)
+  
+  filename <- "gridsearch_longT2D_r06.rds"
+  #filename <- "P:/Staff/Guannan/LTF225/gridsearch_longT2D_r06.rds"
+  saveRDS(grid_best, filename)
+  
+}
