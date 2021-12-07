@@ -4,7 +4,7 @@ library(foreign)
 library(dplyr)
 
 # SET WORKING DIRECTORY
-setwd("H:/BACKUP/Projects/NHANES/Data")
+setwd("H:/BACKUP/Projects/NHANES")
 
 # LOAD AND MERGE ALL NECESSARY FILES PER SURVEY
 
@@ -114,6 +114,7 @@ colnames(demo) <- c("SEQN", "gender", "age", "ethnicity")
 
 
 
+# add line
 
 
 
