@@ -1,5 +1,5 @@
 # LOAD LIBRARIES
-library(haven)
+# library(haven)
 library(foreign)
 library(dplyr)
 
@@ -23,7 +23,7 @@ demo <- loaded_file[,keep_vars]
 ## BODY MEASUREMENTS
 download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/BMX.XPT", tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "BMXWT", "BMXHT")
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI")
 body <- loaded_file[,keep_vars]
 
 ## BLOOD PRESSURE
@@ -33,10 +33,10 @@ keep_vars <- c("SEQN", "BPXSAR", "BPXDAR")
 bloodp <- loaded_file[,keep_vars]
 
 ## BODY COMPOSITION
-download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/BIX.XPT", tf <- tempfile(), mode="wb")
-loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "BIDPFAT")
-bodycomp <- loaded_file[,keep_vars]
+# download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/BIX.XPT", tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "BIDPFAT")
+# bodycomp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
 download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/LAB13AM.XPT", tf <- tempfile(), mode="wb")
@@ -50,8 +50,20 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
 lipid_2 <- loaded_file[,keep_vars]
 
-## ADD OTHER LABORATORY DATA
-## E.G. CRP, HBA1C, FASTING GLUCOSE, C-PEPTIDE
+## HYPERTENSION & LIPID MEDS
+download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/BPQ.XPT", tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D")
+meds <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/MCQ.XPT", tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ250A", "MCQ260AA", "MCQ260AB",
+               "MCQ260AG", "MCQ260AH")
+fam_hist <- loaded_file[,keep_vars]
+
+ 
 
 ## DIABETES
 download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/DIQ.XPT", tf <- tempfile(), mode="wb")
@@ -68,17 +80,9 @@ keep_vars <- c("SEQN", "CDQ010", "CDQ020", "CDQ030", "CDQ040",
                "CDQ050", "CDQ060", "CDQ070", "CDQ080", "CDQ090")
 cardio <- loaded_file[,keep_vars]
 
-## HOSPITALIZATION & ACCESS TO CARE
-download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/HUQ.XPT", tf <- tempfile(), mode="wb")
-loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN")
-hosp_care <- loaded_file[,keep_vars]
 
-## MEDICAL CONDITIONS
-download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/MCQ.XPT", tf <- tempfile(), mode="wb")
-loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN")
-medical <- loaded_file[,keep_vars]
+
+
 
 
 
@@ -86,15 +90,20 @@ medical <- loaded_file[,keep_vars]
 full_1999_2000 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
   full_join(bloodp,  by = "SEQN") %>% 
-  full_join(bodycomp,  by = "SEQN") %>% 
   full_join(lipid_1,  by = "SEQN") %>% 
-  full_join(lipid_2,  by = "SEQN")
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") 
 
 ## RENAME VARIABLES
 colnames(full_1999_2000) <- c("SEQN", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy",
-                              "weight", "height", "SBP", "DBP", "pct_fat", 
-                              "TG", "LDL", "TC", "HDL")
+                              "waist", "BMI",
+                              "SBP", "DBP",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "BP_meds", "lipid_meds",
+                              "hist_T2D", "hist_T2D_mother", "hist_T2D_father",
+                              "hist_T2D_brother", "hist_T2D_sister")
 
 
 
@@ -115,10 +124,6 @@ colnames(demo) <- c("SEQN", "gender", "age", "ethnicity")
 
 
 
-
-
-
-# add line
 
 
 
