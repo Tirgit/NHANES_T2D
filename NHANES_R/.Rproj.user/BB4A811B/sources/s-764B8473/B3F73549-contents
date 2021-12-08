@@ -15,7 +15,9 @@ setwd("H:/BACKUP/Projects/NHANES")
 ## DEMOGRAPHICS
 download.file("https://wwwn.cdc.gov/nchs/nhanes/1999-2000/DEMO.XPT", tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "RIAGENDR", "RIDAGEYR", "RIDRETH1")
+keep_vars <- c("SEQN", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC",
+               "RIDEXPRG")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -89,7 +91,8 @@ full_1999_2000 <- demo %>%
   full_join(lipid_2,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_1999_2000) <- c("SEQN", "gender", "age", "ethnicity",
+colnames(full_1999_2000) <- c("SEQN", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy",
                               "weight", "height", "SBP", "DBP", "pct_fat", 
                               "TG", "LDL", "TC", "HDL")
 
