@@ -24,13 +24,13 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ.XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH.XPT")
 activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ.XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ.XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ.XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC",
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
 
@@ -43,7 +43,8 @@ body <- loaded_file[,keep_vars]
 ## BLOOD PRESSURE
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "BPXSAR", "BPXDAR", "BPXPLS")
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -109,10 +110,10 @@ diabetes <- loaded_file[,keep_vars]
 
 
 ## PRESCRIPTION MEDS
-download.file(prescription_file, tf <- tempfile(), mode="wb")
-loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "RXD240B")
-meds <- loaded_file[,keep_vars]
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
 # DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
 
 
@@ -134,7 +135,7 @@ full_1999_2000 <- demo %>%
 colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP", "DBP", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
                               "now_BP_meds","uric_acid", "glucose",
@@ -170,14 +171,14 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC",
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
 
@@ -190,7 +191,8 @@ body <- loaded_file[,keep_vars]
 ## BLOOD PRESSURE
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "BPXSAR", "BPXDAR", "BPXPLS")
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -256,10 +258,10 @@ diabetes <- loaded_file[,keep_vars]
 
 
 ## PRESCRIPTION MEDS
-download.file(prescription_file, tf <- tempfile(), mode="wb")
-loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "RXD240B")
-meds <- loaded_file[,keep_vars]
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
 # DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
 
 
@@ -281,7 +283,7 @@ full_2001_2002 <- demo %>%
 colnames(full_2001_2002) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP", "DBP", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
                               "now_BP_meds","uric_acid", "glucose",
@@ -299,18 +301,312 @@ colnames(full_2001_2002) <- c("SEQN", "survey_nr", "survey_time", "gender", "age
                               "comp_pain_leg", "comp_pain_calf")
 
 
-
 ######################################
 ########## NHANES 2003-2004 ##########
 ######################################
 years <- "2003-2004"
 letter <- "C"
 
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDDSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ250A", "MCQ260AA", "MCQ260AB",
+               "MCQ260AG", "MCQ260AH", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F", "MCQ250F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2003_2004 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
+                              "famhist_T2D_brother", "famhist_T2D_sister",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke", "famhist_hypertension",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
+
+
 ######################################
 ########## NHANES 2005-2006 ##########
 ######################################
+
+# CHANGES:
+# detailed family history information on diabetes,
+# and hypertension are discontinued
+# lipids are in 3 separate files instead of 2
+# only diabetic retinpathy is asked from all complications,
+# all others are removed
+
 years <- "2005-2006"
 letter <- "D"
+
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
+lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## LIPIDS 3
+download.file(lipid_3_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDHDDSI")
+lipid_3 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070",
+               "DIQ080")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2005_2006 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(lipid_3,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy")
+
 
 ######################################
 ########## NHANES 2007-2008 ##########
@@ -318,11 +614,287 @@ letter <- "D"
 years <- "2007-2008"
 letter <- "E"
 
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2007_2008 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
+
 ######################################
 ########## NHANES 2009-2010 ##########
 ######################################
 years <- "2009-2010"
 letter <- "F"
+
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2009_2010 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
 
 ######################################
 ########## NHANES 2011-2012 ##########
@@ -330,11 +902,287 @@ letter <- "F"
 years <- "2011-2012"
 letter <- "G"
 
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2011_2012 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
+
 ######################################
 ########## NHANES 2013-2014 ##########
 ######################################
 years <- "2013-2014"
 letter <- "H"
+
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2013_2014 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
 
 ######################################
 ########## NHANES 2015-2016 ##########
@@ -342,11 +1190,287 @@ letter <- "H"
 years <- "2015-2016"
 letter <- "I"
 
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2015_2016 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
+
 ######################################
 ########## NHANES 2017-2018 ##########
 ######################################
 years <- "2017-2018"
 letter <- "J"
+
+demo_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DEMO_",letter,".XPT")
+body_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BMX_",letter,".XPT")
+bloodp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPX_",letter,".XPT")
+lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13AM_",letter,".XPT")
+lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L13_",letter,".XPT")
+meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
+smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+activity_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
+diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
+
+## DEMOGRAPHICS
+download.file(demo_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+               "RIDRETH1", "INDHHINC", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN")
+demo <- loaded_file[,keep_vars]
+
+## BODY MEASUREMENTS
+download.file(body_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BMXWAIST", "BMXBMI", "BMXHT")
+body <- loaded_file[,keep_vars]
+
+## BLOOD PRESSURE
+download.file(bloodp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+bloodp <- loaded_file[,keep_vars]
+
+## LIPIDS 1
+download.file(lipid_1_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTRSI", "LBDLDLSI")
+lipid_1 <- loaded_file[,keep_vars]
+
+## LIPIDS 2
+download.file(lipid_2_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDTCSI", "LBDHDLSI")
+lipid_2 <- loaded_file[,keep_vars]
+
+## HYPERTENSION & LIPID MEDS
+download.file(meds_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "BPQ020", "BPQ040A", "BPQ090D",
+               "BPQ050A")
+meds <- loaded_file[,keep_vars]
+
+## LABORATORY PANEL
+download.file(standard_lab_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+standard_lab <- loaded_file[,keep_vars]
+
+## MEDICAL CONDITIONS, FAMILY HISTORY
+download.file(fam_hist_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "MCQ300C", "MCQ080",
+               "MCQ160B", "MCQ160C", "MCQ160D",
+               "MCQ160E", "MCQ160F")
+fam_hist <- loaded_file[,keep_vars]
+
+## SMOKING
+download.file(smoking_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "SMQ040")
+smoking <- loaded_file[,keep_vars]
+
+## FASTING STATUS
+download.file(fasting_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PHAFSTHR")
+fasting <- loaded_file[,keep_vars]
+
+## PHYSICAL ACTIVITY
+download.file(activity_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "PAQ180", "PAD200", "PAD320",
+               "PAD440", "PAD460")
+activity <- loaded_file[,keep_vars]
+
+## DIABETES
+download.file(diabetes_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
+               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
+               "DIQ140", "DIQ150")
+diabetes <- loaded_file[,keep_vars]
+
+
+## PRESCRIPTION MEDS
+# download.file(prescription_file, tf <- tempfile(), mode="wb")
+# loaded_file <- foreign::read.xport(tf)
+# keep_vars <- c("SEQN", "RXD240B")
+# meds <- loaded_file[,keep_vars]
+# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
+
+
+## MERGE ALL BY SEQN
+full_2017_2018 <- demo %>% 
+  full_join(body,  by = "SEQN") %>% 
+  full_join(bloodp,  by = "SEQN") %>% 
+  full_join(lipid_1,  by = "SEQN") %>% 
+  full_join(lipid_2,  by = "SEQN") %>% 
+  full_join(meds,  by = "SEQN") %>% 
+  full_join(standard_lab,  by = "SEQN") %>% 
+  full_join(fam_hist,  by = "SEQN") %>% 
+  full_join(smoking,  by = "SEQN") %>% 
+  full_join(fasting,  by = "SEQN") %>% 
+  full_join(activity,  by = "SEQN") %>%
+  full_join(diabetes,  by = "SEQN")
+
+## RENAME VARIABLES
+colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+                              "income", "education", "pregnancy", "born_USA",
+                              "waist", "BMI", "height",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "TG", "LDL", "TC", "HDL",
+                              "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
+                              "now_BP_meds","uric_acid", "glucose",
+                              "famhist_T2D",
+                              "ever_overweight", "ever_heartfailure",
+                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_stroke",
+                              "current_smoker", "fasting_hr",
+                              "PA_work", "PA_vigorous", "PA_moderate",
+                              "PA_strength", "PA_freq",
+                              "ever_diabetes", "insulin", "oral_diab_med",
+                              "comp_retinopathy", "comp_ulcer",
+                              "comp_numbness", "comp_pain_hand",
+                              "comp_pain_leg", "comp_pain_calf")
 
 
 
