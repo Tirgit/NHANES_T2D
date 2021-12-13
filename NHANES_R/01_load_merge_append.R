@@ -28,7 +28,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX.X
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC4YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -123,7 +123,7 @@ full_1999_2000 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -165,7 +165,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC4YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -260,7 +260,7 @@ full_2001_2002 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2001_2002) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -302,7 +302,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -397,7 +397,7 @@ full_2003_2004 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -448,7 +448,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -548,7 +548,7 @@ full_2005_2006 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -591,7 +591,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN2")
 demo <- loaded_file[,keep_vars]
@@ -691,7 +691,7 @@ full_2007_2008 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -732,7 +732,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -833,7 +833,7 @@ full_2009_2010 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -873,7 +873,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -974,7 +974,7 @@ full_2011_2012 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -1014,7 +1014,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -1115,7 +1115,7 @@ full_2013_2014 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -1155,7 +1155,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -1256,7 +1256,7 @@ full_2015_2016 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
@@ -1296,7 +1296,7 @@ prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_"
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -1397,7 +1397,7 @@ full_2017_2018 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
                               "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
