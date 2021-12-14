@@ -661,8 +661,6 @@ colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "comp_retinopathy")
 
 
-## continue from here >>>>>>>>
-
 ######################################
 ########## NHANES 2009-2010 ##########
 ######################################
@@ -814,8 +812,8 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC2",
-               "RIDEXPRG", "DMDBORN")
+               "RIDRETH1", "INDHHIN2", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -886,8 +884,7 @@ fasting <- loaded_file[,keep_vars]
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+               "DIQ080")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -918,9 +915,8 @@ colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "comp_retinopathy")
+
 
 ######################################
 ########## NHANES 2013-2014 ##########
@@ -945,8 +941,8 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC2",
-               "RIDEXPRG", "DMDBORN")
+               "RIDRETH1", "INDHHIN2", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -1017,8 +1013,7 @@ fasting <- loaded_file[,keep_vars]
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+               "DIQ080")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -1049,9 +1044,8 @@ colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "comp_retinopathy")
+
 
 ######################################
 ########## NHANES 2015-2016 ##########
@@ -1076,8 +1070,8 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC2",
-               "RIDEXPRG", "DMDBORN")
+               "RIDRETH1", "INDHHIN2", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -1148,8 +1142,7 @@ fasting <- loaded_file[,keep_vars]
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+               "DIQ080")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -1181,9 +1174,8 @@ colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "comp_retinopathy")
+
 
 ######################################
 ########## NHANES 2017-2018 ##########
@@ -1208,8 +1200,8 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC2",
-               "RIDEXPRG", "DMDBORN")
+               "RIDRETH1", "INDHHIN2", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -1280,8 +1272,7 @@ fasting <- loaded_file[,keep_vars]
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+               "DIQ080")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -1313,9 +1304,8 @@ colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "comp_retinopathy")
+
 
 
 
