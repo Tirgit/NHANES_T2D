@@ -94,9 +94,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -127,10 +125,7 @@ colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -222,9 +217,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -255,10 +248,7 @@ colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", 
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -350,9 +340,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -383,10 +371,7 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -396,9 +381,7 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
 # CHANGES:
 # detailed family history information on diabetes,
 # and hypertension are discontinued
-# lipids are in 3 separate files instead of 2
-# only diabetic retinpathy is asked from all complications,
-# all others are removed
+
 
 years <- "2005-2006"
 letter <- "D"
@@ -492,8 +475,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -524,8 +506,7 @@ colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -626,8 +607,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -657,8 +637,7 @@ colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -755,8 +734,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -786,8 +764,7 @@ colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 ######################################
 ########## NHANES 2011-2012 ##########
@@ -883,8 +860,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -914,8 +890,7 @@ colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -1012,8 +987,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
@@ -1043,8 +1017,7 @@ colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -1141,8 +1114,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -1173,8 +1145,7 @@ colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 ######################################
@@ -1271,8 +1242,7 @@ fasting <- loaded_file[,keep_vars]
 ## DIABETES
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080")
+keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
 
@@ -1303,8 +1273,7 @@ colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattach",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy")
+                              "ever_diabetes", "insulin", "oral_diab_med")
 
 
 
