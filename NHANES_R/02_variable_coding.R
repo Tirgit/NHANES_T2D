@@ -196,7 +196,7 @@ full_df <- full_df[ , !(names(full_df) %in% dropvars)]
 full_df$SBP[is.nan(full_df$SBP)] <- NA
 full_df$DBP[is.nan(full_df$DBP)] <- NA
 # further rules from NHANES:
-# Systolic blood pressure cannot be greater than 300 mmHg;
+# Systolic blood pressure cannot be greater than 300 mmHg
 full_df$SBP[full_df$SBP > 300] <- NA
 # Systolic blood pressure must be greater than diastolic blood pressure;
 sum(full_df$DBP > full_df$SBP, na.rm = T) #it's OK
@@ -206,3 +206,41 @@ full_df$DBP[is.na(full_df$SBP)] <- NA
 # all converted to numeric variables, original variables removed
 summary(full_df$SBP)
 summary(full_df$DBP)
+
+
+###############################
+##### TG (triglycerides) ######
+###############################
+# all lipids numeric, in SI units (mmol/L)
+summary(full_df$TG)
+summary(full_df$LDL)
+summary(full_df$TC)
+summary(full_df$HDL)
+# for those rows with only LDL that is missing, we can use
+# Friedewald formula to estimate LDL
+# calculation is not valid if TG level is ???4.5 mmol/L
+# calculation is only valid if fasted at least 8.5 hours or more but less than 24 hours
+# LDL = Total cholesterol - (Triglyceride / 2.2) - HDL
+friedewald_index <- !is.na(full_df$TG) & !is.na(full_df$TC) &
+  !is.na(full_df$HDL) & full_df$TG <4.5 &
+  is.na(full_df$LDL) & full_df$fasting_hr >= 8.5 &
+  full_df$fasting_hr < 24 
+friedewald_index[is.na(friedewald_index)] <- FALSE # NA is not allowed in this vector, as it will be used for subsetting
+full_df$LDL[friedewald_index] <- full_df$TC[friedewald_index] - (full_df$TG[friedewald_index]/2.2) - full_df$HDL[friedewald_index]
+# final values
+summary(full_df$TG)
+summary(full_df$LDL)
+summary(full_df$TC)
+summary(full_df$HDL)
+
+
+# >>>> continue annotation from ever_hypertension
+
+# diabetic status: combine self report and medication status
+# this will only be used for exclusion in this project
+
+
+
+
+
+
