@@ -114,10 +114,95 @@ full_df$education <- revalue(full_df$education, c("1"="<9 grade",
 table(full_df$education, useNA = "always")
 
 
+######################
+##### pregnancy ######
+######################
+# factor variable, coded as:
+# 1 = Yes, positive lab pregnancy test or self-reported pregnant at exam
+# 2 = Not pregnant at exam
+# 3 = Cannot ascertain if pregnant at exam
+# note - we will exclude those pregnant at a later stage
+table(full_df$pregnancy, useNA = "always")
+# setting those with the third category  to missing
+full_df$pregnancy[full_df$pregnancy == 3] <- NA
+full_df$pregnancy <- as.factor(full_df$pregnancy)
+full_df$pregnancy <- revalue(full_df$pregnancy, c("1"="pregnant", 
+                                                  "2"="not pregnant"))
+table(full_df$pregnancy, useNA = "always")
 
 
+#####################
+##### born_USA ######
+#####################
+# factor variable, coded three different ways over time
+# first coding until 2006
+# second coding 2007-2010
+# third coding from 2011
+# in all coding:
+# 1 =Born in 50 US States or Washington, DC
+# 2/3/4/5=other countries/places
+# 7/77 = Refused
+# 9/99 = Don't know
+# recoding non-US born as a new category immigrants
+# setting 7, 9, 99 to missing
+table(full_df$born_USA, useNA = "always")
+full_df$born_USA[full_df$born_USA == 3] <- 2
+full_df$born_USA[full_df$born_USA == 4] <- 2
+full_df$born_USA[full_df$born_USA == 5] <- 2
+full_df$born_USA[full_df$born_USA == 7] <- NA
+full_df$born_USA[full_df$born_USA == 9] <- NA
+full_df$born_USA[full_df$born_USA == 77] <- NA
+full_df$born_USA[full_df$born_USA == 99] <- NA
+full_df$born_USA <- as.factor(full_df$born_USA)
+full_df$born_USA <- revalue(full_df$born_USA, c("1"="born in USA", 
+                                                  "2"="immigrant"))
+table(full_df$born_USA, useNA = "always")
 
 
+##################
+##### waist ######
+##################
+# numeric variable, nothing to do
+summary(full_df$waist)
 
 
+################
+##### BMI ######
+################
+# numeric variable, nothing to do
+summary(full_df$BMI)
 
+
+###################
+##### height ######
+###################
+# numeric variable, nothing to do
+summary(full_df$height)
+
+
+#####################
+##### SBP, DBP ######
+#####################
+# for systolic and diastolic blood pressures, 3 measurements
+# were undertaken, and they should be averaged
+# if one measurement failed, there is a 4th measurement
+# I will average the 4 measurements (remove NAs)
+# this is OK, as if 3 measurements are available, the 4th is missing
+# otherwise, the 4th is available and another is missing
+full_df$SBP <- rowMeans(as.data.frame(cbind(full_df$SBP1, full_df$SBP2, full_df$SBP3, full_df$SBP4)), na.rm = T)
+full_df$DBP <- rowMeans(as.data.frame(cbind(full_df$DBP1, full_df$DBP2, full_df$DBP3, full_df$DBP4)), na.rm = T)
+dropvars <- c("SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4")
+full_df <- full_df[ , !(names(full_df) %in% dropvars)]
+full_df$SBP[is.nan(full_df$SBP)] <- NA
+full_df$DBP[is.nan(full_df$DBP)] <- NA
+# further rules from NHANES:
+# Systolic blood pressure cannot be greater than 300 mmHg;
+full_df$SBP[full_df$SBP > 300] <- NA
+# Systolic blood pressure must be greater than diastolic blood pressure;
+sum(full_df$DBP > full_df$SBP, na.rm = T) #it's OK
+# If there is no systolic blood pressure, there can be no diastolic blood pressure;
+full_df$DBP[is.na(full_df$SBP)] <- NA
+# Diastolic blood pressure can be zero.
+# all converted to numeric variables, original variables removed
+summary(full_df$SBP)
+summary(full_df$DBP)
