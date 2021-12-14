@@ -23,7 +23,6 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ.XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ.XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH.XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ.XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -99,14 +98,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
                "DIQ080", "DIQ090", "DIQ100", "DIQ120",
                "DIQ140", "DIQ150")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
 
 
 ## MERGE ALL BY SEQN
@@ -159,7 +150,6 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -238,14 +228,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
 diabetes <- loaded_file[,keep_vars]
 
 
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
-
 ## MERGE ALL BY SEQN
 full_2001_2002 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -296,7 +278,6 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -375,14 +356,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
 diabetes <- loaded_file[,keep_vars]
 
 
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
-
 ## MERGE ALL BY SEQN
 full_2003_2004 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -442,7 +415,6 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -525,14 +497,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070",
 diabetes <- loaded_file[,keep_vars]
 
 
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
-
 ## MERGE ALL BY SEQN
 full_2005_2006 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -586,7 +550,6 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -667,15 +630,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070",
                "DIQ080")
 diabetes <- loaded_file[,keep_vars]
 
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
-
 ## MERGE ALL BY SEQN
 full_2007_2008 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -722,19 +676,18 @@ lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",lett
 lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
 lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
 meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
-standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
 fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
-fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
-               "RIDRETH1", "INDHHINC", "DMDEDUC2",
-               "RIDEXPRG", "DMDBORN")
+               "RIDRETH1", "INDHHIN2", "DMDEDUC2",
+               "RIDEXPRG", "DMDBORN2")
 demo <- loaded_file[,keep_vars]
 
 ## BODY MEASUREMENTS
@@ -805,18 +758,8 @@ fasting <- loaded_file[,keep_vars]
 download.file(diabetes_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
-               "DIQ080", "DIQ090", "DIQ100", "DIQ120",
-               "DIQ140", "DIQ150")
+               "DIQ080")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
 
 ## MERGE ALL BY SEQN
 full_2009_2010 <- demo %>% 
@@ -846,9 +789,7 @@ colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight", "survey_time
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med",
-                              "comp_retinopathy", "comp_ulcer",
-                              "comp_numbness", "comp_pain_hand",
-                              "comp_pain_leg", "comp_pain_calf")
+                              "comp_retinopathy")
 
 ######################################
 ########## NHANES 2011-2012 ##########
@@ -863,12 +804,11 @@ lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",lett
 lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
 lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
 meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
-standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
 fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
-fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -949,15 +889,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
                "DIQ080", "DIQ090", "DIQ100", "DIQ120",
                "DIQ140", "DIQ150")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
 
 ## MERGE ALL BY SEQN
 full_2011_2012 <- demo %>% 
@@ -1004,12 +935,11 @@ lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",lett
 lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
 lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
 meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
-standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
 fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
-fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -1090,15 +1020,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
                "DIQ080", "DIQ090", "DIQ100", "DIQ120",
                "DIQ140", "DIQ150")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
-
 
 ## MERGE ALL BY SEQN
 full_2013_2014 <- demo %>% 
@@ -1145,12 +1066,11 @@ lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",lett
 lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
 lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
 meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
-standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
 fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
-fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -1231,14 +1151,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
                "DIQ080", "DIQ090", "DIQ100", "DIQ120",
                "DIQ140", "DIQ150")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
 
 
 ## MERGE ALL BY SEQN
@@ -1286,12 +1198,11 @@ lipid_1_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TRIGLY_",lett
 lipid_2_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/TCHOL_",letter,".XPT")
 lipid_3_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HDL_",letter,".XPT")
 meds_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BPQ_",letter,".XPT")
-standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L40_",letter,".XPT")
+standard_lab_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/BIOPRO_",letter,".XPT")
 fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter,".XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
-fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
+fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-prescription_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/RXQ_RX_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -1372,14 +1283,6 @@ keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070",
                "DIQ080", "DIQ090", "DIQ100", "DIQ120",
                "DIQ140", "DIQ150")
 diabetes <- loaded_file[,keep_vars]
-
-
-## PRESCRIPTION MEDS
-# download.file(prescription_file, tf <- tempfile(), mode="wb")
-# loaded_file <- foreign::read.xport(tf)
-# keep_vars <- c("SEQN", "RXD240B")
-# meds <- loaded_file[,keep_vars]
-# DO NOT MERGE! CLEAN PRESCRIPTIONS FIRST!
 
 
 ## MERGE ALL BY SEQN
