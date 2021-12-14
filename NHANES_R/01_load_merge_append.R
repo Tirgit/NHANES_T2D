@@ -23,6 +23,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ.XPT")
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ.XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH.XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/LAB10.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -96,6 +97,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
+
 
 ## MERGE ALL BY SEQN
 full_1999_2000 <- demo %>% 
@@ -108,7 +115,8 @@ full_1999_2000 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
 
 ## RENAME VARIABLES
 colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -123,7 +131,7 @@ colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -143,6 +151,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_.XPT")
 
 
 ## DEMOGRAPHICS
@@ -217,6 +226,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2001_2002 <- demo %>% 
@@ -229,7 +243,9 @@ full_2001_2002 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -244,7 +260,7 @@ colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", 
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -264,6 +280,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_.XPT")
 
 
 ## DEMOGRAPHICS
@@ -338,6 +355,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2003_2004 <- demo %>% 
@@ -350,7 +372,9 @@ full_2003_2004 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -365,7 +389,7 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -391,6 +415,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
 
 
 ## DEMOGRAPHICS
@@ -471,6 +496,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2005_2006 <- demo %>% 
@@ -484,7 +514,9 @@ full_2005_2006 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -499,7 +531,7 @@ colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -524,6 +556,8 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -603,6 +637,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DID070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2007_2008 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -615,7 +655,9 @@ full_2007_2008 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -630,7 +672,7 @@ colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -651,6 +693,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -730,6 +773,13 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
+
+
 ## MERGE ALL BY SEQN
 full_2009_2010 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -742,7 +792,9 @@ full_2009_2010 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -757,7 +809,7 @@ colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 ######################################
 ########## NHANES 2011-2012 ##########
@@ -777,6 +829,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -856,6 +909,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2011_2012 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -868,7 +927,9 @@ full_2011_2012 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -883,7 +944,7 @@ colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -904,6 +965,8 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -983,6 +1046,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2013_2014 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -995,7 +1064,9 @@ full_2013_2014 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -1010,7 +1081,7 @@ colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -1031,6 +1102,8 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -1110,6 +1183,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2015_2016 <- demo %>% 
@@ -1123,7 +1201,9 @@ full_2015_2016 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -1138,7 +1218,7 @@ colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 ######################################
@@ -1159,6 +1239,8 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -1238,6 +1320,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "DIQ010", "DIQ050", "DIQ070")
 diabetes <- loaded_file[,keep_vars]
 
+## HbA1c
+download.file(a1c_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXGH")
+a1c <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2017_2018 <- demo %>% 
@@ -1251,7 +1338,9 @@ full_2017_2018 <- demo %>%
   full_join(fam_hist,  by = "SEQN") %>% 
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
-  full_join(diabetes,  by = "SEQN")
+  full_join(diabetes,  by = "SEQN") %>%
+  full_join(a1c,  by = "SEQN")
+
 
 ## RENAME VARIABLES
 colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
@@ -1266,7 +1355,7 @@ colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
 
 
