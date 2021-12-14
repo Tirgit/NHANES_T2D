@@ -1417,7 +1417,16 @@ rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    lipid_3, lipid_3_file)
 
 
-
+full_df <- rbind(full_1999_2000,
+      full_2001_2002,
+      full_2003_2004,
+      full_2005_2006,
+      full_2007_2008,
+      full_2009_2010,
+      full_2011_2012,
+      full_2013_2014,
+      full_2015_2016,
+      full_2017_2018)
 
 
 
