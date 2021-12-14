@@ -73,8 +73,7 @@ standard_lab <- loaded_file[,keep_vars]
 ## MEDICAL CONDITIONS, FAMILY HISTORY
 download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "MCQ250A", "MCQ260AA", "MCQ260AB",
-               "MCQ260AG", "MCQ260AH", "MCQ080",
+keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
                "MCQ160E", "MCQ160F", "MCQ250F")
 fam_hist <- loaded_file[,keep_vars]
@@ -119,10 +118,9 @@ colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
                               "now_BP_meds", "glucose",
-                              "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
-                              "famhist_T2D_brother", "famhist_T2D_sister",
+                              "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -196,8 +194,7 @@ standard_lab <- loaded_file[,keep_vars]
 ## MEDICAL CONDITIONS, FAMILY HISTORY
 download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "MCQ250A", "MCQ260AA", "MCQ260AB",
-               "MCQ260AG", "MCQ260AH", "MCQ080",
+keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
                "MCQ160E", "MCQ160F", "MCQ250F")
 fam_hist <- loaded_file[,keep_vars]
@@ -242,10 +239,9 @@ colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", 
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
                               "now_BP_meds", "glucose",
-                              "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
-                              "famhist_T2D_brother", "famhist_T2D_sister",
+                              "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -319,8 +315,7 @@ standard_lab <- loaded_file[,keep_vars]
 ## MEDICAL CONDITIONS, FAMILY HISTORY
 download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "MCQ250A", "MCQ260AA", "MCQ260AB",
-               "MCQ260AG", "MCQ260AH", "MCQ080",
+keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
                "MCQ160E", "MCQ160F", "MCQ250F")
 fam_hist <- loaded_file[,keep_vars]
@@ -365,10 +360,9 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
                               "now_BP_meds", "glucose",
-                              "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
-                              "famhist_T2D_brother", "famhist_T2D_sister",
+                              "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", "famhist_hypertension",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -379,8 +373,7 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
 ######################################
 
 # CHANGES:
-# detailed family history information on diabetes,
-# and hypertension are discontinued
+# detailed family history information on hypertension are discontinued
 
 
 years <- "2005-2006"
@@ -503,7 +496,7 @@ colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -634,7 +627,7 @@ colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -761,7 +754,7 @@ colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -887,7 +880,7 @@ colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -1014,7 +1007,7 @@ colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -1142,7 +1135,7 @@ colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
@@ -1270,7 +1263,7 @@ colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
-                              "ever_chd", "ever_angina", "ever_heartattach",
+                              "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med")
