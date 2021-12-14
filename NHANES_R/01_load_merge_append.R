@@ -76,7 +76,7 @@ download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
-               "MCQ160E", "MCQ160F", "MCQ250F")
+               "MCQ160E", "MCQ160F")
 fam_hist <- loaded_file[,keep_vars]
 
 ## SMOKING
@@ -129,7 +129,7 @@ colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattack",
-                              "ever_stroke", "famhist_hypertension",
+                              "ever_stroke", 
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
@@ -210,7 +210,7 @@ download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
-               "MCQ160E", "MCQ160F", "MCQ250F")
+               "MCQ160E", "MCQ160F")
 fam_hist <- loaded_file[,keep_vars]
 
 ## SMOKING
@@ -263,7 +263,7 @@ colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", 
                               "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattack",
-                              "ever_stroke", "famhist_hypertension",
+                              "ever_stroke", 
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
@@ -345,7 +345,7 @@ download.file(fam_hist_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "MCQ250A", "MCQ080",
                "MCQ160B", "MCQ160C", "MCQ160D",
-               "MCQ160E", "MCQ160F", "MCQ250F")
+               "MCQ160E", "MCQ160F")
 fam_hist <- loaded_file[,keep_vars]
 
 ## SMOKING
@@ -398,7 +398,7 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "famhist_T2D", 
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattack",
-                              "ever_stroke", "famhist_hypertension",
+                              "ever_stroke", 
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
