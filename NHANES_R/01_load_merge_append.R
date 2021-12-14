@@ -27,7 +27,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ.XPT")
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC4YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -42,7 +42,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -67,7 +67,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -114,13 +114,13 @@ full_1999_2000 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
                               "famhist_T2D_brother", "famhist_T2D_sister",
                               "ever_overweight", "ever_heartfailure",
@@ -155,7 +155,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC4YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -170,7 +170,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -195,7 +195,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -242,13 +242,13 @@ full_2001_2002 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
                               "famhist_T2D_brother", "famhist_T2D_sister",
                               "ever_overweight", "ever_heartfailure",
@@ -283,7 +283,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -298,7 +298,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -323,7 +323,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -370,13 +370,13 @@ full_2003_2004 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D", "famhist_T2D_mother", "famhist_T2D_father",
                               "famhist_T2D_brother", "famhist_T2D_sister",
                               "ever_overweight", "ever_heartfailure",
@@ -420,7 +420,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHINC", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN")
 demo <- loaded_file[,keep_vars]
@@ -435,7 +435,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -466,7 +466,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -512,13 +512,13 @@ full_2005_2006 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -554,7 +554,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN2")
 demo <- loaded_file[,keep_vars]
@@ -569,7 +569,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -600,7 +600,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -645,13 +645,13 @@ full_2007_2008 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -683,7 +683,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN2")
 demo <- loaded_file[,keep_vars]
@@ -698,7 +698,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -729,7 +729,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -774,13 +774,13 @@ full_2009_2010 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -811,7 +811,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
@@ -826,7 +826,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -857,7 +857,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -902,13 +902,13 @@ full_2011_2012 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -940,7 +940,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
@@ -955,7 +955,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -986,7 +986,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -1031,13 +1031,13 @@ full_2013_2014 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -1069,7 +1069,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
@@ -1084,7 +1084,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -1115,7 +1115,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -1161,13 +1161,13 @@ full_2015_2016 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
@@ -1199,7 +1199,7 @@ diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIDEXMON", "RIAGENDR", "RIDAGEYR", 
+keep_vars <- c("SEQN", "SDDSRVYR", "WTMEC2YR", "RIAGENDR", "RIDAGEYR", 
                "RIDRETH1", "INDHHIN2", "DMDEDUC2",
                "RIDEXPRG", "DMDBORN4")
 demo <- loaded_file[,keep_vars]
@@ -1214,7 +1214,7 @@ body <- loaded_file[,keep_vars]
 download.file(bloodp_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "BPXSY1", "BPXSY2", "BPXSY3", "BPXSY4",
-               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4", "BPXPLS")
+               "BPXDI1", "BPXDI2", "BPXDI3", "BPXDI4")
 bloodp <- loaded_file[,keep_vars]
 
 ## LIPIDS 1
@@ -1245,7 +1245,7 @@ meds <- loaded_file[,keep_vars]
 ## LABORATORY PANEL
 download.file(standard_lab_file, tf <- tempfile(), mode="wb")
 loaded_file <- foreign::read.xport(tf)
-keep_vars <- c("SEQN", "LBDSUASI", "LBDSGLSI")
+keep_vars <- c("SEQN", "LBDSGLSI")
 standard_lab <- loaded_file[,keep_vars]
 
 ## MEDICAL CONDITIONS, FAMILY HISTORY
@@ -1291,13 +1291,13 @@ full_2017_2018 <- demo %>%
   full_join(diabetes,  by = "SEQN")
 
 ## RENAME VARIABLES
-colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight", "survey_time", "gender", "age", "ethnicity", 
+colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "age", "ethnicity", 
                               "income", "education", "pregnancy", "born_USA",
                               "waist", "BMI", "height",
-                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4", "pulse",
+                              "SBP1", "SBP2", "SBP3", "SBP4", "DBP1",  "DBP2",  "DBP3",  "DBP4",
                               "TG", "LDL", "TC", "HDL",
                               "ever_hypertension", "ever_BP_meds", "ever_lipid_meds",
-                              "now_BP_meds","uric_acid", "glucose",
+                              "now_BP_meds", "glucose",
                               "famhist_T2D",
                               "ever_overweight", "ever_heartfailure",
                               "ever_chd", "ever_angina", "ever_heartattach",
