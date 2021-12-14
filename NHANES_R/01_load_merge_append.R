@@ -133,6 +133,11 @@ colnames(full_1999_2000) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file)
 
 ######################################
 ########## NHANES 2001-2002 ##########
@@ -151,7 +156,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -262,6 +267,12 @@ colnames(full_2001_2002) <-  c("SEQN", "survey_nr", "survey_weight",  "gender", 
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file)
+
 
 ######################################
 ########## NHANES 2003-2004 ##########
@@ -280,7 +291,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -391,14 +402,18 @@ colnames(full_2003_2004) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file)
 
 ######################################
 ########## NHANES 2005-2006 ##########
 ######################################
 
 # CHANGES:
-# detailed family history information on hypertension are discontinued
-
+# detailed family history information on hypertension is discontinued
 
 years <- "2005-2006"
 letter <- "D"
@@ -415,7 +430,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -533,6 +548,12 @@ colnames(full_2005_2006) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 ######################################
 ########## NHANES 2007-2008 ##########
@@ -556,7 +577,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -674,6 +695,12 @@ colnames(full_2007_2008) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 ######################################
 ########## NHANES 2009-2010 ##########
@@ -693,7 +720,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -811,6 +838,13 @@ colnames(full_2009_2010) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
+
 ######################################
 ########## NHANES 2011-2012 ##########
 ######################################
@@ -829,7 +863,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -946,6 +980,12 @@ colnames(full_2011_2012) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 ######################################
 ########## NHANES 2013-2014 ##########
@@ -965,7 +1005,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -1083,6 +1123,12 @@ colnames(full_2013_2014) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 ######################################
 ########## NHANES 2015-2016 ##########
@@ -1102,7 +1148,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -1220,6 +1266,12 @@ colnames(full_2015_2016) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 ######################################
 ########## NHANES 2017-2018 ##########
@@ -1239,7 +1291,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
-a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_.XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -1357,7 +1409,12 @@ colnames(full_2017_2018) <- c("SEQN", "survey_nr", "survey_weight",  "gender", "
                               "current_smoker", "fasting_hr",
                               "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
 
-
+rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
+   fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
+   demo_file, body_file, bloodp_file, lipid_1_file, 
+   lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
+   smoking_file, fasting_file, diabetes_file, a1c_file,
+   lipid_3, lipid_3_file)
 
 
 
