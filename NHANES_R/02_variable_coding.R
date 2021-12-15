@@ -284,7 +284,6 @@ table(full_df$diabetic, useNA = "always")
 #######################################
 ##### family history of diabetes ######
 #######################################
-######################
 # factor variable, coded as:
 # 1 = Yes
 # 2 = No
@@ -300,9 +299,74 @@ full_df$famhist_T2D <- revalue(full_df$famhist_T2D, c("1"="family diabetes",
 table(full_df$famhist_T2D, useNA = "always")
 
 
+##############################
+##### ever hypertension ######
+##############################
+# factor, we need to generate this variable
+full_df$hypertension_ever <- 0
+# criteria 1: self reported ever told hypertensive
+# in the original variable, 1 = yes (doctor told have hypertension)
+full_df$hypertension_ever[full_df$ever_hypertension == 1] <- 1
+full_df$ever_hypertension <- NULL
+# criteria 2: ever taking blood pressure meds
+# in the original variable, 1 = yes (told before to take meds)
+full_df$hypertension_ever[full_df$ever_BP_meds == 1] <- 1
+full_df$ever_BP_meds <- NULL
+# criteria 3: now taking blood pressure meds
+# in the original variable, 1 = yes (told before to take meds)
+full_df$hypertension_ever[full_df$now_BP_meds == 1] <- 1
+# criteria 4: SBP over 130
+full_df$hypertension_ever[full_df$SBP > 130] <- 1
+# criteria 5: DBP over 80
+full_df$hypertension_ever[full_df$DBP > 80] <- 1
+# convert to factor
+table(full_df$hypertension_ever, useNA = "always")
+full_df$hypertension_ever <- as.factor(full_df$hypertension_ever)
+full_df$hypertension_ever <- revalue(full_df$hypertension_ever, c("0"="no hypertension", 
+                                                "1"="hypertension"))
+table(full_df$hypertension_ever, useNA = "always")
 
 
-# >>>> continue annotation from ever_hypertension
+#################################
+##### current hypertension ######
+#################################
+# factor, we need to generate this variable
+full_df$hypertension_now <- 0
+# criteria 1: now taking blood pressure meds
+# in the original variable, 1 = yes (told before to take meds)
+full_df$hypertension_now[full_df$now_BP_meds == 1] <- 1
+# criteria 2: SBP over 130
+full_df$hypertension_now[full_df$SBP > 130] <- 1
+# criteria 3: DBP over 80
+full_df$hypertension_now[full_df$DBP > 80] <- 1
+# convert to factor
+table(full_df$hypertension_now, useNA = "always")
+full_df$hypertension_now <- as.factor(full_df$hypertension_now)
+full_df$hypertension_now <- revalue(full_df$hypertension_now, c("0"="no hypertension", 
+                                                                  "1"="hypertension"))
+table(full_df$hypertension_now, useNA = "always")
+
+
+###############################################
+##### current antihypertensive treatment ######
+###############################################
+# factor variable, coded as:
+# 1 = Yes
+# 2 = No
+# 7 = Refused
+# 9 = Don't Know
+table(full_df$now_BP_meds, useNA = "always")
+# setting those with the category 7 and 9 to missing
+full_df$now_BP_meds[full_df$now_BP_meds == 7] <- NA
+full_df$now_BP_meds[full_df$now_BP_meds == 9] <- NA
+full_df$now_BP_meds <- as.factor(full_df$now_BP_meds)
+full_df$now_BP_meds <- revalue(full_df$now_BP_meds, c("1"="BP meds", 
+                                                      "2"="no BP meds"))
+table(full_df$now_BP_meds, useNA = "always")
+
+
+
+
 
 
 
