@@ -1,4 +1,4 @@
-# LOAD LIBRARIES
+# load necessary libraries
 library(foreign)
 library(dplyr)
 

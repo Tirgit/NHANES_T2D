@@ -1,6 +1,8 @@
+# load necessary libraries
 library(plyr)
 library(dplyr)
 
+# load data
 full_df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df.rds")
 
 #################
@@ -433,12 +435,10 @@ full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes",
                                                 "1"="diabetes"))
 table(full_df$diabetic, useNA = "always")
 
+saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
 
 
-# IMPUTATION HERE
 
 
-# remove not needed variables
-full_df$fasting_hr <- NULL 
-full_df$ever_lipid_meds <- NULL
+
 
