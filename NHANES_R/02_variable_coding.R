@@ -437,8 +437,3 @@ table(full_df$diabetic, useNA = "always")
 
 saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
 
-
-
-
-
-
