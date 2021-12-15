@@ -5,24 +5,52 @@ library(mice)
 full_df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
 
 
-
 # MICE IMPUTATION
 # save variables as vectors that are not needed for imputation
-SEQN_vec <- full_df$SEQN
-survey_weight_vec <- full_df$survey_weight
+SEQN <- full_df$SEQN
+survey_weight <- full_df$survey_weight
 full_df$SEQN <- NULL
 full_df$survey_weight <- NULL
 
-imputation_object <- mice(full_df, method = "pmm", m = 5, maxit = 5)
+# imputation: 5 copies, 5 iterations, predictive mean matching algorithm
+imputation_object <- mice(full_df, method = "pmm", m = 5, maxit = 5, seed = 64370)
 
-SEQN <- 
-  
-  
-  imputed_df <- complete(full_df_imp, 1)
-plot(full_df_imp)
-full_df_imp$method
+# investigate convergence visually
+imputation_object$method #those variables with no missing have "" as method - they are still used for imputation
+plot(imputation_object) #plots look OK
 
-saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
+# extract imputed datasets
+imputed_1 <- complete(imputation_object, 1)
+imputed_2 <- complete(imputation_object, 2)
+imputed_3 <- complete(imputation_object, 3)
+imputed_4 <- complete(imputation_object, 4)
+imputed_5 <- complete(imputation_object, 5)
+
+# removal of not needed variables
+imputed_1$ever_lipid_meds <- NULL
+imputed_2$ever_lipid_meds <- NULL
+imputed_3$ever_lipid_meds <- NULL
+imputed_4$ever_lipid_meds <- NULL
+imputed_5$ever_lipid_meds <- NULL
+imputed_1$fasting_hr <- NULL
+imputed_2$fasting_hr <- NULL
+imputed_3$fasting_hr <- NULL
+imputed_4$fasting_hr <- NULL
+imputed_5$fasting_hr <- NULL
+
+# re-merge ID and weights
+imputed_df_1 <- as.data.frame(cbind(SEQN, survey_weight, imputed_1))
+imputed_df_2 <- as.data.frame(cbind(SEQN, survey_weight, imputed_2))
+imputed_df_3 <- as.data.frame(cbind(SEQN, survey_weight, imputed_3))
+imputed_df_4 <- as.data.frame(cbind(SEQN, survey_weight, imputed_4))
+imputed_df_5 <- as.data.frame(cbind(SEQN, survey_weight, imputed_5))
+
+# save imputed data
+saveRDS(imputed_df_1, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_1.rds")
+saveRDS(imputed_df_2, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_2.rds")
+saveRDS(imputed_df_3, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_3.rds")
+saveRDS(imputed_df_4, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_4.rds")
+saveRDS(imputed_df_5, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_5.rds")
 
 
 
