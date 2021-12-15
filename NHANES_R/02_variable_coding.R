@@ -66,7 +66,7 @@ table(full_df$gender, useNA = "always")
 ################
 ##### age ######
 ################
-# numeric variable, nothing to do
+# numeric variable, measurement unit: yrs
 summary(full_df$age)
 
 
@@ -162,27 +162,28 @@ table(full_df$born_USA, useNA = "always")
 ##################
 ##### waist ######
 ##################
-# numeric variable, nothing to do
+# numeric variable, measurement unit: cm
 summary(full_df$waist)
 
 
 ################
 ##### BMI ######
 ################
-# numeric variable, nothing to do
+# numeric variable, measurement unit: kg/m2
 summary(full_df$BMI)
 
 
 ###################
 ##### height ######
 ###################
-# numeric variable, nothing to do
+# numeric variable, measurement unit: cm
 summary(full_df$height)
 
 
 #####################
 ##### SBP, DBP ######
 #####################
+# numeric variables, measurement unit: mmHg
 # for systolic and diastolic blood pressures, 3 measurements
 # were undertaken, and they should be averaged
 # if one measurement failed, there is a 4th measurement
@@ -211,14 +212,14 @@ summary(full_df$DBP)
 ###############################
 ##### TG (triglycerides) ######
 ###############################
-# all lipids numeric, in SI units (mmol/L)
+# all lipids numeric, measurement unit: mmol/L
 summary(full_df$TG)
 summary(full_df$LDL)
 summary(full_df$TC)
 summary(full_df$HDL)
 # for those rows with only LDL that is missing, we can use
 # Friedewald formula to estimate LDL
-# calculation is not valid if TG level is ???4.5 mmol/L
+# calculation is not valid if TG level is above 4.5 mmol/L
 # calculation is only valid if fasted at least 8.5 hours or more but less than 24 hours
 # LDL = Total cholesterol - (Triglyceride / 2.2) - HDL
 friedewald_index <- !is.na(full_df$TG) & !is.na(full_df$TC) &
@@ -234,10 +235,76 @@ summary(full_df$TC)
 summary(full_df$HDL)
 
 
+############################
+##### fasting glucose ######
+############################
+# numeric variable, measurement unit: mmol/L
+summary(full_df$glucose)
+
+
+##################
+##### HbA1c ######
+##################
+# numeric variable, measurement unit: %
+summary(full_df$hba1c)
+# not in any prediction models, to be removed later
+
+
+############################
+##### diabetes status ######
+############################
+# we need to generate this variable for exclusion
+# as we only need diabetes-free individuals for risk prediction
+full_df$diabetic <- 0
+# criteria 1: self reported diabetes (doctor told).
+# in the original variable, 1 = yes (doctor diagnosed diabetes)
+full_df$diabetic[full_df$ever_diabetes == 1] <- 1
+full_df$ever_diabetes <- NULL
+# criteria 2: taking insulin
+# in the original variable, 1 = yes (taking insulin)
+full_df$diabetic[full_df$insulin == 1] <- 1
+full_df$insulin <- NULL
+# criteria 3: taking oral diabetes medication
+# in the original variable, 1 = yes (taking oral diabetic medication)
+full_df$diabetic[full_df$oral_diab_med == 1] <- 1
+full_df$oral_diab_med <- NULL
+# criteria 4: fasting glucose above 7 mmol/L
+full_df$diabetic[full_df$glucose > 7] <- 1
+# criteria 5: HbA1c above 6.5%
+full_df$diabetic[full_df$hba1c > 6.5] <- 1
+full_df$hba1c <- NULL
+# tabulate diabetes and convert to factor
+table(full_df$diabetic, useNA = "always")
+full_df$diabetic <- as.factor(full_df$diabetic)
+full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes", 
+                                                "1"="diabetes"))
+table(full_df$diabetic, useNA = "always")
+
+
+#######################################
+##### family history of diabetes ######
+#######################################
+######################
+# factor variable, coded as:
+# 1 = Yes
+# 2 = No
+# 7 = Refused
+# 9 = Don't Know
+table(full_df$famhist_T2D, useNA = "always")
+# setting those with the category 7 and 9 to missing
+full_df$famhist_T2D[full_df$famhist_T2D == 7] <- NA
+full_df$famhist_T2D[full_df$famhist_T2D == 9] <- NA
+full_df$famhist_T2D <- as.factor(full_df$famhist_T2D)
+full_df$famhist_T2D <- revalue(full_df$famhist_T2D, c("1"="family diabetes", 
+                                                "2"="no family diabetes"))
+table(full_df$famhist_T2D, useNA = "always")
+
+
+
+
 # >>>> continue annotation from ever_hypertension
 
-# diabetic status: combine self report and medication status
-# this will only be used for exclusion in this project
+
 
 
 
