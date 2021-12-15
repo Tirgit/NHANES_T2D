@@ -234,7 +234,6 @@ summary(full_df$LDL)
 summary(full_df$TC)
 summary(full_df$HDL)
 
-
 ############################
 ##### fasting glucose ######
 ############################
@@ -248,38 +247,6 @@ summary(full_df$glucose)
 # numeric variable, measurement unit: %
 summary(full_df$hba1c)
 # not in any prediction models, to be removed later
-
-
-############################
-##### diabetes status ######
-############################
-# we need to generate this variable for exclusion
-# as we only need diabetes-free individuals for risk prediction
-full_df$diabetic <- 0
-# criteria 1: self reported diabetes (doctor told).
-# in the original variable, 1 = yes (doctor diagnosed diabetes)
-full_df$diabetic[full_df$ever_diabetes == 1] <- 1
-full_df$ever_diabetes <- NULL
-# criteria 2: taking insulin
-# in the original variable, 1 = yes (taking insulin)
-full_df$diabetic[full_df$insulin == 1] <- 1
-full_df$insulin <- NULL
-# criteria 3: taking oral diabetes medication
-# in the original variable, 1 = yes (taking oral diabetic medication)
-full_df$diabetic[full_df$oral_diab_med == 1] <- 1
-full_df$oral_diab_med <- NULL
-# criteria 4: fasting glucose above 7 mmol/L
-full_df$diabetic[full_df$glucose > 7] <- 1
-# criteria 5: HbA1c above 6.5%
-full_df$diabetic[full_df$hba1c > 6.5] <- 1
-full_df$hba1c <- NULL
-# tabulate diabetes and convert to factor
-table(full_df$diabetic, useNA = "always")
-full_df$diabetic <- as.factor(full_df$diabetic)
-full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes", 
-                                                "1"="diabetes"))
-table(full_df$diabetic, useNA = "always")
-
 
 #######################################
 ##### family history of diabetes ######
@@ -347,6 +314,24 @@ full_df$hypertension_now <- revalue(full_df$hypertension_now, c("0"="no hyperten
 table(full_df$hypertension_now, useNA = "always")
 
 
+#######################################
+##### lipid lowering medications ######
+#######################################
+# factor variable, coded as:
+# 1 = Yes
+# 2 = No
+# 7 = Refused
+# 9 = Don't Know
+table(full_df$ever_lipid_meds, useNA = "always")
+# setting those with the category 7 and 9 to missing
+full_df$ever_lipid_meds[full_df$ever_lipid_meds == 7] <- NA
+full_df$ever_lipid_meds[full_df$ever_lipid_meds == 9] <- NA
+full_df$ever_lipid_meds <- as.factor(full_df$ever_lipid_meds)
+full_df$ever_lipid_meds <- revalue(full_df$ever_lipid_meds, c("1"="lipid meds", 
+                                                      "2"="no lipid meds"))
+table(full_df$ever_lipid_meds, useNA = "always")
+
+
 ###############################################
 ##### current antihypertensive treatment ######
 ###############################################
@@ -365,13 +350,95 @@ full_df$now_BP_meds <- revalue(full_df$now_BP_meds, c("1"="BP meds",
 table(full_df$now_BP_meds, useNA = "always")
 
 
+##########################
+##### heart disease ######
+##########################
+# factor, we need to generate this variable
+full_df$heart_disease <- 0
+# criteria 1: ever heart failure
+# in the original variable, 1 = yes
+full_df$heart_disease[full_df$ever_heartfailure == 1] <- 1
+full_df$ever_heartfailure <- NULL
+# criteria 2: ever CHD
+# in the original variable, 1 = yes
+full_df$heart_disease[full_df$ever_chd == 1] <- 1
+full_df$ever_chd <- NULL
+# criteria 3: ever angina
+# in the original variable, 1 = yes
+full_df$heart_disease[full_df$ever_angina == 1] <- 1
+full_df$ever_angina <- NULL
+# criteria 4: ever heart attack
+# in the original variable, 1 = yes
+full_df$heart_disease[full_df$ever_heartattack == 1] <- 1
+full_df$ever_heartattack <- NULL
+# criteria 5: ever stroke
+# in the original variable, 1 = yes
+full_df$heart_disease[full_df$ever_stroke == 1] <- 1
+full_df$ever_stroke <- NULL
+# convert to factor
+table(full_df$heart_disease, useNA = "always")
+full_df$heart_disease <- as.factor(full_df$heart_disease)
+full_df$heart_disease <- revalue(full_df$heart_disease, c("0"="no heart disease", 
+                                                                "1"="heart disease"))
+table(full_df$heart_disease, useNA = "always")
+
+
+####################
+##### smoking ######
+####################
+# survey number, refers to data collection batch
+# 1 = Every day
+# 2 = Some days
+# 3 = Not at all
+# 7 = Refused
+# 9 = Don't know
+table(full_df$current_smoker, useNA = "always")
+# recode so that 1 = smoker, 2 = nonsmoker
+full_df$current_smoker[full_df$current_smoker == 2] <- 1
+table(full_df$current_smoker, useNA = "always")
+full_df$current_smoker[full_df$current_smoker == 3] <- 2
+full_df$current_smoker <- as.factor(full_df$current_smoker)
+full_df$current_smoker <- revalue(full_df$current_smoker, c("1"="smoker", 
+                                                  "2"="non-smoker"))
+table(full_df$current_smoker, useNA = "always")
+
+
+############################
+##### diabetes status ######
+############################
+# we need to generate this variable for exclusion
+# as we only need diabetes-free individuals for risk prediction
+full_df$diabetic <- 0
+# criteria 1: self reported diabetes (doctor told).
+# in the original variable, 1 = yes (doctor diagnosed diabetes)
+full_df$diabetic[full_df$ever_diabetes == 1] <- 1
+full_df$ever_diabetes <- NULL
+# criteria 2: taking insulin
+# in the original variable, 1 = yes (taking insulin)
+full_df$diabetic[full_df$insulin == 1] <- 1
+full_df$insulin <- NULL
+# criteria 3: taking oral diabetes medication
+# in the original variable, 1 = yes (taking oral diabetic medication)
+full_df$diabetic[full_df$oral_diab_med == 1] <- 1
+full_df$oral_diab_med <- NULL
+# criteria 4: fasting glucose above 7 mmol/L
+full_df$diabetic[full_df$glucose > 7] <- 1
+# criteria 5: HbA1c above 6.5%
+full_df$diabetic[full_df$hba1c > 6.5] <- 1
+full_df$hba1c <- NULL
+# tabulate diabetes and convert to factor
+table(full_df$diabetic, useNA = "always")
+full_df$diabetic <- as.factor(full_df$diabetic)
+full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes", 
+                                                "1"="diabetes"))
+table(full_df$diabetic, useNA = "always")
 
 
 
+# IMPUTATION HERE
 
 
-
-
-
-
+# remove not needed variables
+full_df$fasting_hr <- NULL 
+full_df$ever_lipid_meds <- NULL
 
