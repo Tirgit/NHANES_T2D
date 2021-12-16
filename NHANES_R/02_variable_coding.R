@@ -410,6 +410,9 @@ table(full_df$current_smoker, useNA = "always")
 ############################
 # we need to generate this variable for exclusion
 # as we only need diabetes-free individuals for risk prediction
+# however, we don't want to assign diabetic based on glucose
+# or HbA1c - as these individuals are undiagnosed
+# i.e. they should contribute to future incidence rates
 full_df$diabetic <- 0
 # criteria 1: self reported diabetes (doctor told).
 # in the original variable, 1 = yes (doctor diagnosed diabetes)
@@ -424,9 +427,9 @@ full_df$insulin <- NULL
 full_df$diabetic[full_df$oral_diab_med == 1] <- 1
 full_df$oral_diab_med <- NULL
 # criteria 4: fasting glucose above 7 mmol/L
-full_df$diabetic[full_df$glucose > 7] <- 1
+# full_df$diabetic[full_df$glucose > 7] <- 1
 # criteria 5: HbA1c above 6.5%
-full_df$diabetic[full_df$hba1c > 6.5] <- 1
+# full_df$diabetic[full_df$hba1c > 6.5] <- 1
 full_df$hba1c <- NULL
 # tabulate diabetes and convert to factor
 table(full_df$diabetic, useNA = "always")
