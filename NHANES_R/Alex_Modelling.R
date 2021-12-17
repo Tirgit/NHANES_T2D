@@ -72,7 +72,7 @@ imp1 <- imp1 |>
   mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5,0)) |> 
   mutate(Framingham = Framingham + ifelse(famhist_T2D == 'family diabetes', 3,0)) |> 
   mutate(Framingham = Framingham + ifelse(TG >= 1.695, 3, 0 )) |> 
-  mutate(Framingham = Framingham + ifelse((SBP >= 130 & DBP >= 85) | (now_BP_meds == 'BP meds'), 2,0)) |> 
+  mutate(Framingham = Framingham + ifelse(SBP >= 130 | DBP >= 85 | now_BP_meds == 'BP meds', 2,0)) |> 
   mutate(Risk_Framingham = case_when(Framingham <= 10 ~ 3,
                                      Framingham == 11 ~ 4,
                                      Framingham == 12 ~ 4,
