@@ -8,6 +8,7 @@ df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_1
 ##### FRAMINGHAM OFFSPRING RISK SCORE #####
 ###########################################
 
+df1 <- df
 
 
 ############################
