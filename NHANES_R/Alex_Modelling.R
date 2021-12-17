@@ -65,8 +65,8 @@ library(patchwork)
 # Let's create the Framingham score
 
 imp1 <- imp1 |> 
-  mutate(Framingham = ifelse(between(glucose, 5.55, 6.993), 10, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(between(BMI,25,29.9), 2,0)) |> 
+  mutate(Framingham = ifelse(glucose >= 5.55, 10, 0)) |> 
+  mutate(Framingham = Framingham + ifelse(BMI >= 25 & BMI <30, 2,0)) |> 
   mutate(Framingham = Framingham + ifelse(BMI >= 30, 5, 0)) |> 
   mutate(Framingham = Framingham + ifelse(gender == 'male' & HDL < 1.036, 5,0)) |> 
   mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5,0)) |> 
