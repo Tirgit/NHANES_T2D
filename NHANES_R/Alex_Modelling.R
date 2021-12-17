@@ -92,6 +92,7 @@ imp1 <- imp1 |>
   mutate(Risk_Framingham = Risk_Framingham * 0.01)
          
 
+
 # Let's just plot the ethnicity percentages across the survey years
 
 imp1 |> 
@@ -159,4 +160,41 @@ p3 <- imp1 |>
 
 (p1 + p2 + p3)
 
+
+#########################
+###### DESIR Score ######
+#########################
+
+# Create DESIR Score
+
+imp1 <- imp1 |> 
+  mutate(DESIR = ifelse(gender == 'male' & (waist >= 80 & waist < 90), 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' & (waist >= 90 & waist < 100), 2, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  waist >= 100, 3,0 )) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  current_smoker == 'smoker', 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0)) |>
+  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 70 & waist < 80), 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 80 & waist < 90), 2, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  waist >= 90, 3,0 )) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  famhist_T2D == 'family diabetes', 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0))
+
+
+
+# Create a small function to return probabilities from logits (coefficients)
+
+logit2prob <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
+}
+
+# We have to go to the regression coefficients to estimate the probabilities (we will also convert to probs)
+
+imp1 <- imp1 |> 
+  mutate(hypertension_desir = ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 1, 0)) |> 
+  mutate(Risk_DESIR = case_when(gender == 'male' ~ -10.45 + 0.72 * (current_smoker == 'smoker') + 0.081 * waist + 0.50 * (hypertension_desir == 1),
+                                gender == 'female' ~ -11.81 + 1.09 * (famhist_T2D == 'family_diabetes') +  0.095 * waist + 0.64 * (hypertension_desir == 1))) |>
+  select(-hypertension_desir) |> # we don't need this column anymore, hence we delete
+  mutate(Risk_DESIR = logit2prob(Risk_DESIR))
 
