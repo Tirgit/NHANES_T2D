@@ -42,11 +42,11 @@ imp1 <- imp1 |>
 
 ## create ARIC model:
 
-#Pr(DM) = 1/(1 + e−x), where x = ?
+#Pr(DM) = 1/(1 + e^−x), where x = ?
 
 imp1 <- imp1 |> 
   mutate(ARIC = (-9.9808 + 0.0173 * age))|>
-  mutate(ARIC = ARIC + 0.4433 *(ethnicity==4))|>
+  mutate(ARIC = ARIC + 0.4433 *(ethnicity=="black"))|>
   mutate(ARIC = ARIC + 0.5088 * (famhist_T2D ==1))|>
   mutate(ARIC = ARIC + 1.5849*glucose)|>
   mutate(ARIC = ARIC + 0.0111*SBP)|>
@@ -61,7 +61,17 @@ imp1 <- imp1 |>
 ##### SAN ANTONIO RISK SCORE #####
 ##################################
 
+#1/(1-e^-x)?
 
+imp1 <- imp1 |> 
+  mutate(Antonio = (-13.415 + 0.028 * age))|>
+  mutate(Antonio = Antonio + 0.661 * (gender=="female"))|>
+  mutate(Antonio = Antonio + 0.412 * (ethnicity=="mexican"))|> ##what about the other ethnicities?
+  mutate(Antonio = Antonio + 0.079 * (glucose*0.0555))|> #convert glucose into mm/dL = 0.0555 * glucose 
+  mutate(Antonio = Antonio + 0.018 * SBP)|>
+  mutate(Antonio = Antonio - 0.039 * (0.0259*HDL))|> # convert HDL into mm/dL = 0.0259 * HDL
+  mutate(Antonio = Antonio + 0.070 * BMI)|>
+  mutate(Antonio = Antonio + 0.0481 * (famhist_T2D=="1"))
 
 ############################
 ##### DPoRT RISK SCORE #####
