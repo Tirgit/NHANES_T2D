@@ -20,8 +20,6 @@ df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_1
 ##### EGATS RISK SCORE #####
 ############################
 
-### create other hypertension variable in EGATS (>=140/90 mmHG or current prescription of blood pressure-lowering treatment)
-
 setwd("~/GitHub/NHANES_T2D/NHANES_R") 
 imp1 <- readRDS('imputed_df_1.rds')
 
@@ -38,12 +36,26 @@ imp1 <- imp1 |>
 
   
 
-  
 ###########################
 ##### ARIC RISK SCORE #####
 ###########################
 
+## create ARIC model:
 
+#Pr(DM) = 1/(1 + e−x), where x = ?
+
+imp1 <- imp1 |> 
+  mutate(ARIC = (-9.9808 + 0.0173 * age))|>
+  mutate(ARIC = ARIC + 0.4433 *(ethnicity==4))|>
+  mutate(ARIC = ARIC + 0.5088 * (famhist_T2D ==1))|>
+  mutate(ARIC = ARIC + 1.5849*glucose)|>
+  mutate(ARIC = ARIC + 0.0111*SBP)|>
+  mutate(ARIC = ARIC +0.0273*waist)|>
+  mutate(ARIC = ARIC -0.0326*height)|>
+  mutate(ARIC = ARIC -0.4718*HDL) |>
+  mutate(ARIC = ARIC + 0.2420*TG)
+
+ 
 
 ##################################
 ##### SAN ANTONIO RISK SCORE #####
