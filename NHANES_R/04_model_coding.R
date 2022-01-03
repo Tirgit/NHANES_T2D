@@ -219,27 +219,6 @@ imp1 <- imp1 |>
   mutate(DPoRT = ifelse(gender == "male",DPoRT.M,DPoRT.F)) 
 
 
-#################################
-##### Gao et al. 2009 SCORE #####
-#################################
-### Predict instantaneous risk (i.e. absolute hazard) in Mauritian Indians ###
-imp1 <- imp1 |> 
-  mutate(Gao = ifelse(gender=="male",-0.0213,0) ) |>
-  mutate(Gao = Gao + ifelse(BMI<23,0,
-		ifelse(BMI<25,0.3720,0.6412)) ) |>
-  mutate(Gao = Gao + ifelse((waist<80&gender=="male")|(waist<70&gender=="female"),0,
-		ifelse((waist<90&gender=="male")|(waist<80&gender=="female"),0.7550,0.9390)) ) |>
-  mutate(Gao = Gao + ifelse(famhist_T2D=="family diabetes",0.3249,0) )|>
-  mutate(Gao = Gao + ifelse(glucose<5.6,0,
-		ifelse(glucose<6.1,0.7233,1.5529)) )|>
-  mutate(Gao = Gao + ifelse(TG>=1.7,0.3607,0) )|>
-  mutate(Gao = Gao + ifelse(SBP>=130,0.2703,0) )|>
-
-  mutate(Gao = exp(Gao)*ifelse(age<30,0.0028,
-			ifelse(age<45,0.0038,
-			ifelse(age<55,0.0054,0.0042))) )
-
-
 
 #########################
 ##### NS RISK SCORE #####
