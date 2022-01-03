@@ -8,12 +8,103 @@ df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_1
 ##### FRAMINGHAM OFFSPRING RISK SCORE #####
 ###########################################
 
+# Set working directory
+
+setwd("~/GitHub/NHANES_T2D/NHANES_R")
+
+# Open the imputed  data frames
+
+imp1 <- readRDS('imputed_df_1.rds')
+
+library(tidyverse)
+
+# We will assign new risk scores based on the Framingham scoring
+
+# Glucose values in the table of the paper are in mg/dl, we need to convert into mmol/liter: 0.0555 * glucose table value
+
+100 * 0.0555 # 5.55
+126 * 0.0555 # 6.993
+
+# Do the same for the HDL : 0.0259 * HDL table value
+
+# Males :
+
+40 * 0.0259 # 1.036
+
+# Females
+
+50 * 0.0259 # 1.295
+
+
+# Triglyceride levels as well need to be multiplied by 0.0113
+
+150 * 0.0113 # 1.695
+
+
+# Let's create the Framingham score
+
+imp1 <- imp1 |> 
+  mutate(Framingham = ifelse(glucose >= 5.55, 10, 0)) |> 
+  mutate(Framingham = Framingham + ifelse(BMI >= 25 & BMI <30, 2,0)) |> 
+  mutate(Framingham = Framingham + ifelse(BMI >= 30, 5, 0)) |> 
+  mutate(Framingham = Framingham + ifelse(gender == 'male' & HDL < 1.036, 5,0)) |> 
+  mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5,0)) |> 
+  mutate(Framingham = Framingham + ifelse(famhist_T2D == 'family diabetes', 3,0)) |> 
+  mutate(Framingham = Framingham + ifelse(TG >= 1.695, 3, 0 )) |> 
+  mutate(Framingham = Framingham + ifelse(SBP >= 130 | DBP >= 85 | now_BP_meds == 'BP meds', 2,0)) |> 
+  mutate(Risk_Framingham = case_when(Framingham <= 10 ~ 3,
+                                     Framingham == 11 ~ 4,
+                                     Framingham == 12 ~ 4,
+                                     Framingham == 13 ~ 5,
+                                     Framingham == 14 ~ 6,
+                                     Framingham == 15 ~ 7,
+                                     Framingham == 16 ~ 9,
+                                     Framingham == 17 ~ 11,
+                                     Framingham == 18 ~ 13,
+                                     Framingham == 19 ~ 15,
+                                     Framingham == 20 ~ 18,
+                                     Framingham == 21 ~ 21,
+                                     Framingham == 22 ~ 25,
+                                     Framingham == 23 ~ 29,
+                                     Framingham == 24 ~ 33,
+                                     Framingham >= 25 ~ 35)) |> 
+  mutate(Risk_Framingham = Risk_Framingham * 0.01)
 
 
 ############################
 ##### DESIR RISK SCORE #####
 ############################
 
+imp1 <- imp1 |> 
+  mutate(DESIR = ifelse(gender == 'male' & (waist >= 80 & waist < 90), 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' & (waist >= 90 & waist < 100), 2, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  waist >= 100, 3,0 )) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  current_smoker == 'smoker', 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0)) |>
+  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 70 & waist < 80), 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 80 & waist < 90), 2, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  waist >= 90, 3,0 )) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  famhist_T2D == 'family diabetes', 1, 0)) |> 
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0))
+
+
+
+# Create a small function to return probabilities from logits (coefficients)
+
+logit2prob <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
+}
+
+# We have to go to the regression coefficients to estimate the probabilities (we will also convert to probs)
+
+imp1 <- imp1 |> 
+  mutate(hypertension_desir = ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 1, 0)) |> 
+  mutate(Risk_DESIR = case_when(gender == 'male' ~ -10.45 + 0.72 * (current_smoker == 'smoker') + 0.081 * waist + 0.50 * (hypertension_desir == 1),
+                                gender == 'female' ~ -11.81 + 1.09 * (famhist_T2D == 'family_diabetes') +  0.095 * waist + 0.64 * (hypertension_desir == 1))) |>
+  select(-hypertension_desir) |> # we don't need this column anymore, hence we delete
+  mutate(Risk_DESIR = logit2prob(Risk_DESIR))
 
 
 ############################
