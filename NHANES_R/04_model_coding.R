@@ -45,13 +45,13 @@ library(tidyverse)
 
 imp1 <- imp1 |> 
   mutate(Framingham = ifelse(glucose >= 5.55, 10, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(BMI >= 25 & BMI <30, 2,0)) |> 
+  mutate(Framingham = Framingham + ifelse(BMI >= 25 & BMI <30, 2, 0)) |> 
   mutate(Framingham = Framingham + ifelse(BMI >= 30, 5, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(gender == 'male' & HDL < 1.036, 5,0)) |> 
-  mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5,0)) |> 
-  mutate(Framingham = Framingham + ifelse(famhist_T2D == 'family diabetes', 3,0)) |> 
+  mutate(Framingham = Framingham + ifelse(gender == 'male' & HDL < 1.036, 5, 0)) |> 
+  mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5, 0)) |> 
+  mutate(Framingham = Framingham + ifelse(famhist_T2D == 'family diabetes', 3, 0)) |> 
   mutate(Framingham = Framingham + ifelse(TG >= 1.695, 3, 0 )) |> 
-  mutate(Framingham = Framingham + ifelse(SBP >= 130 | DBP >= 85 | now_BP_meds == 'BP meds', 2,0)) |> 
+  mutate(Framingham = Framingham + ifelse(SBP >= 130 | DBP >= 85 | now_BP_meds == 'BP meds', 2, 0)) |> 
   mutate(Risk_Framingham = case_when(Framingham <= 10 ~ 3,
                                      Framingham == 11 ~ 4,
                                      Framingham == 12 ~ 4,
@@ -80,12 +80,12 @@ imp1 <- imp1 |>
   mutate(DESIR = DESIR + ifelse(gender == 'male' & (waist >= 90 & waist < 100), 2, 0)) |> 
   mutate(DESIR = DESIR + ifelse(gender == 'male' &  waist >= 100, 3,0 )) |> 
   mutate(DESIR = DESIR + ifelse(gender == 'male' &  current_smoker == 'smoker', 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0)) |>
+  mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0)) |>
   mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 70 & waist < 80), 1, 0)) |> 
   mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 80 & waist < 90), 2, 0)) |> 
   mutate(DESIR = DESIR + ifelse(gender == 'female' &  waist >= 90, 3,0 )) |> 
   mutate(DESIR = DESIR + ifelse(gender == 'female' &  famhist_T2D == 'family diabetes', 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1,0))
+  mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0))
 
 
 
@@ -111,21 +111,22 @@ imp1 <- imp1 |>
 ##### EGATS RISK SCORE #####
 ############################
 
-setwd("~/GitHub/NHANES_T2D/NHANES_R") 
-imp1 <- readRDS('imputed_df_1.rds')
+# Create the EGATS Score
 
 imp1 <- imp1 |> 
   mutate(EGATS = ifelse(gender == "male", 2, 0)) |> 
-  mutate(EGATS = EGATS + ifelse(age >= 45 & age <=49, 1,0)) |> 
+  mutate(EGATS = EGATS + ifelse(age >= 45 & age <= 49, 1, 0)) |> 
   mutate(EGATS = EGATS + ifelse(age >= 50, 2, 0)) |> 
-  mutate(EGATS = EGATS + ifelse(BMI >= 23 & BMI <27.5, 3,0)) |> 
+  mutate(EGATS = EGATS + ifelse(BMI >= 23 & BMI < 27.5, 3, 0)) |> 
   mutate(EGATS = EGATS + ifelse(BMI >= 27.5, 5, 0)) |> 
-  mutate(EGATS = EGATS + ifelse(gender == 'male' & waist <= 90, 2,0)) |> 
-  mutate(EGATS = EGATS + ifelse(gender == 'female' & waist <= 80, 2,0)) |> 
-  mutate(EGATS = EGATS + ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 2,0)) |> 
-  mutate(EGATS = EGATS + ifelse(famhist_T2D == 'family diabetes', 4,0))  
+  mutate(EGATS = EGATS + ifelse(gender == 'male' & waist >= 90, 2, 0)) |> 
+  mutate(EGATS = EGATS + ifelse(gender == 'female' & waist >= 80, 2, 0)) |> 
+  mutate(EGATS = EGATS + ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 2, 0)) |> 
+  mutate(EGATS = EGATS + ifelse(famhist_T2D == 'family diabetes', 4, 0))  
 
-  
+# Calculation of risk probabilities (extract logits then return probabilities see above for DESIR, intercept not specified clearly, 
+# possible problem ?)
+
 
 ###########################
 ##### ARIC RISK SCORE #####
@@ -137,14 +138,17 @@ imp1 <- imp1 |>
 
 imp1 <- imp1 |> 
   mutate(ARIC = (-9.9808 + 0.0173 * age))|>
-  mutate(ARIC = ARIC + 0.4433 *(ethnicity=="black"))|>
-  mutate(ARIC = ARIC + 0.5088 * (famhist_T2D ==1))|>
-  mutate(ARIC = ARIC + 1.5849*glucose)|>
-  mutate(ARIC = ARIC + 0.0111*SBP)|>
-  mutate(ARIC = ARIC +0.0273*waist)|>
-  mutate(ARIC = ARIC -0.0326*height)|>
-  mutate(ARIC = ARIC -0.4718*HDL) |>
-  mutate(ARIC = ARIC + 0.2420*TG)
+  mutate(ARIC = ARIC + 0.4433 * (ethnicity == "black"))|>
+  mutate(ARIC = ARIC + 0.4981 * (famhist_T2D == 1))|>
+  mutate(ARIC = ARIC + 1.5849 * glucose)|>
+  mutate(ARIC = ARIC + 0.0111 * SBP)|>
+  mutate(ARIC = ARIC + 0.0273 * waist)|>
+  mutate(ARIC = ARIC - 0.0326 * height)|>
+  mutate(ARIC = ARIC - 0.4718 * HDL) |>
+  mutate(ARIC = ARIC + 0.2420 * TG)
+
+
+# Needs calculation of risk probabilities (see DESIR on how to convert, intercept is specified on the paper)
 
  
 
@@ -153,16 +157,17 @@ imp1 <- imp1 |>
 ##################################
 
 #1/(1-e^-x)?
+# See above for that, same procedure
 
 imp1 <- imp1 |> 
   mutate(Antonio = (-13.415 + 0.028 * age))|>
-  mutate(Antonio = Antonio + 0.661 * (gender=="female"))|>
-  mutate(Antonio = Antonio + 0.412 * (ethnicity=="mexican"))|> ##what about the other ethnicities?
-  mutate(Antonio = Antonio + 0.079 * (glucose*0.0555))|> #convert glucose into mm/dL = 0.0555 * glucose 
-  mutate(Antonio = Antonio + 0.018 * SBP)|>
-  mutate(Antonio = Antonio - 0.039 * (0.0259*HDL))|> # convert HDL into mm/dL = 0.0259 * HDL
-  mutate(Antonio = Antonio + 0.070 * BMI)|>
-  mutate(Antonio = Antonio + 0.0481 * (famhist_T2D=="1"))
+  mutate(Antonio = Antonio + 0.661 * (gender == "female"))|>
+  mutate(Antonio = Antonio + 0.412 * (ethnicity == "mexican"))|> ##what about the other ethnicities?
+  mutate(Antonio = Antonio + 0.079 * (glucose / 0.0555))|> #convert glucose into mm/dL = glucose / 0.0555 
+  mutate(Antonio = Antonio + 0.018 *  SBP)|>
+  mutate(Antonio = Antonio - 0.039 * (HDL / 0.0259))|> # convert HDL into mm/dL = HDL / 0.0259
+  mutate(Antonio = Antonio + 0.070 *  BMI)|>
+  mutate(Antonio = Antonio + 0.481 * (famhist_T2D == "1"))
 
 
 ############################
