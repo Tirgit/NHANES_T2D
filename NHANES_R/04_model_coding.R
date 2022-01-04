@@ -65,7 +65,7 @@ imp1 <- imp1 |>
 imp1 <- imp1 |> 
   mutate(hypertension_desir = ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 1, 0)) |> 
   mutate(Risk_DESIR = case_when(gender == 'male' ~ -10.45 + 0.72 * (current_smoker == 'smoker') + 0.081 * waist + 0.50 * (hypertension_desir == 1),
-                                gender == 'female' ~ -11.81 + 1.09 * (famhist_T2D == 'family_diabetes') +  0.095 * waist + 0.64 * (hypertension_desir == 1))) |>
+                                gender == 'female' ~ -11.81 + 1.09 * (famhist_T2D == 'family diabetes') +  0.095 * waist + 0.64 * (hypertension_desir == 1))) |>
   select(-hypertension_desir) |> # we don't need this column anymore, hence we delete
   mutate(Risk_DESIR = logit2prob(Risk_DESIR))
 
