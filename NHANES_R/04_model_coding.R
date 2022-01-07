@@ -152,6 +152,7 @@ imp1 <- imp1 |>
 ##### non-hispanic white (coded as is)
 ##### non-hispanic black (coded as is)
 ##### hispanic (coded as two categories for now: mexican american + other hispanic) - please merge these categories
+##### additionally, it would perhaps useful to also calculate an OVERALL estimate with all races together?
 #####
 ##### output:
 ##### we need race specific estimates in a new data frame
