@@ -146,6 +146,12 @@ imp1 <- imp1 |>
 #####
 ##### individuals who are diabetic should not be considered!!!
 ##### individuals under age 20 should not be considered!!!
+##### category called "other race" should not be considered!!!
+#####
+##### Please calculate for the following 3 categories:
+##### non-hispanic white (coded as is)
+##### non-hispanic black (coded as is)
+##### hispanic (coded as two categories for now: mexican american + other hispanic) - please merge these categories
 #####
 ##### output:
 ##### we need race specific estimates in a new data frame
