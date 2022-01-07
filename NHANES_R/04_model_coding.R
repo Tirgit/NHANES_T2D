@@ -47,17 +47,17 @@ imp1 <- imp1 |>
 ##### DESIR RISK SCORE #####
 ############################
 
-imp1 <- imp1 |> 
-  mutate(DESIR = ifelse(gender == 'male' & (waist >= 80 & waist < 90), 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'male' & (waist >= 90 & waist < 100), 2, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'male' &  waist >= 100, 3,0 )) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'male' &  current_smoker == 'smoker', 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0)) |>
-  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 70 & waist < 80), 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 80 & waist < 90), 2, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'female' &  waist >= 90, 3,0 )) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'female' &  famhist_T2D == 'family diabetes', 1, 0)) |> 
-  mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0))
+# imp1 <- imp1 |> 
+#   mutate(DESIR = ifelse(gender == 'male' & (waist >= 80 & waist < 90), 1, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'male' & (waist >= 90 & waist < 100), 2, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'male' &  waist >= 100, 3,0 )) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'male' &  current_smoker == 'smoker', 1, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'male' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0)) |>
+#   mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 70 & waist < 80), 1, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'female' & (waist >= 80 & waist < 90), 2, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'female' &  waist >= 90, 3,0 )) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'female' &  famhist_T2D == 'family diabetes', 1, 0)) |> 
+#   mutate(DESIR = DESIR + ifelse(gender == 'female' &  (SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds'),1, 0))
 
 
 
@@ -76,14 +76,10 @@ imp1 <- imp1 |>
 
 # Create the EGATS Score
 
-# correction needed: age values to be changed
-# as age can take values between 49 and 50
-# otherwise OK
-
 
 imp1 <- imp1 |> 
   mutate(EGATS = ifelse(gender == "male", 2, 0)) |> 
-  mutate(EGATS = EGATS + ifelse(age >= 45 & age <= 49, 1, 0)) |> 
+  mutate(EGATS = EGATS + ifelse(age >= 45 & age < 50, 1, 0)) |> 
   mutate(EGATS = EGATS + ifelse(age >= 50, 2, 0)) |> 
   mutate(EGATS = EGATS + ifelse(BMI >= 23 & BMI < 27.5, 3, 0)) |> 
   mutate(EGATS = EGATS + ifelse(BMI >= 27.5, 5, 0)) |> 
@@ -92,21 +88,16 @@ imp1 <- imp1 |>
   mutate(EGATS = EGATS + ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 2, 0)) |> 
   mutate(EGATS = EGATS + ifelse(famhist_T2D == 'family diabetes', 4, 0))  
 
-# Calculation of risk probabilities (extract logits then return probabilities see above for DESIR, intercept not specified clearly, 
-# possible problem ?)
-
 
 ###########################
 ##### ARIC RISK SCORE #####
 ###########################
 
-# check famhist_T2D to refer to as 'family diabetes' instead of 1
-
 ## create ARIC model:
 imp1 <- imp1 |> 
   mutate(ARIC = (-9.9808 + 0.0173 * age))|>
   mutate(ARIC = ARIC + 0.4433 * (ethnicity == "black"))|>
-  mutate(ARIC = ARIC + 0.4981 * (famhist_T2D == 1))|>
+  mutate(ARIC = ARIC + 0.4981 * (famhist_T2D == 'family diabetes'))|>
   mutate(ARIC = ARIC + 1.5849 * glucose)|>
   mutate(ARIC = ARIC + 0.0111 * SBP)|>
   mutate(ARIC = ARIC + 0.0273 * waist)|>
@@ -123,9 +114,6 @@ imp1 <- imp1 |>
 ##### SAN ANTONIO RISK SCORE #####
 ##################################
 
-# check famhist_T2D to refer to as 'family diabetes' instead of 1
-  
-  
 imp1 <- imp1 |> 
   mutate(Antonio = (-13.415 + 0.028 * age))|>
   mutate(Antonio = Antonio + 0.661 * (gender == "female"))|>
@@ -134,7 +122,7 @@ imp1 <- imp1 |>
   mutate(Antonio = Antonio + 0.018 *  SBP)|>
   mutate(Antonio = Antonio - 0.039 * (HDL / 0.0259))|> # convert HDL into mm/dL = HDL / 0.0259
   mutate(Antonio = Antonio + 0.070 *  BMI)|>
-  mutate(Antonio = Antonio + 0.481 * (famhist_T2D == "1"))
+  mutate(Antonio = Antonio + 0.481 * (famhist_T2D == 'family diabetes'))
 
 # Convert to risk prob:
   mutate(Risk_Antonio = logit2prob(Antonio))
