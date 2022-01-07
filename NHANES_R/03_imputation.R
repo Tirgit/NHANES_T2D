@@ -1,8 +1,11 @@
+# Set working directory
+setwd("~/GitHub/NHANES_T2D/NHANES_R")
+
 # load necessary libraries
 library(mice)
 
 # load data
-full_df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
+full_df <- readRDS("full_df_clean_missing.rds")
 
 
 # MICE IMPUTATION

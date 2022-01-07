@@ -1,9 +1,12 @@
+# Set working directory
+setwd("~/GitHub/NHANES_T2D/NHANES_R")
+
 # load necessary libraries
 library(plyr)
 library(dplyr)
 
 # load data
-full_df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df.rds")
+full_df <- readRDS("full_df.rds")
 
 #################
 ##### SEQN ######
@@ -438,5 +441,5 @@ full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes",
                                                 "1"="diabetes"))
 table(full_df$diabetic, useNA = "always")
 
-saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
+saveRDS(full_df, "full_df_clean_missing.rds")
 

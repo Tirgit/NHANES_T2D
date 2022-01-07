@@ -2,7 +2,6 @@ library(tidyverse)
 
 # Set working directory & load data
 setwd("~/GitHub/NHANES_T2D/NHANES_R")
-imp1 <- readRDS('imputed_df_1.rds')
 
 # Create a small function to return probabilities from logits (coefficients)
 logit2prob <- function(logit){
@@ -11,6 +10,10 @@ logit2prob <- function(logit){
   return(prob)
 }
 
+# loop for bootstrapping starts here
+
+# loop for multiple imputation (5 copies) start here
+imp1 <- readRDS('imputed_df_1.rds')
 
 ###########################################
 ##### FRAMINGHAM OFFSPRING RISK SCORE #####
@@ -140,15 +143,23 @@ imp1 <- imp1 |>
 ##### CONSIDERATIONS:
 ##### WEIGHTS are 2-yr WEIGHTS - they are applicable within 
 ##### a specific 2-yr period (survey_nr)
-##### individuals who are diabetic should not be considered
+#####
+##### individuals who are diabetic should not be considered!!!
+##### individuals under age 20 should not be considered!!!
+#####
+##### output:
 ##### we need race specific estimates in a new data frame
 ##### with columns:
 ##### survey_nr (year), ethnicity, estimate
 
 
+# end of multiple imputation analysis loop
 
 # pooling estimates from 5 imputed copies
 
+# end of bootstrapping loop
+
+# pooling estimates from 1,000 bootstraps
 
 
 
