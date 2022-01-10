@@ -219,6 +219,7 @@ result_df$year[result_df$model == "EGATS"] <- result_df$baseline_year[result_df$
 # drop Other ethnicity from results
 result_df <- result_df[result_df$ethnicity != "Other",] 
 
+saveRDS(result_df, "result_df.rds")
 
 
 # end of multiple imputation analysis loop
