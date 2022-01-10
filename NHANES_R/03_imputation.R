@@ -49,11 +49,11 @@ imputed_df_4 <- as.data.frame(cbind(SEQN, survey_weight, imputed_4))
 imputed_df_5 <- as.data.frame(cbind(SEQN, survey_weight, imputed_5))
 
 # save imputed data
-saveRDS(imputed_df_1, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_1.rds")
-saveRDS(imputed_df_2, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_2.rds")
-saveRDS(imputed_df_3, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_3.rds")
-saveRDS(imputed_df_4, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_4.rds")
-saveRDS(imputed_df_5, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/imputed_df_5.rds")
+saveRDS(imputed_df_1, "imputed_df_1.rds")
+saveRDS(imputed_df_2, "imputed_df_2.rds")
+saveRDS(imputed_df_3, "imputed_df_3.rds")
+saveRDS(imputed_df_4, "imputed_df_4.rds")
+saveRDS(imputed_df_5, "imputed_df_5.rds")
 
 
 

@@ -12,8 +12,12 @@ logit2prob <- function(logit){
 
 # loop for bootstrapping starts here
 
-# loop for multiple imputation (5 copies) start here
-imp1 <- readRDS('imputed_df_1.rds')
+# initialize empty list to collect estimates
+estimate_list_mi <- list()
+
+for (multimp in 1:5) {
+filename <- paste0("imputed_df_", multimp, ".rds")
+imp1 <- readRDS(filename)
 
 ###########################################
 ##### FRAMINGHAM OFFSPRING RISK SCORE #####
@@ -91,7 +95,7 @@ imp1 <- imp1 |>
   mutate(EGATS = EGATS + ifelse(gender == 'female' & waist >= 80, 2, 0)) |> 
   mutate(EGATS = EGATS + ifelse(SBP >= 140 | DBP >= 90 | now_BP_meds == 'BP meds', 2, 0)) |> 
   mutate(EGATS = EGATS + ifelse(famhist_T2D == 'family diabetes', 4, 0))  |> 
-  mutate(Risk_EGATS = ifelse(EGATS >= 6, 1, 0)) |>
+  mutate(Risk_EGATS = ifelse(EGATS > 6, 1, 0)) |>
   select(-EGATS)
 
 
@@ -137,27 +141,84 @@ imp1 <- imp1 |>
          diabetic, Risk_Framingham, Risk_DESIR, Risk_EGATS,
          Risk_ARIC, Risk_Antonio)
 
+imp1_excl <- imp1[imp1$age>=18 & imp1$diabetic == 'no diabetes',]
 
-##### LONG TO CALCULATE AVERAGE PREDICTED PROBABILITIES
-##### 
-##### CONSIDERATIONS:
-##### WEIGHTS are 2-yr WEIGHTS - they are applicable within 
-##### a specific 2-yr period (survey_nr)
-#####
-##### individuals who are diabetic should not be considered!!!
-##### individuals under age 20 should not be considered!!!
-##### category called "other race" should not be considered!!!
-#####
-##### Please calculate for the following 3 categories:
-##### non-hispanic white (coded as is)
-##### non-hispanic black (coded as is)
-##### hispanic (coded as two categories for now: mexican american + other hispanic) - please merge these categories
-##### additionally, it would perhaps useful to also calculate an OVERALL estimate with all races together?
-#####
-##### output:
-##### we need race specific estimates in a new data frame
-##### with columns:
-##### survey_nr (year), ethnicity, estimate
+
+collect_vec <- c()
+# FRAMINGHAM
+for (i in levels(imp1_excl$survey_nr)) {
+  d <- imp1_excl[imp1_excl$survey_nr== i,]
+  collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_Framingham, w=d$survey_weight))
+  for (j in levels(imp1_excl$ethnicity)) {
+d <- imp1_excl[imp1_excl$survey_nr== i & imp1_excl$ethnicity== j ,]
+collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_Framingham, w=d$survey_weight))
+  }
+}
+# DESIR
+for (i in levels(imp1_excl$survey_nr)) {
+  d <- imp1_excl[imp1_excl$survey_nr== i,]
+  collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_DESIR, w=d$survey_weight))
+  for (j in levels(imp1_excl$ethnicity)) {
+    d <- imp1_excl[imp1_excl$survey_nr== i & imp1_excl$ethnicity== j ,]
+    collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_DESIR, w=d$survey_weight))
+  }
+}
+# EGATS
+for (i in levels(imp1_excl$survey_nr)) {
+  d <- imp1_excl[imp1_excl$survey_nr== i,]
+  collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_EGATS, w=d$survey_weight))
+  for (j in levels(imp1_excl$ethnicity)) {
+    d <- imp1_excl[imp1_excl$survey_nr== i & imp1_excl$ethnicity== j ,]
+    collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_EGATS, w=d$survey_weight))
+  }
+}
+# ARIC
+for (i in levels(imp1_excl$survey_nr)) {
+  d <- imp1_excl[imp1_excl$survey_nr== i,]
+  collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_ARIC, w=d$survey_weight))
+  for (j in levels(imp1_excl$ethnicity)) {
+    d <- imp1_excl[imp1_excl$survey_nr== i & imp1_excl$ethnicity== j ,]
+    collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_ARIC, w=d$survey_weight))
+  }
+}
+# SAN ANTONIO
+for (i in levels(imp1_excl$survey_nr)) {
+  d <- imp1_excl[imp1_excl$survey_nr== i,]
+  collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_Antonio, w=d$survey_weight))
+  for (j in levels(imp1_excl$ethnicity)) {
+    d <- imp1_excl[imp1_excl$survey_nr== i & imp1_excl$ethnicity== j ,]
+    collect_vec <- c(collect_vec, weighted.mean(x=d$Risk_Antonio, w=d$survey_weight))
+  }
+}
+
+estimate_list_mi[[multimp]] <- collect_vec
+
+}
+
+# Rubin's rules on predicted probabilities
+estimate_list <- Reduce("+", estimate_list_mi) / length(estimate_list_mi)
+
+
+# generate result dataframe
+model_vals <- c(rep("Framingham",50),rep("DESIR",50),rep("EGATS",50),rep("ARIC",50),rep("San Antonio",50))
+year_vals <- rep(c(rep(1999,5),rep(2001,5),rep(2003,5),rep(2005,5),rep(2007,5),rep(2009,5),rep(2011,5),rep(2013,5),rep(2015,5),rep(2017,5)),5)
+ethnicity_vals <- rep(c("All", levels(imp1_excl$ethnicity)),50)
+result_df <- as.data.frame(cbind(avg_pred = estimate_list,
+                                 model = model_vals,
+                                 baseline_year = year_vals,
+                                 ethnicity = ethnicity_vals))
+result_df$avg_pred <- as.numeric(result_df$avg_pred)
+result_df$baseline_year <- as.numeric(result_df$baseline_year)
+
+# add model follow up times
+result_df$year <- NA
+result_df$year[result_df$model == "Framingham" | result_df$model == "San Antonio"] <- result_df$baseline_year[result_df$model == "Framingham" | result_df$model == "San Antonio"] + 8
+result_df$year[result_df$model == "DESIR" | result_df$model == "ARIC"] <- result_df$baseline_year[result_df$model == "DESIR" | result_df$model == "ARIC"] + 9
+result_df$year[result_df$model == "EGATS"] <- result_df$baseline_year[result_df$model == "EGATS"] + 12
+
+# drop Other ethnicity from results
+result_df <- result_df[result_df$ethnicity != "Other",] 
+
 
 
 # end of multiple imputation analysis loop
