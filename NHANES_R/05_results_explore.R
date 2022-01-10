@@ -58,7 +58,7 @@ cbind()
 
 length_inc <- length(all_inc)*4
 # generate result dataframe
-model_vals <- rep("8-yr-incidence",length_inc)
+model_vals <- rep("9-yr-incidence",length_inc)
 year_vals <- rep(2008:2018,4)
 ethnicity_vals <- c(rep("All",11),rep("Hispanic",11),rep("White",11),rep("Black",11))
 nine_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,black_inc),
@@ -68,6 +68,35 @@ nine_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,b
 nine_yr_inc$avg_pred <- as.numeric(nine_yr_inc$avg_pred)
 nine_yr_inc$year <- as.numeric(nine_yr_inc$year)
 
+
+
+# EGATS: TWELVE YEAR INCIDENCES
+# 2008 - 2018 cumulative incidences:
+all_inc <- c()
+hispanic_inc <- c()
+white_inc <- c()
+black_inc <- c()
+
+for (i in 0:7) {
+  all_inc <- c(all_inc, 1 - prod(diab_survival[(1+i):(12+i),2]))
+  hispanic_inc <- c(hispanic_inc, 1 - prod(diab_survival[(12+i):(6+i),3]))
+  white_inc <- c(white_inc, 1 - prod(diab_survival[(1+i):(12+i),4]))
+  black_inc <- c(black_inc, 1 - prod(diab_survival[(1+i):(12+i),5]))
+}
+
+cbind()
+
+length_inc <- length(all_inc)*4
+# generate result dataframe
+model_vals <- rep("12-yr-incidence",length_inc)
+year_vals <- rep(2011:2018,4)
+ethnicity_vals <- c(rep("All",8),rep("Hispanic",8),rep("White",8),rep("Black",8))
+twelve_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,black_inc),
+                                   model = model_vals,
+                                   ethnicity = ethnicity_vals,
+                                   year = year_vals))
+twelve_yr_inc$avg_pred <- as.numeric(twelve_yr_inc$avg_pred)
+twelve_yr_inc$year <- as.numeric(twelve_yr_inc$year)
 
 
 
