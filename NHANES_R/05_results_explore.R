@@ -3,6 +3,9 @@ setwd("~/GitHub/NHANES_T2D")
 
 # load necessary libraries
 library(readxl)
+library(ggplot2)
+
+# load results from NHANES
 result_df <- readRDS("NHANES_R/result_df.rds")
 result_df$baseline_year <- NULL
 
@@ -99,5 +102,49 @@ twelve_yr_inc$avg_pred <- as.numeric(twelve_yr_inc$avg_pred)
 twelve_yr_inc$year <- as.numeric(twelve_yr_inc$year)
 
 
+# merge observed with calculated incidences
+df <- rbind(result_df, eight_yr_inc, nine_yr_inc, twelve_yr_inc)
+
+# visualization Framingham
+df_model <- df[df$model == "Framingham" | df$model == "8-yr-incidence",]
+
+ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
+  facet_grid(~ethnicity)
 
 
+# visualization San Antonio
+df_model <- df[df$ethnicity != "Black" & (df$model == "San Antonio" | df$model == "8-yr-incidence"),]
+
+ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
+  facet_grid(~ethnicity)
+
+
+# visualization ARIC
+df_model <- df[df$ethnicity != "Hispanic" & (df$model == "ARIC" | df$model == "9-yr-incidence"),]
+
+ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
+  facet_grid(~ethnicity)
+
+
+# visualization DESIR
+df_model <- df[df$model == "DESIR" | df$model == "9-yr-incidence",]
+
+ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
+  facet_grid(~ethnicity)
+
+
+# visualization EGATS
+df_model <- df[df$model == "EGATS" | df$model == "12-yr-incidence",]
+
+ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
+  facet_grid(~ethnicity)
