@@ -4,6 +4,7 @@ setwd("~/GitHub/NHANES_T2D")
 # load necessary libraries
 library(readxl)
 library(ggplot2)
+library(reshape2)
 
 # load results from NHANES
 result_df <- readRDS("NHANES_R/result_df.rds")
@@ -108,43 +109,73 @@ df <- rbind(result_df, eight_yr_inc, nine_yr_inc, twelve_yr_inc)
 # visualization Framingham
 df_model <- df[df$model == "Framingham" | df$model == "8-yr-incidence",]
 
-ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
   facet_grid(~ethnicity)
+
+png("Framingham_pred.png", width = 1000, height = 500)
+p
+dev.off()
+
+df_y <- df_model[df_model$year %in% c(2007,2009,2011,2013,2015,2017),]
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "ethnicity"), timevar = c("model"))
+df_y_wide$diff <- df_y_wide$avg_pred.Framingham - df_y_wide$`avg_pred.8-yr-incidence`
+
+p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
+  geom_point() +
+  geom_hline(yintercept=c(0), linetype='dashed') +
+  ylab("Delta predicted score") +
+  scale_x_continuous(name="Year", limits=c(2006.5, 2017.5))
+
+png("Framingham_pred.png", width = 1000, height = 500)
+p
+dev.off()
+
 
 
 # visualization San Antonio
 df_model <- df[df$ethnicity != "Black" & (df$model == "San Antonio" | df$model == "8-yr-incidence"),]
 
-ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
   facet_grid(~ethnicity)
 
+png("SanAntonio_pred.png", width = 1000, height = 500)
+p
+dev.off()
 
 # visualization ARIC
 df_model <- df[df$ethnicity != "Hispanic" & (df$model == "ARIC" | df$model == "9-yr-incidence"),]
 
-ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
   facet_grid(~ethnicity)
+
+png("ARIC_pred.png", width = 1000, height = 500)
+p
+dev.off()
 
 
 # visualization DESIR
 df_model <- df[df$model == "DESIR" | df$model == "9-yr-incidence",]
 
-ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
   facet_grid(~ethnicity)
+
+png("DESIR_pred.png", width = 1000, height = 500)
+p
+dev.off()
 
 
 # visualization EGATS
 df_model <- df[df$model == "EGATS" | df$model == "12-yr-incidence",]
 
-ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
+p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 3), se = TRUE) +
   facet_grid(~ethnicity)
+
+png("EGATS_pred.png", width = 1000, height = 500)
+p
+dev.off()
