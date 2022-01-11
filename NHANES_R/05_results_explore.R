@@ -111,13 +111,15 @@ df_model <- df[df$model == "Framingham" | df$model == "8-yr-incidence",]
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  facet_grid(~ethnicity)
+  facet_grid(~ethnicity) +
+  theme_minimal()
 
-png("Framingham_pred.png", width = 1000, height = 500)
+png("Framingham_pred.png", width = 600, height = 300)
 p
 dev.off()
 
-df_y <- df_model[df_model$year %in% c(2007,2009,2011,2013,2015,2017),]
+valid_years <- c(2007,2009,2011,2013,2015,2017)
+df_y <- df_model[df_model$year %in% valid_years,]
 df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "ethnicity"), timevar = c("model"))
 df_y_wide$diff <- df_y_wide$avg_pred.Framingham - df_y_wide$`avg_pred.8-yr-incidence`
@@ -126,9 +128,10 @@ p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
   geom_point() +
   geom_hline(yintercept=c(0), linetype='dashed') +
   ylab("Delta predicted score") +
-  scale_x_continuous(name="Year", limits=c(2006.5, 2017.5))
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal()
 
-png("Framingham_pred.png", width = 1000, height = 500)
+png("Framingham_diff.png", width = 600, height = 300)
 p
 dev.off()
 
@@ -139,9 +142,27 @@ df_model <- df[df$ethnicity != "Black" & (df$model == "San Antonio" | df$model =
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  facet_grid(~ethnicity)
+  facet_grid(~ethnicity) +
+  theme_minimal()
 
-png("SanAntonio_pred.png", width = 1000, height = 500)
+png("SanAntonio_pred.png", width = 600, height = 300)
+p
+dev.off()
+
+valid_years <- c(2007,2009,2011,2013,2015,2017)
+df_y <- df_model[df_model$year %in% valid_years,]
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "ethnicity"), timevar = c("model"))
+df_y_wide$diff <- df_y_wide$`avg_pred.San Antonio` - df_y_wide$`avg_pred.8-yr-incidence`
+
+p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
+  geom_point() +
+  geom_hline(yintercept=c(0), linetype='dashed') +
+  ylab("Delta predicted score") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal()
+
+png("SanAntonio_diff.png", width = 600, height = 300)
 p
 dev.off()
 
@@ -150,32 +171,84 @@ df_model <- df[df$ethnicity != "Hispanic" & (df$model == "ARIC" | df$model == "9
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  facet_grid(~ethnicity)
+  facet_grid(~ethnicity) +
+  theme_minimal()
 
-png("ARIC_pred.png", width = 1000, height = 500)
+png("ARIC_pred.png", width = 600, height = 300)
 p
 dev.off()
 
+valid_years <- c(2008,2010,2012,2014,2016,2018)
+df_y <- df_model[df_model$year %in% valid_years,]
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "ethnicity"), timevar = c("model"))
+df_y_wide$diff <- df_y_wide$avg_pred.ARIC - df_y_wide$`avg_pred.9-yr-incidence`
+
+p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
+  geom_point() +
+  geom_hline(yintercept=c(0), linetype='dashed') +
+  ylab("Delta predicted score") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal()
+
+png("ARIC_diff.png", width = 600, height = 300)
+p
+dev.off()
 
 # visualization DESIR
 df_model <- df[df$model == "DESIR" | df$model == "9-yr-incidence",]
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  facet_grid(~ethnicity)
+  facet_grid(~ethnicity) +
+  theme_minimal()
 
-png("DESIR_pred.png", width = 1000, height = 500)
+png("DESIR_pred.png", width = 600, height = 300)
 p
 dev.off()
 
+valid_years <- c(2008,2010,2012,2014,2016,2018)
+df_y <- df_model[df_model$year %in% valid_years,]
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "ethnicity"), timevar = c("model"))
+df_y_wide$diff <- df_y_wide$avg_pred.DESIR - df_y_wide$`avg_pred.9-yr-incidence`
+
+p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
+  geom_point() +
+  geom_hline(yintercept=c(0), linetype='dashed') +
+  ylab("Delta predicted score") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal()
+
+png("DESIR_diff.png", width = 600, height = 300)
+p
+dev.off()
 
 # visualization EGATS
 df_model <- df[df$model == "EGATS" | df$model == "12-yr-incidence",]
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
-  facet_grid(~ethnicity)
+  facet_grid(~ethnicity) +
+  theme_minimal()
 
-png("EGATS_pred.png", width = 1000, height = 500)
+png("EGATS_pred.png", width = 600, height = 300)
+p
+dev.off()
+
+valid_years <- c(2011,2013,2015,2017)
+df_y <- df_model[df_model$year %in% valid_years,]
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "ethnicity"), timevar = c("model"))
+df_y_wide$diff <- df_y_wide$avg_pred.EGATS - df_y_wide$`avg_pred.12-yr-incidence`
+
+p <- ggplot(df_y_wide, aes(x=year, y=diff, col=ethnicity)) +
+  geom_point() +
+  geom_hline(yintercept=c(0), linetype='dashed') +
+  ylab("Delta predicted score") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal()
+
+png("EGATS_diff.png", width = 600, height = 300)
 p
 dev.off()
