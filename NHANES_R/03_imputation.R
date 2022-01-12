@@ -1,26 +1,33 @@
 # Set working directory
-setwd("~/GitHub/NHANES_T2D/NHANES_R")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(mice)
 
-# load data
-full_df <- readRDS("full_df_clean_missing.rds")
+# load complete merged data to obtain survey number levels
+# nothing to do with this data, we only need the factor levels for the loop
+cleaned_full_df <- readRDS("cleaned_full_df.rds")
 
+# calculate average missingness in data
+(sum(is.na(cleaned_full_df))/prod(dim(cleaned_full_df)))*100
+# it is 15% - so we will make 15 imputed copies
+
+# load data per survey (loop)
+for (i in levels(cleaned_full_df$survey_nr)) {
+  
+full_df <- readRDS("full_",i,".rds")
 
 # MICE IMPUTATION
 # save variables as vectors that are not needed for imputation
 SEQN <- full_df$SEQN
-survey_weight <- full_df$survey_weight
 full_df$SEQN <- NULL
-full_df$survey_weight <- NULL
 
 # imputation: 5 copies, 5 iterations, predictive mean matching algorithm
-imputation_object <- mice(full_df, method = "pmm", m = 5, maxit = 5, seed = 64370)
+imputation_object <- mice(full_df, method = "rf", m = 15, maxit = 5, seed = 64370)
 
 # investigate convergence visually
-imputation_object$method #those variables with no missing have "" as method - they are still used for imputation
-plot(imputation_object) #plots look OK
+# imputation_object$method #those variables with no missing have "" as method - they are still used for imputation
+# plot(imputation_object) #plots look OK
 
 # extract imputed datasets
 imputed_1 <- complete(imputation_object, 1)
@@ -41,22 +48,30 @@ imputed_3$fasting_hr <- NULL
 imputed_4$fasting_hr <- NULL
 imputed_5$fasting_hr <- NULL
 
-# re-merge ID and weights
-imputed_df_1 <- as.data.frame(cbind(SEQN, survey_weight, imputed_1))
-imputed_df_2 <- as.data.frame(cbind(SEQN, survey_weight, imputed_2))
-imputed_df_3 <- as.data.frame(cbind(SEQN, survey_weight, imputed_3))
-imputed_df_4 <- as.data.frame(cbind(SEQN, survey_weight, imputed_4))
-imputed_df_5 <- as.data.frame(cbind(SEQN, survey_weight, imputed_5))
+# re-merge ID 
+imputed_df_1 <- as.data.frame(cbind(SEQN, imputed_1))
+imputed_df_2 <- as.data.frame(cbind(SEQN, imputed_2))
+imputed_df_3 <- as.data.frame(cbind(SEQN, imputed_3))
+imputed_df_4 <- as.data.frame(cbind(SEQN, imputed_4))
+imputed_df_5 <- as.data.frame(cbind(SEQN, imputed_5))
+
+
+filename1 <- paste0("imputed_",i,"_1.rds")
+filename2 <- paste0("imputed_",i,"_2.rds")
+filename3 <- paste0("imputed_",i,"_3.rds")
+filename4 <- paste0("imputed_",i,"_4.rds")
+filename5 <- paste0("imputed_",i,"_5.rds")
+
 
 # save imputed data
-saveRDS(imputed_df_1, "imputed_df_1.rds")
-saveRDS(imputed_df_2, "imputed_df_2.rds")
-saveRDS(imputed_df_3, "imputed_df_3.rds")
-saveRDS(imputed_df_4, "imputed_df_4.rds")
-saveRDS(imputed_df_5, "imputed_df_5.rds")
+saveRDS(imputed_df_1, filename1)
+saveRDS(imputed_df_2, filename2)
+saveRDS(imputed_df_3, filename3)
+saveRDS(imputed_df_4, filename4)
+saveRDS(imputed_df_5, filename5)
 
 
-
+}
 
 
 

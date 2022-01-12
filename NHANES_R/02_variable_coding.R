@@ -446,6 +446,9 @@ full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes",
 table(full_df$diabetic, useNA = "always")
 
 
+saveRDS(full_df, "cleaned_full_df.rds")
+
+# save data per survey - this is how we will impute missing data
 for (i in levels(full_df$survey_nr)) {
   
   filename <- paste0("full_",i,".rds")

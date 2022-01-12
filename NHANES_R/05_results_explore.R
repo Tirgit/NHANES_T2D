@@ -11,7 +11,7 @@ result_df <- readRDS("NHANES_R/result_df.rds")
 result_df$baseline_year <- NULL
 
 # load incidence rates / 1000
-diab_incidence <- read_xlsx("diab_incidence.xlsx")
+diab_incidence <- read_xlsx("/Data/diab_incidence.xlsx")
 diab_survival <- cbind(diab_incidence[,1], 1-diab_incidence[,2:5])
 1000
 
