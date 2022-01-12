@@ -10,8 +10,6 @@ logit2prob <- function(logit){
   return(prob)
 }
 
-# loop for bootstrapping starts here
-
 # initialize empty list to collect estimates
 estimate_list_mi <- list()
 
@@ -222,13 +220,6 @@ result_df <- result_df[result_df$ethnicity != "Other",]
 saveRDS(result_df, "result_df.rds")
 
 
-# end of multiple imputation analysis loop
-
-# pooling estimates from 5 imputed copies
-
-# end of bootstrapping loop
-
-# pooling estimates from 1,000 bootstraps
 
 
 
