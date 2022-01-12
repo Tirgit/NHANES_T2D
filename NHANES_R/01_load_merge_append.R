@@ -1,5 +1,5 @@
 # Set working directory
-setwd("~/GitHub/NHANES_T2D/NHANES_R")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(foreign)

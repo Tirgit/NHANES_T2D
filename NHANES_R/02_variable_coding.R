@@ -1,5 +1,5 @@
 # Set working directory
-setwd("~/GitHub/NHANES_T2D/NHANES_R")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(plyr)
@@ -445,5 +445,12 @@ full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes",
                                                 "1"="diabetes"))
 table(full_df$diabetic, useNA = "always")
 
-saveRDS(full_df, "full_df_clean_missing.rds")
+
+for (i in levels(full_df$survey_nr)) {
+  
+  filename <- paste0("full_",i,".rds")
+  survey_df <- full_df[full_df$survey_nr == i,]
+  saveRDS(survey_df, filename)
+  
+}
 
