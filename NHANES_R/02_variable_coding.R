@@ -1,9 +1,12 @@
+# Set working directory
+setwd("~/GitHub/NHANES_T2D/NHANES_R")
+
 # load necessary libraries
 library(plyr)
 library(dplyr)
 
 # load data
-full_df <- readRDS("C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df.rds")
+full_df <- readRDS("full_df.rds")
 
 #################
 ##### SEQN ######
@@ -82,12 +85,16 @@ summary(full_df$age)
 # 4 = Non-Hispanic Black
 # 5 = Other Race - Including Multi-Racial
 table(full_df$ethnicity, useNA = "always")
+# create hispanic category by merging 1 and 2
+full_df$ethnicity[full_df$ethnicity == 2] <- 1
+full_df$ethnicity[full_df$ethnicity == 3] <- 2
+full_df$ethnicity[full_df$ethnicity == 4] <- 3
+full_df$ethnicity[full_df$ethnicity == 5] <- 4
 full_df$ethnicity <- as.factor(full_df$ethnicity)
-full_df$ethnicity <- revalue(full_df$ethnicity, c("1"="mexican", 
-                                                  "2"="other_hispanic",
-                                                  "3"="white",
-                                                  "4"="black",
-                                                  "5"="other"))
+full_df$ethnicity <- revalue(full_df$ethnicity, c("1"="Hispanic", 
+                                                  "2"="White",
+                                                  "3"="Black",
+                                                  "4"="Other"))
 table(full_df$ethnicity, useNA = "always")
 
 
@@ -438,5 +445,5 @@ full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes",
                                                 "1"="diabetes"))
 table(full_df$diabetic, useNA = "always")
 
-saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df_clean_missing.rds")
+saveRDS(full_df, "full_df_clean_missing.rds")
 

@@ -1,9 +1,9 @@
+# Set working directory
+setwd("~/GitHub/NHANES_T2D/NHANES_R")
+
 # load necessary libraries
 library(foreign)
 library(dplyr)
-
-# SET WORKING DIRECTORY
-# setwd("H:/BACKUP/Projects/NHANES")
 
 # LOAD AND MERGE ALL NECESSARY FILES PER SURVEY
 
@@ -1427,7 +1427,7 @@ full_df <- rbind(full_1999_2000,
       full_2015_2016,
       full_2017_2018)
 
-saveRDS(full_df, "C:/Users/vrw657/Documents/GitHub/NHANES_T2D/NHANES_R/full_df.rds")
+saveRDS(full_df, "full_df.rds")
 
 
 
