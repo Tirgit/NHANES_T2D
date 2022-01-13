@@ -24,6 +24,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ.XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH.XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ.XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/LAB10.XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/LAB11.XPT")
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -103,6 +104,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_1999_2000 <- demo %>% 
@@ -116,7 +122,8 @@ full_1999_2000 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 ## RENAME VARIABLES
 colnames(full_1999_2000) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gender", "age", "ethnicity", 
@@ -131,13 +138,13 @@ colnames(full_1999_2000) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", 
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
-   smoking_file, fasting_file, diabetes_file, a1c_file)
+   smoking_file, fasting_file, diabetes_file, a1c_file, crp_file, crp)
 
 ######################################
 ########## NHANES 2001-2002 ##########
@@ -157,6 +164,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L11_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -237,6 +245,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2001_2002 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -249,7 +263,8 @@ full_2001_2002 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -265,13 +280,13 @@ colnames(full_2001_2002) <-  c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gen
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", 
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
-   smoking_file, fasting_file, diabetes_file, a1c_file)
+   smoking_file, fasting_file, diabetes_file, a1c_file, crp_file, crp)
 
 
 ######################################
@@ -292,6 +307,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PH_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L10_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/L11_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -372,6 +388,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2003_2004 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -384,7 +406,8 @@ full_2003_2004 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -400,13 +423,13 @@ colnames(full_2003_2004) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke", 
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
-   smoking_file, fasting_file, diabetes_file, a1c_file)
+   smoking_file, fasting_file, diabetes_file, a1c_file, crp_file, crp)
 
 ######################################
 ########## NHANES 2005-2006 ##########
@@ -431,6 +454,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/CRP_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -517,6 +541,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2005_2006 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -530,7 +560,8 @@ full_2005_2006 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -546,20 +577,18 @@ colnames(full_2005_2006) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
    smoking_file, fasting_file, diabetes_file, a1c_file,
-   lipid_3, lipid_3_file)
+   lipid_3, lipid_3_file, crp_file, crp)
 
 ######################################
 ########## NHANES 2007-2008 ##########
 ######################################
-
-# RECODE BORN OUTSIDE OF USA!
 
 years <- "2007-2008"
 letter <- "E"
@@ -577,6 +606,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/CRP_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -663,6 +693,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2007_2008 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -676,7 +712,8 @@ full_2007_2008 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -692,14 +729,14 @@ colnames(full_2007_2008) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
    smoking_file, fasting_file, diabetes_file, a1c_file,
-   lipid_3, lipid_3_file)
+   lipid_3, lipid_3_file, crp_file, crp)
 
 ######################################
 ########## NHANES 2009-2010 ##########
@@ -720,6 +757,8 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/CRP_",letter,".XPT")
+
 
 ## DEMOGRAPHICS
 download.file(demo_file, tf <- tempfile(), mode="wb")
@@ -805,6 +844,11 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## CRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXCRP")
+crp <- loaded_file[,keep_vars]
 
 ## MERGE ALL BY SEQN
 full_2009_2010 <- demo %>% 
@@ -819,7 +863,8 @@ full_2009_2010 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -835,14 +880,15 @@ colnames(full_2009_2010) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
    smoking_file, fasting_file, diabetes_file, a1c_file,
-   lipid_3, lipid_3_file)
+   lipid_3, lipid_3_file, crp_file, crp)
+
 
 ######################################
 ########## NHANES 2011-2012 ##########
@@ -963,6 +1009,7 @@ full_2011_2012 <- demo %>%
   full_join(diabetes,  by = "SEQN") %>%
   full_join(a1c,  by = "SEQN")
 
+full_2011_2012$CRP <- NA
 
 ## RENAME VARIABLES
 colnames(full_2011_2012) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gender", "age", "ethnicity", 
@@ -977,7 +1024,7 @@ colnames(full_2011_2012) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
@@ -1106,6 +1153,7 @@ full_2013_2014 <- demo %>%
   full_join(diabetes,  by = "SEQN") %>%
   full_join(a1c,  by = "SEQN")
 
+full_2013_2014$CRP <- NA
 
 ## RENAME VARIABLES
 colnames(full_2013_2014) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gender", "age", "ethnicity", 
@@ -1120,7 +1168,7 @@ colnames(full_2013_2014) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
@@ -1148,6 +1196,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HSCRP_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -1234,6 +1283,13 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## hsCRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXHSCRP")
+crp <- loaded_file[,keep_vars]
+
+
 ## MERGE ALL BY SEQN
 full_2015_2016 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -1247,7 +1303,8 @@ full_2015_2016 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN") 
 
 
 ## RENAME VARIABLES
@@ -1263,14 +1320,14 @@ colnames(full_2015_2016) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
    smoking_file, fasting_file, diabetes_file, a1c_file,
-   lipid_3, lipid_3_file)
+   lipid_3, lipid_3_file, crp_file, crp)
 
 ######################################
 ########## NHANES 2017-2018 ##########
@@ -1291,6 +1348,7 @@ smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
 a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
+crp_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/HSCRP_",letter,".XPT")
 
 
 ## DEMOGRAPHICS
@@ -1377,6 +1435,12 @@ loaded_file <- foreign::read.xport(tf)
 keep_vars <- c("SEQN", "LBXGH")
 a1c <- loaded_file[,keep_vars]
 
+## hsCRP
+download.file(crp_file, tf <- tempfile(), mode="wb")
+loaded_file <- foreign::read.xport(tf)
+keep_vars <- c("SEQN", "LBXHSCRP")
+crp <- loaded_file[,keep_vars]
+
 ## MERGE ALL BY SEQN
 full_2017_2018 <- demo %>% 
   full_join(body,  by = "SEQN") %>% 
@@ -1390,7 +1454,8 @@ full_2017_2018 <- demo %>%
   full_join(smoking,  by = "SEQN") %>% 
   full_join(fasting,  by = "SEQN") %>% 
   full_join(diabetes,  by = "SEQN") %>%
-  full_join(a1c,  by = "SEQN")
+  full_join(a1c,  by = "SEQN") %>%
+  full_join(crp,  by = "SEQN")
 
 
 ## RENAME VARIABLES
@@ -1406,14 +1471,14 @@ colnames(full_2017_2018) <- c("SEQN","SDMVPSU", "SDMVSTRA" , "survey_nr",  "gend
                               "ever_chd", "ever_angina", "ever_heartattack",
                               "ever_stroke",
                               "current_smoker", "fasting_hr",
-                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c")
+                              "ever_diabetes", "insulin", "oral_diab_med", "hba1c", "CRP")
 
 rm(demo, body, bloodp, lipid_1, lipid_2, meds,  standard_lab,
    fam_hist, smoking, fasting, diabetes, a1c, loaded_file, 
    demo_file, body_file, bloodp_file, lipid_1_file, 
    lipid_2_file, meds_file ,standard_lab_file, fam_hist_file,
    smoking_file, fasting_file, diabetes_file, a1c_file,
-   lipid_3, lipid_3_file)
+   lipid_3, lipid_3_file, crp_file, crp)
 
 
 full_df <- rbind(full_1999_2000,
