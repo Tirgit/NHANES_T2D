@@ -11,9 +11,7 @@ result_df <- readRDS("NHANES_R/result_df.rds")
 result_df$baseline_year <- NULL
 
 # load incidence rates / 1000
-diab_incidence <- read_xlsx("/Data/diab_incidence.xlsx")
-diab_survival <- cbind(diab_incidence[,1], 1-diab_incidence[,2:5])
-1000
+diab_incidence <- read_xlsx("Data/diab_incidence.xlsx")
 
 # FRAMINGHAM, SAN ANTONIO: EIGHT YEAR INCIDENCES
 # 2007 - 2018 cumulative incidences:
@@ -138,7 +136,7 @@ dev.off()
 
 
 # visualization San Antonio
-df_model <- df[df$ethnicity != "Black" & (df$model == "San Antonio" | df$model == "8-yr-incidence"),]
+df_model <- df[df$model == "San Antonio" | df$model == "8-yr-incidence",]
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
@@ -167,7 +165,7 @@ p
 dev.off()
 
 # visualization ARIC
-df_model <- df[df$ethnicity != "Hispanic" & (df$model == "ARIC" | df$model == "9-yr-incidence"),]
+df_model <- df[df$model == "ARIC" | df$model == "9-yr-incidence",]
 
 p <- ggplot(df_model, aes(x=year, y=avg_pred, col=model)) +
   geom_point() +
