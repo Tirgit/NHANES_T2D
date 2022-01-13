@@ -1,5 +1,22 @@
-x
+library(tidyverse)
 
+# Set working directory & load data
+setwd("~/GitHub/NHANES_T2D/Data")
+
+# Create a small function to return probabilities from logits (coefficients)
+logit2prob <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
+}
+
+# load example data
+imp1 <- readRDS("imputed_1999-2000_1.rds")
+  
+
+#############################
+##### PCE (ASCVD) SCORE #####
+#############################
 
 imp1 <- imp1 |> 
   mutate(Framingham = ifelse(glucose >= 5.55, 10, 0)) |> 
@@ -28,3 +45,27 @@ imp1 <- imp1 |>
                                      Framingham >= 25 ~ 35)) |> 
   mutate(Risk_Framingham = Risk_Framingham * 0.01) |>
   select(-Framingham)
+
+
+#################################
+##### FRAMINGHAM RISK SCORE #####
+#################################
+
+xxxxx
+
+###############################
+##### REYNOLDS RISK SCORE #####
+###############################
+
+xxxxx
+
+#################################
+##### SCORE RISK ESTIMATION #####
+#################################
+
+xxxxx
+
+
+
+
+

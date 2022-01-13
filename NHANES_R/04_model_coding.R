@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # Set working directory & load data
-setwd("~/GitHub/NHANES_T2D/NHANES_R")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # Create a small function to return probabilities from logits (coefficients)
 logit2prob <- function(logit){
