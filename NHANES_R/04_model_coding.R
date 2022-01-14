@@ -32,6 +32,16 @@ rubin_se <- function(average, standard_error) {
 }
 
 
+# extract survey years
+cleaned_full_df <- readRDS("cleaned_full_df.rds")
+surveys <- levels(cleaned_full_df$survey_nr)
+
+# initialize empty list
+RESULTS_list <- list()
+
+# loop for all survey nr cohorts
+for (i in 1:length(surveys)) {
+
 # specify number of imputed datasets
 M <- 15
 ethnic_group <- c("All","Black","White","Hispanic")
@@ -66,7 +76,7 @@ for (ethn in ethnic_group) {
   for (m in 1:M) {
     
     # load data
-    imp1 <- readRDS(paste0("imputed_1999-2000_", m, ".rds"))
+    imp1 <- readRDS(paste0("imputed_",surveys[i],"_", m, ".rds"))
     
     # calculate risk model variables
     ###########################################
@@ -236,37 +246,29 @@ for (ethn in ethnic_group) {
   RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Antonio","pooled.se"] <- rubin_se(average = MI.Antonio$avg, standard_error = MI.Antonio$se)
   
 }
-    
 
-### pick up from here and:
-### - code this for all survey nr s!
+RESULTS_list[[i]] <- RESULTS
 
+}
 
+# rbinding results from each survey year
+RESULTS_df <- do.call("rbind", RESULTS_list)
 
+# add baseline years
+L <- nrow(RESULTS)
+year_vals <- rep(c(rep(1999,L),rep(2001,L),rep(2003,L),rep(2005,L),rep(2007,L),rep(2009,L),rep(2011,L),rep(2013,L),rep(2015,L),rep(2017,L)),L)
 
-
-
-# generate result dataframe
-model_vals <- c(rep("Framingham",50),rep("DESIR",50),rep("EGATS",50),rep("ARIC",50),rep("San Antonio",50))
-year_vals <- rep(c(rep(1999,5),rep(2001,5),rep(2003,5),rep(2005,5),rep(2007,5),rep(2009,5),rep(2011,5),rep(2013,5),rep(2015,5),rep(2017,5)),5)
-ethnicity_vals <- rep(c("All", levels(imp1_excl$ethnicity)),50)
-result_df <- as.data.frame(cbind(avg_pred = estimate_list,
-                                 model = model_vals,
-                                 baseline_year = year_vals,
-                                 ethnicity = ethnicity_vals))
-result_df$avg_pred <- as.numeric(result_df$avg_pred)
-result_df$baseline_year <- as.numeric(result_df$baseline_year)
+RESULTS_df <- as.data.frame(cbind(RESULTS_df,
+                                 baseline_year = year_vals))
 
 # add model follow up times
-result_df$year <- NA
-result_df$year[result_df$model == "Framingham" | result_df$model == "San Antonio"] <- result_df$baseline_year[result_df$model == "Framingham" | result_df$model == "San Antonio"] + 8
-result_df$year[result_df$model == "DESIR" | result_df$model == "ARIC"] <- result_df$baseline_year[result_df$model == "DESIR" | result_df$model == "ARIC"] + 9
-result_df$year[result_df$model == "EGATS"] <- result_df$baseline_year[result_df$model == "EGATS"] + 12
+RESULTS_df$year <- NA
+RESULTS_df$year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "San Antonio"] + 8
+RESULTS_df$year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] + 9
+RESULTS_df$year[RESULTS_df$Model == "EGATS"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "EGATS"] + 12
 
-# drop Other ethnicity from results
-result_df <- result_df[result_df$ethnicity != "Other",] 
-
-saveRDS(result_df, "result_df.rds")
+# save results
+saveRDS(RESULTS_df, "RESULTS_df.rds")
 
 
 
