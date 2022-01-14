@@ -12,19 +12,56 @@ logit2prob <- function(logit){
   return(prob)
 }
 
+# Create Rubin's Rules functions
+# Rubin's Rules - pooling means
+rubin_mean <- function(average) {
+  Reduce("+", average) / length(average)
+}
+
+# Rubin's Rules - pooling SEs
+rubin_se <- function(average, standard_error) {
+  # Within imputation variance:
+  within_var <- Reduce("+", lapply(standard_error, function(i){i*i})) / length(standard_error)
+  # Between imputation variance:
+  between_var <- Reduce("+", lapply(average, function(i){(i-rubin_mean(average))*(i-rubin_mean(average))})) / (length(average)-1)
+  between_var2 <- between_var/ length(average)
+  # Total variance:
+  total_var <- within_var+between_var+between_var2
+  # Pooled SE:
+  sqrt(total_var)
+}
+
+
 # specify number of imputed datasets
 M <- 15
 ethnic_group <- c("All","Black","White","Hispanic")
-RESULTS <- data.frame(array(dim=c(length(ethnic_group),2)))
+RESULTS <- data.frame(array(dim=c(5*length(ethnic_group),2)))
 colnames(RESULTS) <- c("pooled.avg","pooled.se")
-rownames(RESULTS) <- ethnic_group
+RESULTS$Ethnicity <- rep(c("All","Black","White","Hispanic"),5)
+RESULTS$Model <- c(rep(c("Framingham"),length(ethnic_group)),
+                   rep(c("DESIR"),length(ethnic_group)),
+                   rep(c("EGATS"),length(ethnic_group)),
+                   rep(c("ARIC"),length(ethnic_group)),
+                   rep(c("Antonio"),length(ethnic_group)))
 
 for (ethn in ethnic_group) {
   
-  # create an empty table
-  MI <- data.frame(array(dim=c(M,2)))
-  rownames(MI) <- 1:M
-  colnames(MI) <- c("avg","se")
+  # create an table data frames for result collection
+  MI.Framingham <- data.frame(array(dim=c(M,2)))
+  rownames(MI.Framingham) <- 1:M
+  colnames(MI.Framingham) <- c("avg","se")
+  MI.DESIR <- data.frame(array(dim=c(M,2)))
+  rownames(MI.DESIR) <- 1:M
+  colnames(MI.DESIR) <- c("avg","se")
+  MI.EGATS <- data.frame(array(dim=c(M,2)))
+  rownames(MI.EGATS) <- 1:M
+  colnames(MI.EGATS) <- c("avg","se")
+  MI.ARIC <- data.frame(array(dim=c(M,2)))
+  rownames(MI.ARIC) <- 1:M
+  colnames(MI.ARIC) <- c("avg","se")
+  MI.Antonio <- data.frame(array(dim=c(M,2)))
+  rownames(MI.Antonio) <- 1:M
+  colnames(MI.Antonio) <- c("avg","se")
   
   for (m in 1:M) {
     
@@ -165,37 +202,43 @@ for (ethn in ethnic_group) {
     }
     
     # calculation of average predicted probabilities
-    pred.y <- svymean(~Risk_Framingham, sub.y)
+    pred.y.Framingham <- svymean(~Risk_Framingham, sub.y)
+    pred.y.DESIR <- svymean(~Risk_DESIR, sub.y)
+    pred.y.EGATS <- svymean(~Risk_EGATS, sub.y)
+    pred.y.ARIC <- svymean(~Risk_ARIC, sub.y)
+    pred.y.Antonio <- svymean(~Risk_Antonio, sub.y)
     
     # the output svystat object is weird and needs to be coerced 
     # in a data frame before extracting the relevant stats
-    MI[m,"avg"] <- as.numeric(as.data.frame(pred.y)[1])
-    MI[m,"se"] <- as.numeric(as.data.frame(pred.y)[2])
+    MI.Framingham[m,"avg"] <- as.numeric(as.data.frame(pred.y.Framingham)[1])
+    MI.Framingham[m,"se"] <- as.numeric(as.data.frame(pred.y.Framingham)[2])
+    MI.DESIR[m,"avg"] <- as.numeric(as.data.frame(pred.y.DESIR)[1])
+    MI.DESIR[m,"se"] <- as.numeric(as.data.frame(pred.y.DESIR)[2])
+    MI.EGATS[m,"avg"] <- as.numeric(as.data.frame(pred.y.EGATS)[1])
+    MI.EGATS[m,"se"] <- as.numeric(as.data.frame(pred.y.EGATS)[2])
+    MI.ARIC[m,"avg"] <- as.numeric(as.data.frame(pred.y.ARIC)[1])
+    MI.ARIC[m,"se"] <- as.numeric(as.data.frame(pred.y.ARIC)[2])
+    MI.Antonio[m,"avg"] <- as.numeric(as.data.frame(pred.y.Antonio)[1])
+    MI.Antonio[m,"se"] <- as.numeric(as.data.frame(pred.y.Antonio)[2])
     
   }
-
-  # Rubin's rules
-  # Pooling averages:
-  pool.avg.ethn <- Reduce("+", MI$avg) / length(MI$avg)
-
-  # Pooling standard errors:
-  within_var <- Reduce("+", lapply(MI$se, function(i){i*i})) / length(MI$se)
-  # Between imputation variance:
-  between_var <- Reduce("+", lapply(MI$avg, function(i){(i-pool.avg.ethn)*(i-pool.avg.ethn)})) / (length(MI$avg)-1)
-  between_var2 <- between_var/ length(MI$avg)
-  # Total variance:
-  total_var <- within_var+between_var+between_var2
-  # Pooled SE:
-  pool.se.ethn <- sqrt(total_var)
   
-  RESULTS[ethn,"pooled.avg"] <- pool.avg.ethn
-  RESULTS[ethn,"pooled.se"] <- pool.se.ethn 
+  # Rubin's rules, and assign to result collection df
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Framingham","pooled.avg"] <- rubin_mean(average = MI.Framingham$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Framingham","pooled.se"] <- rubin_se(average = MI.Framingham$avg, standard_error = MI.Framingham$se)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "DESIR","pooled.avg"] <- rubin_mean(average = MI.DESIR$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "DESIR","pooled.se"] <- rubin_se(average = MI.DESIR$avg, standard_error = MI.DESIR$se)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "EGATS","pooled.avg"] <- rubin_mean(average = MI.EGATS$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "EGATS","pooled.se"] <- rubin_se(average = MI.EGATS$avg, standard_error = MI.EGATS$se)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "ARIC","pooled.avg"] <- rubin_mean(average = MI.ARIC$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "ARIC","pooled.se"] <- rubin_se(average = MI.ARIC$avg, standard_error = MI.ARIC$se)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Antonio","pooled.avg"] <- rubin_mean(average = MI.Antonio$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Antonio","pooled.se"] <- rubin_se(average = MI.Antonio$avg, standard_error = MI.Antonio$se)
   
 }
     
 
 ### pick up from here and:
-### - code this for not only Framingham but for all risk models!
 ### - code this for all survey nr s!
 
 
