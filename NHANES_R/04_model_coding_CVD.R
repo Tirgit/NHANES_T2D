@@ -11,45 +11,85 @@ logit2prob <- function(logit){
 }
 
 # load example data
+
 imp1 <- readRDS("imputed_1999-2000_1.rds")
-  
+
 
 #############################
 ##### PCE (ASCVD) SCORE #####
 #############################
 
-imp1 <- imp1 |> 
-  mutate(Framingham = ifelse(glucose >= 5.55, 10, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(BMI >= 25 & BMI <30, 2, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(BMI >= 30, 5, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(gender == 'male' & HDL < 1.036, 5, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(gender == 'female' & HDL < 1.295, 5, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(famhist_T2D == 'family diabetes', 3, 0)) |> 
-  mutate(Framingham = Framingham + ifelse(TG >= 1.695, 3, 0 )) |> 
-  mutate(Framingham = Framingham + ifelse(SBP >= 130 | DBP >= 85 | now_BP_meds == 'BP meds', 2, 0)) |> 
-  mutate(Risk_Framingham = case_when(Framingham <= 10 ~ 3,
-                                     Framingham == 11 ~ 4,
-                                     Framingham == 12 ~ 4,
-                                     Framingham == 13 ~ 5,
-                                     Framingham == 14 ~ 6,
-                                     Framingham == 15 ~ 7,
-                                     Framingham == 16 ~ 9,
-                                     Framingham == 17 ~ 11,
-                                     Framingham == 18 ~ 13,
-                                     Framingham == 19 ~ 15,
-                                     Framingham == 20 ~ 18,
-                                     Framingham == 21 ~ 21,
-                                     Framingham == 22 ~ 25,
-                                     Framingham == 23 ~ 29,
-                                     Framingham == 24 ~ 33,
-                                     Framingham >= 25 ~ 35)) |> 
-  mutate(Risk_Framingham = Risk_Framingham * 0.01) |>
-  select(-Framingham)
+# The model is different for Whites and African Americans
 
+# We will split the data for Whites and African Americans
+
+imp1_whites <- imp1 |> 
+  filter(ethnicity == 'White')
+
+imp1_blacks <- imp1 |> 
+  filter(ethnicity == 'Black')
+
+
+# We can now proceed towards writing the model for each ethnicity defined
+
+
+imp1_whites <- imp1_whites |> 
+  mutate(Treated_Systolic_BP = ifelse(now_BP_meds == 'BP meds', SBP, 1)) |> 
+  mutate(Untreated_Systolic_BP = ifelse(now_BP_meds == 'no BP meds', SBP, 1)) |> 
+  mutate(smoker = ifelse(current_smoker == 'smoker', 1,0)) |> 
+  mutate(new_TC = 38.67 * TC, new_HDL = 38.67 * HDL) |> 
+  mutate(Risk_Sum = case_when(gender == 'female' ~ -29.799 * log(age) + 4.884 * (log(age)^2) + 
+                                          13.540 * log(new_TC) -3.114 * (log(age) * log(new_TC)) - 
+                                          13.578 * log(new_HDL) + 3.149 * (log(age) * log(new_HDL)) + 
+                                          2.019 *  log(Treated_Systolic_BP) + 1.957 * log(Untreated_Systolic_BP) +
+                                          7.574 * (smoker) -
+                                          1.665 * (log(age) * (smoker)) + 
+                                          0.661 * (diabetic == 'diabetes'),
+                               gender == 'male' ~ 12.344 * log(age) + 
+                                          11.853 * log(new_TC) -2.664 * (log(age) * log(new_TC)) - 
+                                          7.990 *  log(new_HDL) + 1.769 * (log(age) * log(new_HDL)) + 
+                                          1.797 *  log(Treated_Systolic_BP) + 1.764 * log(Untreated_Systolic_BP) +
+                                          7.837 * (smoker) -
+                                          1.795 * (log(age) * (smoker)) + 
+                                          0.658 * (diabetic == 'diabetes')),
+         PCE_Risk = case_when(gender == 'female' ~ 1 - (0.9665)^exp(Risk_Sum + 29.18),
+                              gender == 'male'   ~ 1 - (0.9144)^exp(Risk_Sum - 61.18))) 
+                              
+
+imp1_blacks <- imp1_blacks |> 
+  mutate(Treated_Systolic_BP = ifelse(now_BP_meds == 'BP meds', SBP, 1)) |> 
+  mutate(Untreated_Systolic_BP = ifelse(now_BP_meds == 'no BP meds', SBP, 1)) |> 
+  mutate(smoker = ifelse(current_smoker == 'smoker', 1,0)) |> 
+  mutate(new_TC = 38.67 * TC, new_HDL = 38.67 * HDL) |>
+  mutate(Risk_Sum = case_when(gender == 'female' ~ 17.114 * log(age) + 
+                                0.940 * log(new_TC) - 
+                                18.920 * log(new_HDL) + 4.475 * (log(age) * log(new_HDL)) + 
+                                29.291 *  log(Treated_Systolic_BP) -6.432 * (log(age) * log(Treated_Systolic_BP)) + 
+                                27.820 * log(Untreated_Systolic_BP) -6.087 * (log(age)* log(Untreated_Systolic_BP))+
+                                0.691 * (smoker) +
+                                0.874 * (diabetic == 'diabetes'),
+                              gender == 'male' ~ 2.469 * log(age) + 
+                                0.302 * log(new_TC) - 
+                                0.307 *  log(new_HDL) +
+                                1.916 *  log(Treated_Systolic_BP) + 1.809 * log(Untreated_Systolic_BP) +
+                                0.549 * (smoker) +
+                                0.645 * (diabetic == 'diabetes')),
+         PCE_Risk = case_when(gender == 'female' ~ 1 - (0.9553)^exp(Risk_Sum - 86.61),
+                              gender == 'male'   ~ 1 - (0.8954)^exp(Risk_Sum - 19.54))) 
+        
+
+
+# Merge these two data frames
+
+imp_merged <- bind_rows(imp1_whites,imp1_blacks)
+
+
+# We need to figure out what to do with the rest of the ethnicities
 
 #################################
 ##### FRAMINGHAM RISK SCORE #####
 #################################
+
 # HDL mg/dL to mmol/L = #0.0259
 # TC mg/dL to mmol/L = #0.0259
 
@@ -177,6 +217,7 @@ imp1$Risk_Framingham_men <- NULL
 imp1$Risk_Framingham_women <- NULL
 
 
+
 #################################
 ##### SCORE RISK ESTIMATION #####
 #################################
@@ -211,5 +252,8 @@ imp1 <- imp1 |>
          -w_chd, -w_noncvd_chd, -sage_chd, -sage10_chd,
          -sage_noncvd_chd, -sage10_noncvd_chd, -s10age_chd, -s10age_noncvd_chd,
          -risk10_chd, -risk10_noncvd_chd)
-  
+
+
+
+
 
