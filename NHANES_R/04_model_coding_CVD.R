@@ -53,19 +53,42 @@ imp1 <- imp1 |>
 
 xxxxx
 
-###############################
-##### REYNOLDS RISK SCORE #####
-###############################
 
-xxxxx
 
 #################################
 ##### SCORE RISK ESTIMATION #####
 #################################
 
-xxxxx
+# age needs to be more than 20
+imp1 <- imp1[imp1$age > 20,]
 
-
-
-
+imp1 <- imp1 |> 
+  mutate(alpha_chd = ifelse(gender == "female", -28.7, -21.0)) |>
+  mutate(p_chd = ifelse(gender == "female", 6.23, 4.62)) |>
+  mutate(s0age_chd = exp(-(exp(alpha_chd))*(age-20)^p_chd)) |>
+  mutate(s0age10_chd = exp(-(exp(alpha_chd))*(age-10)^p_chd)) |>
+  mutate(alpha_noncvd_chd = ifelse(gender == "female", -30.0, -25.7)) |>
+  mutate(p_noncvd_chd = ifelse(gender == "female", 6.42, 5.47)) |>
+  mutate(s0age_noncvd_chd = exp(-(exp(alpha_noncvd_chd))*(age-20)^p_noncvd_chd)) |>
+  mutate(s0age10_noncvd_chd = exp(-(exp(alpha_noncvd_chd))*(age-10)^p_noncvd_chd)) |>
+  mutate(w_chd = 0.24*(TC-6)+0.018*(SBP-120)) |>
+  mutate(w_chd = w_chd + ifelse(current_smoker == "smoker", 0.71, 0)) |>
+  mutate(w_noncvd_chd = 0.02*(TC-6)+0.022*(SBP-120)) |>
+  mutate(w_noncvd_chd = w_noncvd_chd + ifelse(current_smoker == "smoker", 0.63, 0)) |>
+  mutate(sage_chd = s0age_chd^exp(w_chd)) |>
+  mutate(sage10_chd = s0age10_chd^exp(w_chd)) |>
+  mutate(sage_noncvd_chd = s0age_noncvd_chd^exp(w_noncvd_chd)) |>
+  mutate(sage10_noncvd_chd = s0age10_noncvd_chd^exp(w_noncvd_chd)) |>
+  mutate(s10age_chd = sage10_chd/sage_chd) |>
+  mutate(s10age_noncvd_chd = sage10_noncvd_chd/sage_noncvd_chd) |>
+  mutate(risk10_chd = 1-s10age_chd) |>
+  mutate(risk10_noncvd_chd = 1-s10age_noncvd_chd) |>
+  mutate(SCORE_Risk = risk10_chd+risk10_noncvd_chd) |>
+  select(-alpha_chd, -p_chd, -s0age_chd, -s0age10_chd,
+         -alpha_noncvd_chd, -p_noncvd_chd, -s0age_noncvd_chd, -s0age10_noncvd_chd,
+         -w_chd, -w_noncvd_chd, -sage_chd, -sage10_chd,
+         -sage_noncvd_chd, -sage10_noncvd_chd, -s10age_chd, -s10age_noncvd_chd,
+         -risk10_chd, -risk10_noncvd_chd)
+  
+  
 
