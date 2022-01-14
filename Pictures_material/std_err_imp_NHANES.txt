@@ -1,0 +1,53 @@
+# How to calculate the weighted average prob and the corresponding standard error:
+https://wwwn.cdc.gov/nchs/nhanes/tutorials/module4.aspx
+
+library(mice)
+library(survey)
+
+
+# suppose "data.y" is the name of the dataset for a specific 2-year cycle (e.g. 1999-2000)
+M <- 5    #M is the total number of imputed datasets
+data.imp.y <- mice(data.y,M) 
+
+ETHNICITY <- c("black","white","hispanic")
+
+#create an empty table to fill up
+RESULTS <- data.frame(array(dim=c(length(ETHNICITY),2)))
+colnames(RESULTS) <- c("pooled.avg","pooled.se")
+rownames(RESULTS) <- ETHNICITY
+
+for (ethn in ETHNICITY)
+{
+#create an empty table
+MI <- data.frame(array(dim=c(2,M) ) )
+rownames(MI) <- 1:M
+colnames(MI) <- c("avg","se")
+ 
+
+ for(m in 1:M) 
+ {
+ ds.y <- data.imp.y[m]
+ nhanes.y <- svydesign(data=ds.y, id=~SDMVPSU, strata=~SDMVSTRA, weights=~wtsaf2yr, nest=TRUE)
+	#SDMVPSU: is the primary sampling unit
+	#SDMVSTRA: is the sampling strata
+	#wtsaf2yr: the sampling weights for 2years (we will use these, and not the 4years "wtsaf4yr", if we separate the analysis by 2-year cycles (1999-2000; 2001-2002; etc.)
+
+
+ sub.y <- subset(nhanes.y, ethnicity==ethn & diabetes=="no") #restrict the analysis only to non-diabetic and to the specific ethnicity
+ pred.y <- svymean(~pred.prob, sub.y)
+	#pred.prob: is the name of the variable for the predicted probability
+ 
+ #pred.y contains the weighted predicted prob and the standard error
+ avg <- pred.y$... #suppose "avg" is the weighted predicted prob extracted from pred.y
+ se <- pred.y$... #suppose "se" is the standard extracted from pred.y
+ MI[m,"avg"] <- avg
+ MI[m,"se"] <- se
+ }
+
+#use Rubin's rule
+#pool MI[,"avg"] over all M and return "pool.avg.ethn"
+#pool MI[,"se"] over all M and return "pool.se.ethn"
+
+RESULTS[ethn,"pooled.avg"] <- "pool.avg.ethn"
+RESULTS[ethn,"pooled.se"] <- "pool.se.ethn"
+}
