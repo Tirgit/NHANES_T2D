@@ -1,5 +1,5 @@
 # Set working directory
-setwd("~/GitHub/NHANES_T2D")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(readxl)
@@ -7,7 +7,7 @@ library(ggplot2)
 library(reshape2)
 
 # load results from NHANES
-result_df <- readRDS("NHANES_R/result_df.rds")
+result_df <- readRDS("RESULTS_df.rds")
 result_df$baseline_year <- NULL
 
 # load incidence rates / 1000
