@@ -5,6 +5,7 @@ setwd("~/GitHub/NHANES_T2D/Data")
 library(readxl)
 library(ggplot2)
 library(reshape2)
+library(tidyverse)
 
 # load results from NHANES
 result_df <- readRDS("RESULTS_df.rds")
@@ -13,15 +14,8 @@ result_df$baseline_year <- NULL
 # load incidence rates / 1000
 diab_incidence <- read_xlsx("~/GitHub/NHANES_T2D/Data/diab_incidence.xlsx")
 
-#####################################################
-############### Start of Alex's Coding ##############
-#####################################################
-
 # Calculate SEs from the diab_incidence data frame
-
 # SE = (UL - mean) / 1.96
-
-library(tidyverse)
 
 diab_incidence <- diab_incidence |> 
   mutate(SE_all = (All_uCI - All) / 1.96,
@@ -32,6 +26,7 @@ diab_incidence <- diab_incidence |>
          Variance_Hispanic = SE_Hispanic^2,
          Variance_White = SE_White^2,
          Variance_Black = SE_Black^2)
+
 
 # FRAMINGHAM, SAN ANTONIO: EIGHT YEAR INCIDENCES
 # 2007 - 2018 cumulative incidences:
@@ -47,7 +42,6 @@ white_inc_var <- c()
 black_inc_var <- c()
 
 # For the cumulative incidence 8-years
-
 for (i in 0:11) {
   all_inc <- c(all_inc, sum(diab_incidence[(1+i):(8+i),2]))
   hispanic_inc <- c(hispanic_inc, sum(diab_incidence[(1+i):(8+i),4]))
@@ -55,10 +49,7 @@ for (i in 0:11) {
   black_inc <- c(black_inc, sum(diab_incidence[(1+i):(8+i),8]))
 }
 
-cbind()
-
 # For the standard errors 8-years (calculate the 1.96 * SE)
-
 for (i in 0:11) {
   all_inc_var <- c(all_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(8+i),14])))
   hispanic_inc_var <- c(hispanic_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(8+i),15])))
@@ -68,89 +59,53 @@ for (i in 0:11) {
 
 
 # Assign a new data frame with both the cumulative incidence and the bounds
-
 all_inc_new <- as.data.frame(cbind(all_inc, all_inc_var))
-
 hispanic_inc_new <- as.data.frame(cbind(hispanic_inc, hispanic_inc_var))
-
 white_inc_new <- as.data.frame(cbind(white_inc, white_inc_var))
-
 black_inc_new <- as.data.frame(cbind(black_inc, black_inc_var))
-
 
 # Rename the columns and calculate the confidence intervals now
 
 # For everyone
-
 all_inc_new <- all_inc_new |> 
   rename(Cumulative_Incidence = 'all_inc', Bound = 'all_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'All') 
-
 all_inc_new$Ethnicity <- as.factor(all_inc_new$Ethnicity)
 
 # For Hispanics
-
 hispanic_inc_new <- hispanic_inc_new |> 
   rename(Cumulative_Incidence = 'hispanic_inc', Bound = 'hispanic_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Hispanic')
-
 hispanic_inc_new$Ethnicity <- as.factor(hispanic_inc_new$Ethnicity)
 
-
 # For Whites
-
 white_inc_new <- white_inc_new |> 
   rename(Cumulative_Incidence = 'white_inc', Bound = 'white_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'White')
-
 white_inc_new$Ethnicity <- as.factor(white_inc_new$Ethnicity)
 
 # For Blacks
-
 black_inc_new <- black_inc_new |> 
   rename(Cumulative_Incidence = 'black_inc', Bound = 'black_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Black')
-
 black_inc_new$Ethnicity <- as.factor(black_inc_new$Ethnicity)
 
-
 # We can merge the dataframes now
-
 incidence_8year <- bind_rows(all_inc_new, hispanic_inc_new, white_inc_new, black_inc_new)
-
 incidence_8year <- incidence_8year |> rename(Incidence_8year = 'Cumulative_Incidence')
-
-##############################################
-#############End of Alex's Coding ############
-##############################################
-
-length_inc <- length(all_inc)*4
-# generate result dataframe
-model_vals <- rep("8-yr-incidence",length_inc)
-year_vals <- rep(2007:2018,4)
-ethnicity_vals <- c(rep("All",12),rep("Hispanic",12),rep("White",12),rep("Black",12))
-eight_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,black_inc),
-                                 model = model_vals,
-                                 ethnicity = ethnicity_vals,
-                                 year = year_vals))
-eight_yr_inc$avg_pred <- as.numeric(eight_yr_inc$avg_pred)
-eight_yr_inc$year <- as.numeric(eight_yr_inc$year)
 
 
 # DESIR, ARIC: NINE YEAR INCIDENCES
 # 2008 - 2018 cumulative incidences:
 
-#######################################
-##### Start of Alex's Coding ##########
-#######################################
 
 all_inc <- c()
 hispanic_inc <- c()
@@ -163,7 +118,6 @@ white_inc_var <- c()
 black_inc_var <- c()
 
 # For the cumulative incidence 9-years
-
 for (i in 0:10) {
   all_inc <- c(all_inc, sum(diab_incidence[(1+i):(9+i),2]))
   hispanic_inc <- c(hispanic_inc, sum(diab_incidence[(1+i):(9+i),4]))
@@ -171,10 +125,8 @@ for (i in 0:10) {
   black_inc <- c(black_inc, sum(diab_incidence[(1+i):(9+i),8]))
 }
 
-cbind()
 
 # For the standard errors 9-years (calculate the 1.96 * SE)
-
 for (i in 0:10) {
   all_inc_var <- c(all_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(9+i),14])))
   hispanic_inc_var <- c(hispanic_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(9+i),15])))
@@ -184,92 +136,54 @@ for (i in 0:10) {
 
 
 # Assign a new data frame with both the cumulative incidence and the bounds
-
 all_inc_new <- as.data.frame(cbind(all_inc, all_inc_var))
-
 hispanic_inc_new <- as.data.frame(cbind(hispanic_inc, hispanic_inc_var))
-
 white_inc_new <- as.data.frame(cbind(white_inc, white_inc_var))
-
 black_inc_new <- as.data.frame(cbind(black_inc, black_inc_var))
 
 
 # Rename the columns and calculate the confidence intervals now
 
 # For everyone
-
 all_inc_new <- all_inc_new |> 
   rename(Cumulative_Incidence = 'all_inc', Bound = 'all_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'All') 
-
 all_inc_new$Ethnicity <- as.factor(all_inc_new$Ethnicity)
 
 # For Hispanics
-
 hispanic_inc_new <- hispanic_inc_new |> 
   rename(Cumulative_Incidence = 'hispanic_inc', Bound = 'hispanic_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Hispanic')
-
 hispanic_inc_new$Ethnicity <- as.factor(hispanic_inc_new$Ethnicity)
 
-
 # For Whites
-
 white_inc_new <- white_inc_new |> 
   rename(Cumulative_Incidence = 'white_inc', Bound = 'white_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'White')
-
 white_inc_new$Ethnicity <- as.factor(white_inc_new$Ethnicity)
 
 # For Blacks
-
 black_inc_new <- black_inc_new |> 
   rename(Cumulative_Incidence = 'black_inc', Bound = 'black_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Black')
-
 black_inc_new$Ethnicity <- as.factor(black_inc_new$Ethnicity)
 
 
 # We can merge the dataframes now
-
 incidence_9year <- bind_rows(all_inc_new, hispanic_inc_new, white_inc_new, black_inc_new)
-
 incidence_9year <- incidence_9year |> rename(Incidence_9year = 'Cumulative_Incidence')
-
-##############################################
-#############End of Alex's Coding ############
-##############################################
-
-
-length_inc <- length(all_inc)*4
-# generate result dataframe
-model_vals <- rep("9-yr-incidence",length_inc)
-year_vals <- rep(2008:2018,4)
-ethnicity_vals <- c(rep("All",11),rep("Hispanic",11),rep("White",11),rep("Black",11))
-nine_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,black_inc),
-                                    model = model_vals,
-                                    ethnicity = ethnicity_vals,
-                                    year = year_vals))
-nine_yr_inc$avg_pred <- as.numeric(nine_yr_inc$avg_pred)
-nine_yr_inc$year <- as.numeric(nine_yr_inc$year)
-
 
 
 # EGATS: TWELVE YEAR INCIDENCES
 # 2008 - 2018 cumulative incidences:
-
-
-#######################################
-##### Start of Alex's Coding ##########
-#######################################
 
 all_inc <- c()
 hispanic_inc <- c()
@@ -282,7 +196,6 @@ white_inc_var <- c()
 black_inc_var <- c()
 
 # For the cumulative incidence 12-years
-
 for (i in 0:7) {
   all_inc <- c(all_inc, sum(diab_incidence[(1+i):(12+i),2]))
   hispanic_inc <- c(hispanic_inc, sum(diab_incidence[(1+i):(12+i),4]))
@@ -290,10 +203,8 @@ for (i in 0:7) {
   black_inc <- c(black_inc, sum(diab_incidence[(1+i):(12+i),8]))
 }
 
-cbind()
 
 # For the standard errors 12-years (calculate the 1.96 * SE)
-
 for (i in 0:7) {
   all_inc_var <- c(all_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(12+i),14])))
   hispanic_inc_var <- c(hispanic_inc_var, 1.96 * sqrt(sum(diab_incidence[(1+i):(12+i),15])))
@@ -303,85 +214,63 @@ for (i in 0:7) {
 
 
 # Assign a new data frame with both the cumulative incidence and the bounds
-
 all_inc_new <- as.data.frame(cbind(all_inc, all_inc_var))
-
 hispanic_inc_new <- as.data.frame(cbind(hispanic_inc, hispanic_inc_var))
-
 white_inc_new <- as.data.frame(cbind(white_inc, white_inc_var))
-
 black_inc_new <- as.data.frame(cbind(black_inc, black_inc_var))
-
 
 # Rename the columns and calculate the confidence intervals now
 
 # For everyone
-
 all_inc_new <- all_inc_new |> 
   rename(Cumulative_Incidence = 'all_inc', Bound = 'all_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'All') 
-
 all_inc_new$Ethnicity <- as.factor(all_inc_new$Ethnicity)
 
 # For Hispanics
-
 hispanic_inc_new <- hispanic_inc_new |> 
   rename(Cumulative_Incidence = 'hispanic_inc', Bound = 'hispanic_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Hispanic')
-
 hispanic_inc_new$Ethnicity <- as.factor(hispanic_inc_new$Ethnicity)
 
-
 # For Whites
-
 white_inc_new <- white_inc_new |> 
   rename(Cumulative_Incidence = 'white_inc', Bound = 'white_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'White')
-
 white_inc_new$Ethnicity <- as.factor(white_inc_new$Ethnicity)
 
 # For Blacks
-
 black_inc_new <- black_inc_new |> 
   rename(Cumulative_Incidence = 'black_inc', Bound = 'black_inc_var') |> 
   mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
   select(-Bound) |> 
   mutate(Ethnicity = 'Black')
-
 black_inc_new$Ethnicity <- as.factor(black_inc_new$Ethnicity)
 
 
 # We can merge the dataframes now
-
 incidence_12year <- bind_rows(all_inc_new, hispanic_inc_new, white_inc_new, black_inc_new)
-
 incidence_12year <- incidence_12year |> rename(Incidence_12year = 'Cumulative_Incidence')
 
 
-# Hence we have 3 dataframes incidence_8year, incidence_9year and incidence_12year
 
-##############################################
-#############End of Alex's Coding ############
-##############################################
+# START FROM HERE:
 
 
-length_inc <- length(all_inc)*4
-# generate result dataframe
-model_vals <- rep("12-yr-incidence",length_inc)
-year_vals <- rep(2011:2018,4)
-ethnicity_vals <- c(rep("All",8),rep("Hispanic",8),rep("White",8),rep("Black",8))
-twelve_yr_inc <- as.data.frame(cbind(avg_pred = c(all_inc,hispanic_inc,white_inc,black_inc),
-                                   model = model_vals,
-                                   ethnicity = ethnicity_vals,
-                                   year = year_vals))
-twelve_yr_inc$avg_pred <- as.numeric(twelve_yr_inc$avg_pred)
-twelve_yr_inc$year <- as.numeric(twelve_yr_inc$year)
+# add column: name of "model", e.g 8-year cumulative incidence
+# add column: year the number is applicable for.
+incidence_8year
+incidence_9year
+incidence_12year
+
+# merge with result_df
+result_df
 
 
 # merge observed with calculated incidences
