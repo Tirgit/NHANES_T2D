@@ -256,7 +256,7 @@ RESULTS_df <- do.call("rbind", RESULTS_list)
 
 # add baseline years
 L <- nrow(RESULTS)
-year_vals <- rep(c(rep(1999,L),rep(2001,L),rep(2003,L),rep(2005,L),rep(2007,L),rep(2009,L),rep(2011,L),rep(2013,L),rep(2015,L),rep(2017,L)),L)
+year_vals <- c(rep(1999,L),rep(2001,L),rep(2003,L),rep(2005,L),rep(2007,L),rep(2009,L),rep(2011,L),rep(2013,L),rep(2015,L),rep(2017,L))
 
 RESULTS_df <- as.data.frame(cbind(RESULTS_df,
                                  baseline_year = year_vals))

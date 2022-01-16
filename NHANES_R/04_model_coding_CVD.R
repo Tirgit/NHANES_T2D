@@ -20,20 +20,9 @@ imp1 <- readRDS("imputed_1999-2000_1.rds")
 #############################
 
 # The model is different for Whites and African Americans
-
-# We will split the data for Whites and African Americans
-
-imp1_whites <- imp1 |> 
-  filter(ethnicity == 'White')
-
-imp1_blacks <- imp1 |> 
-  filter(ethnicity == 'Black')
-
-
 # We can now proceed towards writing the model for each ethnicity defined
 
-
-imp1_whites <- imp1_whites |> 
+imp1 <- imp1 |> 
   mutate(Treated_Systolic_BP = ifelse(now_BP_meds == 'BP meds', SBP, 1)) |> 
   mutate(Untreated_Systolic_BP = ifelse(now_BP_meds == 'no BP meds', SBP, 1)) |> 
   mutate(smoker = ifelse(current_smoker == 'smoker', 1,0)) |> 
@@ -52,11 +41,11 @@ imp1_whites <- imp1_whites |>
                                           7.837 * (smoker) -
                                           1.795 * (log(age) * (smoker)) + 
                                           0.658 * (diabetic == 'diabetes')),
-         PCE_Risk = case_when(gender == 'female' ~ 1 - (0.9665)^exp(Risk_Sum + 29.18),
+         PCE_Risk_white = case_when(gender == 'female' ~ 1 - (0.9665)^exp(Risk_Sum + 29.18),
                               gender == 'male'   ~ 1 - (0.9144)^exp(Risk_Sum - 61.18))) 
                               
 
-imp1_blacks <- imp1_blacks |> 
+imp1 <- imp1 |> 
   mutate(Treated_Systolic_BP = ifelse(now_BP_meds == 'BP meds', SBP, 1)) |> 
   mutate(Untreated_Systolic_BP = ifelse(now_BP_meds == 'no BP meds', SBP, 1)) |> 
   mutate(smoker = ifelse(current_smoker == 'smoker', 1,0)) |> 
@@ -74,17 +63,18 @@ imp1_blacks <- imp1_blacks |>
                                 1.916 *  log(Treated_Systolic_BP) + 1.809 * log(Untreated_Systolic_BP) +
                                 0.549 * (smoker) +
                                 0.645 * (diabetic == 'diabetes')),
-         PCE_Risk = case_when(gender == 'female' ~ 1 - (0.9553)^exp(Risk_Sum - 86.61),
+         PCE_Risk_black = case_when(gender == 'female' ~ 1 - (0.9553)^exp(Risk_Sum - 86.61),
                               gender == 'male'   ~ 1 - (0.8954)^exp(Risk_Sum - 19.54))) 
         
 
+imp1$Risk_PCE <- 0
+# for now, score for Whites are assigned to all participants who are not Black
+imp1$Risk_PCE[imp1$ethnicity != "Black"] <- imp1$PCE_Risk_white[imp1$ethnicity != "Black"] 
+imp1$Risk_PCE[imp1$ethnicity == "Black"] <- imp1$PCE_Risk_black[imp1$ethnicity == "Black"] 
 
-# Merge these two data frames
+imp1$PCE_Risk_white <- NULL
+imp1$PCE_Risk_black <- NULL
 
-imp_merged <- bind_rows(imp1_whites,imp1_blacks)
-
-
-# We need to figure out what to do with the rest of the ethnicities
 
 #################################
 ##### FRAMINGHAM RISK SCORE #####
