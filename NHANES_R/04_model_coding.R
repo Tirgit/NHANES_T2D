@@ -263,7 +263,7 @@ RESULTS_df <- as.data.frame(cbind(RESULTS_df,
 
 # add model follow up times
 RESULTS_df$year <- NA
-RESULTS_df$year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "San Antonio"] + 8
+RESULTS_df$year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] + 8
 RESULTS_df$year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] + 9
 RESULTS_df$year[RESULTS_df$Model == "EGATS"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "EGATS"] + 12
 
