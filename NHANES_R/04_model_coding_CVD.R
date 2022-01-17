@@ -251,8 +251,8 @@ for (i in 1:length(surveys)) {
                                            Framingham == 15 ~ 21.6,
                                            Framingham == 16 ~ 25.3,
                                            Framingham == 17 ~ 29.4,
-                                           Framingham == 18 ~ 30)) |> 
-        mutate(Risk_Framingham_men = Risk_Framingham * 0.01) |>
+                                           Framingham >= 18 ~ 30)) |> 
+        mutate(Risk_Framingham_men = Risk_Framingham * 0.01)  |>
         select(-Framingham, -Risk_Framingham)
       
       imp1$Risk_Framingham <- 0
@@ -303,9 +303,12 @@ for (i in 1:length(surveys)) {
       nhanes.y <- svydesign(data=imp1, id=~SDMVPSU, strata=~SDMVSTRA, weights=~survey_weight, nest=TRUE)
       
       # subsetting data
-      # MODIFY: add line for ALL (if else loop as in T2D script)
-      sub.y <- subset(nhanes.y, ethnicity == ethn & imp1$age>=40)
-        
+      if (ethn == "All") {
+        sub.y <- subset(nhanes.y, imp1$age>=40) 
+      } else {
+        sub.y <- subset(nhanes.y, ethnicity == ethn & imp1$age>=40) 
+      }
+
       # calculation of average predicted probabilities
       pred.y.PCE <- svymean(~Risk_PCE, sub.y)
       pred.y.Framingham <- svymean(~Risk_Framingham, sub.y)
@@ -336,7 +339,6 @@ for (i in 1:length(surveys)) {
   
 }
 
-# MODIFY: check what is wrong with Framingham!
 # rbinding results from each survey year
 RESULTS_df <- do.call("rbind", RESULTS_list)
 
@@ -353,35 +355,6 @@ RESULTS_df$year <- RESULTS_df$baseline_year + 10
 
 # save results
 saveRDS(RESULTS_df, "RESULTS_df_CVD.rds")
-
-
-
-
-
-
-
-#############################
-##### PCE (ASCVD) SCORE #####
-#############################
-
-
-
-#################################
-##### FRAMINGHAM RISK SCORE #####
-#################################
-
-
-
-
-#################################
-##### SCORE RISK ESTIMATION #####
-#################################
-
-# age needs to be more than 20
-imp1 <- imp1[imp1$age > 20,]
-
-
-
 
 
 
