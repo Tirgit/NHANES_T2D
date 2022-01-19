@@ -297,6 +297,16 @@ colnames(incidence_12year) <- c("estimate","estimate_lCI",
 # merge observed with calculated incidences
 df <- rbind(result_df, incidence_8year, incidence_9year, incidence_12year)
 
+
+
+
+########################################
+########################################
+############### PLOTTING ###############
+########################################
+########################################
+
+
 # directory to Plots
 setwd("~/GitHub/NHANES_T2D/Plots")
 
@@ -315,7 +325,8 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         strip.text = element_text(size=rel(2)),
         axis.title.x = element_text(size=rel(2)),
         axis.title.y = element_text(size=rel(2)),
-        legend.position = "none") + 
+        legend.title = element_text(size=rel(2)),
+        legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
   ylab("APP & cumulative incidence") +
@@ -352,85 +363,112 @@ dev.off()
 
 # visualization San Antonio
 df_model <- df[df$Model == "Antonio" | df$Model == "8-yr-incidence",]
-
-p <- ggplot(df_model, aes(x=year, y=estimate, col=Model)) +
-  geom_point() +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI)) +
-  facet_grid(~Ethnicity) +
-  theme_minimal()
-
-png("SanAntonio_pred.png", width = 600, height = 300)
-p
-dev.off()
-
 valid_years <- c(2007,2009,2011,2013,2015,2017)
 df_y <- df_model[df_model$year %in% valid_years,]
-df_y_wide <- reshape(df_y, direction = "wide",
-                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
-df_y_wide$diff <- df_y_wide$estimate.Antonio - df_y_wide$`estimate.8-yr-incidence`
-df_y_wide$ratio <- df_y_wide$estimate.Antonio / df_y_wide$`estimate.8-yr-incidence`
 
-p <- ggplot(df_y_wide, aes(x=year, y=diff, col=Ethnicity)) +
-  geom_point() +
-  geom_hline(yintercept=c(0), linetype='dashed') +
-  ylab("Delta predicted score") +
-  scale_x_continuous(breaks = valid_years) +
-  theme_minimal()
 
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point() +
-  geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("Ratio predicted score") +
-  scale_x_continuous(breaks = valid_years) +
-  theme_minimal()
+p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1) +
+  facet_grid(~Ethnicity) +
+  theme_minimal() +    
+  theme(axis.text.y=element_text(size=rel(2)),
+        axis.text.x=element_text(size=rel(2), angle=45),
+        strip.text = element_text(size=rel(2)),
+        axis.title.x = element_text(size=rel(2)),
+        axis.title.y = element_text(size=rel(2)),
+        legend.title = element_text(size=rel(2)),
+        legend.text = element_text(size=rel(2))) + 
+  scale_x_continuous(breaks=valid_years) +
+  xlab("Year") + 
+  ylab("APP & cumulative incidence") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
-png("SanAntonio_diff.png", width = 600, height = 300)
+png("SanAntonio_pred.png", width = 1200, height = 600)
 p
 dev.off()
-png("SanAntonio_ratio.png", width = 600, height = 300)
+
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
+df_y_wide$ratio <- df_y_wide$estimate.Antonio / df_y_wide$`estimate.8-yr-incidence`
+
+ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+  geom_point(size = 4) +
+  geom_hline(yintercept=c(1), linetype='dashed') +
+  ylab("APP / cumulative incidence") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal() +
+  theme(axis.text.y=element_text(size=rel(2)),
+        axis.text.x=element_text(size=rel(2), angle=45),
+        axis.title.x = element_text(size=rel(2)),
+        axis.title.y = element_text(size=rel(2)),
+        legend.title = element_text(size=rel(2)),
+        legend.text = element_text(size=rel(2))) + 
+  xlab("Year") + 
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+
+png("SanAntonio_ratio.png", width = 1200, height = 600)
 q
 dev.off()
+
 
 # visualization ARIC
 df_model <- df[df$Model == "ARIC" | df$Model == "9-yr-incidence",]
-
-p <- ggplot(df_model, aes(x=year, y=estimate, col=Model)) +
-  geom_point() +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI)) +
-  facet_grid(~Ethnicity) +
-  theme_minimal()
-
-png("ARIC_pred.png", width = 600, height = 300)
-p
-dev.off()
-
 valid_years <- c(2008,2010,2012,2014,2016,2018)
 df_y <- df_model[df_model$year %in% valid_years,]
-df_y_wide <- reshape(df_y, direction = "wide",
-                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
-df_y_wide$diff <- df_y_wide$estimate.ARIC - df_y_wide$`estimate.9-yr-incidence`
-df_y_wide$ratio <- df_y_wide$estimate.ARIC / df_y_wide$`estimate.9-yr-incidence`
 
-p <- ggplot(df_y_wide, aes(x=year, y=diff, col=Ethnicity)) +
-  geom_point() +
-  geom_hline(yintercept=c(0), linetype='dashed') +
-  ylab("Delta predicted score") +
-  scale_x_continuous(breaks = valid_years) +
-  theme_minimal()
 
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point() +
-  geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("Ratio predicted score") +
-  scale_x_continuous(breaks = valid_years) +
-  theme_minimal()
+p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1) +
+  facet_grid(~Ethnicity) +
+  theme_minimal() +    
+  theme(axis.text.y=element_text(size=rel(2)),
+        axis.text.x=element_text(size=rel(2), angle=45),
+        strip.text = element_text(size=rel(2)),
+        axis.title.x = element_text(size=rel(2)),
+        axis.title.y = element_text(size=rel(2)),
+        legend.title = element_text(size=rel(2)),
+        legend.text = element_text(size=rel(2))) + 
+  scale_x_continuous(breaks=valid_years) +
+  xlab("Year") + 
+  ylab("APP & cumulative incidence") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
-png("ARIC_diff.png", width = 600, height = 300)
+png("ARIC_pred.png", width = 1200, height = 600)
 p
 dev.off()
-png("ARIC_ratio.png", width = 600, height = 300)
+
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
+df_y_wide$ratio <- df_y_wide$estimate.ARIC / df_y_wide$`estimate.9-yr-incidence`
+
+ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+  geom_point(size = 4) +
+  geom_hline(yintercept=c(1), linetype='dashed') +
+  ylab("APP / cumulative incidence") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal() +
+  theme(axis.text.y=element_text(size=rel(2)),
+        axis.text.x=element_text(size=rel(2), angle=45),
+        axis.title.x = element_text(size=rel(2)),
+        axis.title.y = element_text(size=rel(2)),
+        legend.title = element_text(size=rel(2)),
+        legend.text = element_text(size=rel(2))) + 
+  xlab("Year") + 
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+
+
+png("ARIC_ratio.png", width = 1200, height = 600)
 q
 dev.off()
+
+
+
+
+
+
+
 
 # # visualization DESIR
 # df_model <- df[df$Model == "DESIR" | df$Model == "9-yr-incidence",]
@@ -441,7 +479,7 @@ dev.off()
 #   facet_grid(~Ethnicity) +
 #   theme_minimal()
 # 
-# png("DESIR_pred.png", width = 600, height = 300)
+# png("DESIR_pred.png", width = 1200, height = 600)
 # p
 # dev.off()
 # 
@@ -466,10 +504,10 @@ dev.off()
 #   scale_x_continuous(breaks = valid_years) +
 #   theme_minimal()
 # 
-# png("DESIR_diff.png", width = 600, height = 300)
+# png("DESIR_diff.png", width = 1200, height = 600)
 # p
 # dev.off()
-# png("DESIR_ratio.png", width = 600, height = 300)
+# png("DESIR_ratio.png", width = 1200, height = 600)
 # q
 # dev.off()
 # 
@@ -482,7 +520,7 @@ dev.off()
 #   facet_grid(~Ethnicity) +
 #   theme_minimal()
 # 
-# png("EGATS_pred.png", width = 600, height = 300)
+# png("EGATS_pred.png", width = 1200, height = 600)
 # p
 # dev.off()
 # 
@@ -507,9 +545,9 @@ dev.off()
 #   scale_x_continuous(breaks = valid_years) +
 #   theme_minimal()
 # 
-# png("EGATS_diff.png", width = 600, height = 300)
+# png("EGATS_diff.png", width = 1200, height = 600)
 # p
 # dev.off()
-# png("EGATS_ratio.png", width = 600, height = 300)
+# png("EGATS_ratio.png", width = 1200, height = 600)
 # q
 # dev.off()
