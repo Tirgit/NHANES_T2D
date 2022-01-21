@@ -9,7 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 # Load the full non-imputed dataset (Imputation is part of the estimation process, table 1 comes before that)
-
+#"C:/Users/kdx120/NHANES_T2D/Data"
+setwd("~/GitHub/NHANES_T2D/Data")
 cleaned_full_df <- readRDS("cleaned_full_df.rds")
 
 
