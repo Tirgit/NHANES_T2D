@@ -315,9 +315,19 @@ df_model <- df[df$Model == "Framingham" | df$Model == "8-yr-incidence",]
 valid_years <- c(2007,2009,2011,2013,2015,2017)
 df_y <- df_model[df_model$year %in% valid_years,]
 
+# Make this a factor to change the name of the levels
+df_y$Ethnicity <- as.factor(df_y$Ethnicity)
+
+# Change the level names (plurals)
+
+levels(df_y$Ethnicity)[2] <- 'Hispanics'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+
+
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
   facet_grid(~Ethnicity) +
   theme_minimal() +    
   theme(axis.text.y=element_text(size=rel(2)),
@@ -329,7 +339,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("APP & cumulative incidence") +
+  ylab("Average Predicted Probability") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("Framingham_pred.png", width = 1200, height = 600)
@@ -368,9 +378,24 @@ valid_years <- c(2007,2009,2011,2013,2015,2017)
 df_y <- df_model[df_model$year %in% valid_years,]
 
 
+# Make this a factor to change the name of the levels
+df_y$Ethnicity <- as.factor(df_y$Ethnicity)
+
+# Change the level names (plurals)
+
+levels(df_y$Ethnicity)[2] <- 'Hispanics'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+
+# Make Model a factor as well
+
+df_y$Model <- as.factor(df_y$Model)
+
+levels(df_y$Model)[2] <- 'San Antonio'
+
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
   facet_grid(~Ethnicity) +
   theme_minimal() +    
   theme(axis.text.y=element_text(size=rel(2)),
@@ -382,7 +407,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("APP & cumulative incidence") +
+  ylab("Average Predicted Probability") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("SanAntonio_pred.png", width = 1200, height = 600)
@@ -422,9 +447,19 @@ valid_years <- c(2008,2010,2012,2014,2016,2018)
 df_y <- df_model[df_model$year %in% valid_years,]
 
 
+# Make this a factor to change the name of the levels
+df_y$Ethnicity <- as.factor(df_y$Ethnicity)
+
+# Change the level names (plurals)
+
+levels(df_y$Ethnicity)[2] <- 'Hispanics'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+
+
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
   facet_grid(~Ethnicity) +
   theme_minimal() +    
   theme(axis.text.y=element_text(size=rel(2)),
@@ -436,7 +471,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("APP & cumulative incidence") +
+  ylab("Average Predicted Probability") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("ARIC_pred.png", width = 1200, height = 600)
