@@ -7,6 +7,7 @@ library(mice)
 # load complete merged data to obtain survey number levels
 # nothing to do with this data, we only need the factor levels for the loop
 cleaned_full_df <- readRDS("cleaned_full_df.rds")
+cleaned_full_df_used <- cleaned_full_df[cleaned_full_df$survey_nr %in% c("1999-2000","2001-2002","2003_2004","2005_2006","2007_2008","2009_2010"),]
 
 # calculate average missingness in data
 (sum(is.na(cleaned_full_df))/prod(dim(cleaned_full_df)))*100

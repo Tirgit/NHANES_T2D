@@ -359,6 +359,7 @@ png("Framingham_ratio.png", width = 1200, height = 600)
 q
 dev.off()
 
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/Framingham_table.xlsx")
 
 
 # visualization San Antonio
@@ -412,6 +413,9 @@ q
 dev.off()
 
 
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/Antonio_table.xlsx")
+
+
 # visualization ARIC
 df_model <- df[df$Model == "ARIC" | df$Model == "9-yr-incidence",]
 valid_years <- c(2008,2010,2012,2014,2016,2018)
@@ -463,6 +467,7 @@ png("ARIC_ratio.png", width = 1200, height = 600)
 q
 dev.off()
 
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/ARIC_table.xlsx")
 
 
 
