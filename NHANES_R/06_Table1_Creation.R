@@ -1,6 +1,6 @@
 # Set the working directory
-
 setwd("~/GitHub/NHANES_T2D/Data")
+
 
 # Load the full non-imputed dataset (Imputation is part of the estimation process, table 1 comes before that)
 
@@ -63,3 +63,5 @@ k_2017 <- tableone::svyCreateTableOne(vars = c('age', 'glucose',  'BMI', 'HDL',
 table1_2017 <- print(k_2017, varLabels = T, format = "p", showAllLevels = T, catDigits = 1, 
                 pDigits = 3, contDigits = 1, quote = F, missing = T, explain = F, printToggle = T, 
                 noSpaces = T, cramVars = NULL, dropEqual = T)
+
+
