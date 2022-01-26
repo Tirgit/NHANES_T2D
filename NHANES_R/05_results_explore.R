@@ -339,7 +339,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("Average Predicted Probability") +
+  ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("Framingham_pred.png", width = 1200, height = 600)
@@ -353,7 +353,7 @@ df_y_wide$ratio <- df_y_wide$estimate.Framingham / df_y_wide$`estimate.8-yr-inci
 q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 4) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("APP / cumulative incidence") +
+  ylab("Average Predicted Incidence / Cumulative Incidence") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
   theme(axis.text.y=element_text(size=rel(2)),
@@ -407,7 +407,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("Average Predicted Probability") +
+  ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("SanAntonio_pred.png", width = 1200, height = 600)
@@ -416,12 +416,12 @@ dev.off()
 
 df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "Ethnicity"), timevar = c("Model"))
-df_y_wide$ratio <- df_y_wide$estimate.Antonio / df_y_wide$`estimate.8-yr-incidence`
+df_y_wide$ratio <- df_y_wide$`estimate.San Antonio` / df_y_wide$`estimate.8-yr-incidence`
 
-ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 4) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("APP / cumulative incidence") +
+  ylab("Average Predicted Incidence / Cumulative Incidence") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
   theme(axis.text.y=element_text(size=rel(2)),
@@ -471,7 +471,7 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(2))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("Year") + 
-  ylab("Average Predicted Probability") +
+  ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("ARIC_pred.png", width = 1200, height = 600)
@@ -482,10 +482,10 @@ df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "Ethnicity"), timevar = c("Model"))
 df_y_wide$ratio <- df_y_wide$estimate.ARIC / df_y_wide$`estimate.9-yr-incidence`
 
-ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 4) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("APP / cumulative incidence") +
+  ylab("Average Predicted Incidence / Cumulative Incidence") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
   theme(axis.text.y=element_text(size=rel(2)),
