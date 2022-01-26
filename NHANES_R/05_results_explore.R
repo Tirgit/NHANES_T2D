@@ -326,19 +326,19 @@ levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
 
 
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
-  geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
-  facet_grid(~Ethnicity) +
+  geom_point(size = 7) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
+  facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
   theme_minimal() +    
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        strip.text = element_text(size=rel(2)),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
-  xlab("Year") + 
+  xlab("") + 
   ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
@@ -351,21 +351,21 @@ df_y_wide <- reshape(df_y, direction = "wide",
 df_y_wide$ratio <- df_y_wide$estimate.Framingham / df_y_wide$`estimate.8-yr-incidence`
 
 q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point(size = 4) +
+  geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("Average Predicted Incidence / Cumulative Incidence") +
+  ylab("API / CI") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
-  xlab("Year") + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  xlab("") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
-png("Framingham_ratio.png", width = 1200, height = 600)
+png("Framingham_ratio.png", width = 1200, height = 300)
 q
 dev.off()
 
@@ -394,19 +394,19 @@ df_y$Model <- as.factor(df_y$Model)
 levels(df_y$Model)[2] <- 'San Antonio'
 
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
-  geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
-  facet_grid(~Ethnicity) +
+  geom_point(size = 7) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
+  facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
   theme_minimal() +    
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        strip.text = element_text(size=rel(2)),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
-  xlab("Year") + 
+  xlab("") + 
   ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
@@ -419,21 +419,21 @@ df_y_wide <- reshape(df_y, direction = "wide",
 df_y_wide$ratio <- df_y_wide$`estimate.San Antonio` / df_y_wide$`estimate.8-yr-incidence`
 
 q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point(size = 4) +
+  geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("Average Predicted Incidence / Cumulative Incidence") +
+  ylab("API / CI") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
-  xlab("Year") + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  xlab("") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
-png("SanAntonio_ratio.png", width = 1200, height = 600)
+png("SanAntonio_ratio.png", width = 1200, height = 300)
 q
 dev.off()
 
@@ -458,19 +458,19 @@ levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
 
 
 p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
-  geom_point(size = 2) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 1, width = 0.3) +
-  facet_grid(~Ethnicity) +
+  geom_point(size = 7) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
+  facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
   theme_minimal() +    
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        strip.text = element_text(size=rel(2)),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
-  xlab("Year") + 
+  xlab("") + 
   ylab("Average Predicted Incidence") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
@@ -483,22 +483,22 @@ df_y_wide <- reshape(df_y, direction = "wide",
 df_y_wide$ratio <- df_y_wide$estimate.ARIC / df_y_wide$`estimate.9-yr-incidence`
 
 q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point(size = 4) +
+  geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("Average Predicted Incidence / Cumulative Incidence") +
+  ylab("API / CI") +
   scale_x_continuous(breaks = valid_years) +
   theme_minimal() +
-  theme(axis.text.y=element_text(size=rel(2)),
-        axis.text.x=element_text(size=rel(2), angle=45),
-        axis.title.x = element_text(size=rel(2)),
-        axis.title.y = element_text(size=rel(2)),
-        legend.title = element_text(size=rel(2)),
-        legend.text = element_text(size=rel(2))) + 
-  xlab("Year") + 
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  xlab("") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 
-png("ARIC_ratio.png", width = 1200, height = 600)
+png("ARIC_ratio.png", width = 1200, height = 300)
 q
 dev.off()
 
