@@ -363,6 +363,7 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   xlab("") + 
+  labs(col = "Race") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("Framingham_ratio.png", width = 1200, height = 300)
@@ -431,6 +432,7 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   xlab("") + 
+  labs(col = "Race") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("SanAntonio_ratio.png", width = 1200, height = 300)
@@ -495,6 +497,7 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   xlab("") + 
+  labs(col = "Race") + 
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 
