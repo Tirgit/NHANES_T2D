@@ -339,8 +339,9 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("") + 
-  ylab("Average Predicted Incidence") +
-  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+  ylab("Incidence Rate") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
+                     labels = c('Reported CI', 'Framingham API'))
 
 png("Framingham_pred.png", width = 1200, height = 600)
 p
@@ -408,8 +409,9 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("") + 
-  ylab("Average Predicted Incidence") +
-  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+  ylab("Incidence Rate") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
+                     labels = c('Reported CI', 'San Antonio API'))
 
 png("SanAntonio_pred.png", width = 1200, height = 600)
 p
@@ -473,8 +475,9 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
   xlab("") + 
-  ylab("Average Predicted Incidence") +
-  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+  ylab("Incidence Rate") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
+                     labels = c('Reported CI', 'ARIC API'))
 
 png("ARIC_pred.png", width = 1200, height = 600)
 p
