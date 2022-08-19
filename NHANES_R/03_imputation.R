@@ -27,7 +27,7 @@ full_df$SDMVPSU <- NULL
 SDMVSTRA <- full_df$SDMVSTRA
 full_df$SDMVSTRA <- NULL
 
-# imputation: 5 copies, 5 iterations, predictive mean matching algorithm
+# imputation: 5 copies, 5 iterations, random forest algorithm
 imputation_object <- mice(full_df, method = "rf", m = 15, maxit = 5, seed = 64370)
 
 # investigate convergence visually

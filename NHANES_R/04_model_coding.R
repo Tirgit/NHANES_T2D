@@ -44,10 +44,10 @@ for (i in 1:length(surveys)) {
 
 # specify number of imputed datasets
 M <- 15
-ethnic_group <- c("All","Black","White","Hispanic")
+ethnic_group <- c("All","Black","White")
 RESULTS <- data.frame(array(dim=c(5*length(ethnic_group),2)))
 colnames(RESULTS) <- c("pooled.avg","pooled.se")
-RESULTS$Ethnicity <- rep(c("All","Black","White","Hispanic"),5)
+RESULTS$Ethnicity <- rep(c("All","Black","White"),5)
 RESULTS$Model <- c(rep(c("Framingham"),length(ethnic_group)),
                    rep(c("DESIR"),length(ethnic_group)),
                    rep(c("EGATS"),length(ethnic_group)),
@@ -206,7 +206,7 @@ for (ethn in ethnic_group) {
 
     # subsetting data
     if (ethn == "All") {
-    sub.y <- subset(nhanes.y, imp1$age>=18 & imp1$diabetic == 'no diabetes') 
+    sub.y <- subset(nhanes.y, (imp1$ethnicity == "Black" | imp1$ethnicity == "White") & imp1$age>=18 & imp1$diabetic == 'no diabetes') 
     } else {
       sub.y <- subset(nhanes.y, ethnicity == ethn & imp1$age>=18 & imp1$diabetic == 'no diabetes') 
     }
