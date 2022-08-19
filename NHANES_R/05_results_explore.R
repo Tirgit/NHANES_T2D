@@ -6,6 +6,7 @@ library(readxl)
 library(ggplot2)
 library(reshape2)
 library(tidyverse)
+library(patchwork)
 
 # load results from NHANES
 result_df <- readRDS("RESULTS_df.rds")
@@ -41,12 +42,12 @@ diab_incidence <- diab_incidence |>
 # 2007 - 2018 cumulative incidences:
 
 all_inc <- c()
-hispanic_inc <- c()
+ hispanic_inc <- c()
 white_inc <- c()
 black_inc <- c()
 
 all_inc_var <- c()
-hispanic_inc_var <- c()
+ hispanic_inc_var <- c()
 white_inc_var <- c()
 black_inc_var <- c()
 
@@ -84,10 +85,10 @@ all_inc_new <- all_inc_new |>
 all_inc_new$Ethnicity <- as.factor(all_inc_new$Ethnicity)
 
 # For Hispanics
-hispanic_inc_new <- hispanic_inc_new |> 
-  rename(Cumulative_Incidence = 'hispanic_inc', Bound = 'hispanic_inc_var') |> 
-  mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |> 
-  select(-Bound) |> 
+hispanic_inc_new <- hispanic_inc_new |>
+  rename(Cumulative_Incidence = 'hispanic_inc', Bound = 'hispanic_inc_var') |>
+  mutate(LI = Cumulative_Incidence - Bound, UI = Cumulative_Incidence + Bound) |>
+  select(-Bound) |>
   mutate(Ethnicity = 'Hispanic')
 hispanic_inc_new$Ethnicity <- as.factor(hispanic_inc_new$Ethnicity)
 
@@ -108,7 +109,7 @@ black_inc_new <- black_inc_new |>
 black_inc_new$Ethnicity <- as.factor(black_inc_new$Ethnicity)
 
 # We can merge the dataframes now
-incidence_8year <- bind_rows(all_inc_new, hispanic_inc_new, white_inc_new, black_inc_new)
+incidence_8year <- bind_rows(all_inc_new, hispanic_inc_new, white_inc_new, black_inc_new) 
 incidence_8year <- incidence_8year |> rename(Incidence_8year = 'Cumulative_Incidence')
 
 model_vals <- rep("8-yr-incidence",nrow(incidence_8year))
@@ -297,7 +298,8 @@ colnames(incidence_12year) <- c("estimate","estimate_lCI",
 # merge observed with calculated incidences
 df <- rbind(result_df, incidence_8year, incidence_9year, incidence_12year)
 
-
+# narrowing down to everyone non Hispanic
+df <- df[df$Ethnicity != "Hispanic",]
 
 
 ########################################
@@ -320,12 +322,11 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
-levels(df_y$Ethnicity)[2] <- 'Hispanics'
-levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
-levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
 
-p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+p1 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 7) +
   geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
   facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
@@ -338,13 +339,14 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
+  scale_y_continuous(limits=c(0,0.2)) +
   xlab("") + 
   ylab("Incidence Rate") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
                      labels = c('Reported CI', 'Framingham API'))
 
 png("Framingham_pred.png", width = 1200, height = 600)
-p
+p1
 dev.off()
 
 df_y_wide <- reshape(df_y, direction = "wide",
@@ -385,9 +387,8 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
-levels(df_y$Ethnicity)[2] <- 'Hispanics'
-levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
-levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
 # Make Model a factor as well
 
@@ -395,7 +396,7 @@ df_y$Model <- as.factor(df_y$Model)
 
 levels(df_y$Model)[2] <- 'San Antonio'
 
-p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+p2 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 7) +
   geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
   facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
@@ -408,13 +409,14 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
+  scale_y_continuous(limits=c(0,0.2)) +
   xlab("") + 
   ylab("Incidence Rate") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
                      labels = c('Reported CI', 'San Antonio API'))
 
 png("SanAntonio_pred.png", width = 1200, height = 600)
-p
+p2
 dev.off()
 
 df_y_wide <- reshape(df_y, direction = "wide",
@@ -456,12 +458,11 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
-levels(df_y$Ethnicity)[2] <- 'Hispanics'
-levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Blacks'
-levels(df_y$Ethnicity)[4] <- 'Non-Hispanic Whites'
+levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
 
-p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+p3 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   geom_point(size = 7) +
   geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
   facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
@@ -474,13 +475,14 @@ p <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
   scale_x_continuous(breaks=valid_years) +
+  scale_y_continuous(limits=c(0,0.2)) +
   xlab("") + 
   ylab("Incidence Rate") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
                      labels = c('Reported CI', 'ARIC API'))
 
 png("ARIC_pred.png", width = 1200, height = 600)
-p
+p3
 dev.off()
 
 df_y_wide <- reshape(df_y, direction = "wide",
@@ -511,6 +513,12 @@ dev.off()
 writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/ARIC_table.xlsx")
 
 
+
+
+
+png("Framingham_ARIC_pred.png", width = 1200, height = 1200)
+p1/p3
+dev.off()
 
 
 
