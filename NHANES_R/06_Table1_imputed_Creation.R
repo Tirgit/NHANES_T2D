@@ -52,7 +52,7 @@ for (m in 1:15) {
   
   cleaned_full_df <- readRDS(paste0("imputed_",surveys[i],"_", m, ".rds"))
   cleaned_full_df_new <- cleaned_full_df |> 
-    filter(age >= 18 & diabetic == 'no diabetes') |> 
+    filter(ethnicity %in% c("White","Black") & age >= 18 & diabetic == 'no diabetes') |> 
     mutate(TG_log = log(TG))
   survey_df <- svydesign(data=cleaned_full_df_new, id=~SDMVPSU, strata=~SDMVSTRA, weights=~survey_weight, nest=TRUE)
   k <- tableone::svyCreateTableOne(vars = c('age',  'gender', 'glucose',  'BMI', 'ethnicity', 'HDL', 

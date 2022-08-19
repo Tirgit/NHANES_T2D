@@ -373,7 +373,7 @@ png("Framingham_ratio.png", width = 1200, height = 300)
 q
 dev.off()
 
-writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/Framingham_table.xlsx")
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/Framingham_table.xlsx")
 
 
 # visualization San Antonio
@@ -444,7 +444,7 @@ q
 dev.off()
 
 
-writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/Antonio_table.xlsx")
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/Antonio_table.xlsx")
 
 
 # visualization ARIC
@@ -510,7 +510,7 @@ png("ARIC_ratio.png", width = 1200, height = 300)
 q
 dev.off()
 
-writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/not_needed/ARIC_table.xlsx")
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/ARIC_table.xlsx")
 
 
 

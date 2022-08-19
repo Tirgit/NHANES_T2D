@@ -17,9 +17,11 @@ library(tableone)
 # Keep those who are adults and non diabetics, while creating a tryglycerides with logs.
 
 cleaned_full_df_new <- cleaned_full_df |> 
-  filter(age >= 18 & diabetic == 'no diabetes') |> 
+  filter(ethnicity %in% c("White","Black") & age >= 18 & diabetic == 'no diabetes') |> 
   mutate(TG_log = log(TG))
 
+cleaned_full_df_new$ethnicity <- droplevels(cleaned_full_df_new$ethnicity)
+levels(cleaned_full_df_new$ethnicity)
 
 # Apply survey design to the dataset
 
