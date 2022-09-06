@@ -3,7 +3,7 @@ library(tidyverse)
 library(survey)
 
 # Set working directory & load data
-setwd("~/GitHub/NHANES_T2D/Data")
+setwd("~/Documents/GitHub/NHANES_T2D/Data")
 
 # Create a small function to return probabilities from logits (coefficients)
 logit2prob <- function(logit){
@@ -34,6 +34,15 @@ rubin_se <- function(average, standard_error) {
 
 # extract survey years
 cleaned_full_df <- readRDS("cleaned_full_df.rds")
+
+cleaned_full_df <- cleaned_full_df |> mutate(now_BP_meds = 
+                                               if_else(hypertension_ever == 'no hypertension' & is.na(now_BP_meds), 
+                                                       'no BP meds', as.character(now_BP_meds)))
+
+# Recode the now_BP_meds variable as factor
+
+cleaned_full_df$now_BP_meds <- as.factor(cleaned_full_df$now_BP_meds)
+
 surveys <- levels(cleaned_full_df$survey_nr)
 
 # initialize empty list
