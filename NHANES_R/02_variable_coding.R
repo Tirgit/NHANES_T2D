@@ -1,5 +1,5 @@
 # Set working directory
-setwd("~/GitHub/NHANES_T2D/Data")
+setwd("~/Documents/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(plyr)
@@ -444,6 +444,16 @@ full_df$diabetic <- as.factor(full_df$diabetic)
 full_df$diabetic <- revalue(full_df$diabetic, c("0"="no diabetes", 
                                                 "1"="diabetes"))
 table(full_df$diabetic, useNA = "always")
+
+# We introduce the now_BP_meds modification here
+
+full_df <- full_df |> mutate(now_BP_meds = 
+                             if_else(hypertension_ever == 'no hypertension' & is.na(now_BP_meds), 
+                             'no BP meds', as.character(now_BP_meds)))
+
+# Recode the now_BP_meds variable as factor
+
+full_df$now_BP_meds <- as.factor(full_df$now_BP_meds)
 
 
 saveRDS(full_df, "cleaned_full_df.rds")
