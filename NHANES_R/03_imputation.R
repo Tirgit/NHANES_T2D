@@ -9,17 +9,6 @@ library(tidyverse)
 # nothing to do with this data, we only need the factor levels for the loop
 cleaned_full_df <- readRDS("cleaned_full_df.rds")
 
-# Correctly fill the missing values of now_BP_meds variable
-
-cleaned_full_df <- cleaned_full_df |> mutate(now_BP_meds = 
-                                               if_else(hypertension_ever == 'no hypertension' & is.na(now_BP_meds), 
-                                                       'no BP meds', as.character(now_BP_meds)))
-
-# Recode the now_BP_meds variable as factor
-
-cleaned_full_df$now_BP_meds <- as.factor(cleaned_full_df$now_BP_meds)
-
-
 cleaned_full_df_used <- cleaned_full_df[cleaned_full_df$survey_nr %in% c("1999-2000","2001-2002","2003_2004","2005_2006","2007_2008","2009_2010"),]
 
 # calculate average missingness in data
