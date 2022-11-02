@@ -123,6 +123,36 @@ full_df$education <- revalue(full_df$education, c("1"="<9 grade",
 table(full_df$education, useNA = "always")
 
 
+##############################
+##### physical activity ######
+##############################
+# combined from 2 variables
+# between 1999-2006, this is ascertained by a single question:
+# Are you more active than people you know (same age and sex)?: PAQ520
+# factor variable, coded as:
+# 1 = Yes
+# 2 = less active
+# 3 = about the same
+# 7 = Refused
+# 9 = Don't Know
+# ACTIVE: option 1 will be converted to 1 = Yes, options 2 or 3 converted to 2 = No
+# between 2007-2018, this is ascertained by two questions
+# Are you doing vigorous PA at work (yes vs no): PAQ605
+# Are you doing vigorous PA during leisure time (yes vs no): PAQ650
+# questions were merged in script 1: 
+# if both are no -> no; 
+# if either is yes (or both yes) -> yes
+table(full_df$active, useNA = "always")
+# setting those who refused and don't know to missing
+full_df$active[full_df$active == 7] <- NA
+full_df$active[full_df$active == 9] <- NA
+full_df$active[full_df$active == 3] <- 2
+full_df$active <- as.factor(full_df$active)
+full_df$active <- revalue(full_df$active, c("1"="Yes", 
+                                                  "2"="No"))
+table(full_df$active, useNA = "always")
+
+
 ######################
 ##### pregnancy ######
 ######################

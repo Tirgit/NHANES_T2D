@@ -1394,6 +1394,7 @@ fam_hist_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/MCQ_",letter
 smoking_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/SMQ_",letter,".XPT")
 fasting_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/FASTQX_",letter,".XPT")
 diabetes_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/DIQ_",letter,".XPT")
+a1c_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/GHB_",letter,".XPT")
 pa_file <- paste0("https://wwwn.cdc.gov/nchs/nhanes/",years,"/PAQ_",letter,".XPT")
 
 ## PHYSICAL ACTIVITY
