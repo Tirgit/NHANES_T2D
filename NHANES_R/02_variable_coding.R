@@ -1,5 +1,5 @@
 # Set working directory
-setwd("~/Documents/GitHub/NHANES_T2D/Data")
+setwd("~/GitHub/NHANES_T2D/Data")
 
 # load necessary libraries
 library(plyr)
