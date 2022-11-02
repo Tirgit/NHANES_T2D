@@ -46,12 +46,13 @@ for (i in 1:length(surveys)) {
 # specify number of imputed datasets
 M <- 15
 ethnic_group <- c("All","Black","White")
-RESULTS <- data.frame(array(dim=c(5*length(ethnic_group),2)))
+RESULTS <- data.frame(array(dim=c(6*length(ethnic_group),2)))
 colnames(RESULTS) <- c("pooled.avg","pooled.se")
-RESULTS$Ethnicity <- rep(c("All","Black","White"),5)
+RESULTS$Ethnicity <- rep(c("All","Black","White"),6)
 RESULTS$Model <- c(rep(c("Framingham"),length(ethnic_group)),
                    rep(c("DESIR"),length(ethnic_group)),
                    rep(c("EGATS"),length(ethnic_group)),
+                   rep(c('National_Screening'),length(ethnic_group)),
                    rep(c("ARIC"),length(ethnic_group)),
                    rep(c("Antonio"),length(ethnic_group)))
 
@@ -67,14 +68,17 @@ for (ethn in ethnic_group) {
   MI.EGATS <- data.frame(array(dim=c(M,2)))
   rownames(MI.EGATS) <- 1:M
   colnames(MI.EGATS) <- c("avg","se")
+  MI.National_Screening <- data.frame(array(dim = c(M,2)))
+  rownames(MI.National_Screening) <- 1:M
+  colnames(MI.National_Screening) <- c('avg','se')
   MI.ARIC <- data.frame(array(dim=c(M,2)))
   rownames(MI.ARIC) <- 1:M
   colnames(MI.ARIC) <- c("avg","se")
   MI.Antonio <- data.frame(array(dim=c(M,2)))
   rownames(MI.Antonio) <- 1:M
   colnames(MI.Antonio) <- c("avg","se")
-  
-  for (m in 1:M) {
+
+    for (m in 1:M) {
     
     # load data
     imp1 <- readRDS(paste0("imputed_",surveys[i],"_", m, ".rds"))
@@ -112,6 +116,35 @@ for (ethn in ethnic_group) {
       select(-Framingham)
     
     
+    ####################################
+    ####### National Screening #########
+    ####################################
+    
+    imp1 <- imp1 |> 
+      mutate(waist_inches = waist * 0.393701) |> #Convert into inches
+               mutate(BMI_Categories = case_when(BMI >= 40 | (gender == 'male' & waist_inches >= 50) | (gender == 'female' & waist_inches >= 49) ~ 'Extremely Obese',
+                                                 (BMI >= 30 & BMI < 40)| (gender == 'male' & waist_inches >=40 & waist_inches < 50) | (gender == 'female' & waist_inches >= 35 & waist_inches < 49) ~ 'Obese',
+                                                 (BMI >= 25 & BMI < 30)| (gender == 'male' & waist_inches >=37 & waist_inches < 40) | (gender == 'female' & waist_inches >= 31.5 & waist_inches < 35) ~ 'Overweight',
+                                                 TRUE ~ 'Not Overweight or Obese'),
+                      BMI_Categories = factor(BMI_Categories,levels = c('Extremely Obese','Obese','Overweight','Not Overweight or Obese'))) |> 
+      mutate(National_Screening = case_when((age < 40) ~ 0,
+                                            (age >= 40 & age <= 49) ~ 1,
+                                            (age >= 50 & age <= 59) ~ 2,
+                                             age >= 60 ~ 3)) |> 
+      mutate(National_Screening = National_Screening + if_else(gender == 'male', 1,0)) |> 
+      mutate(National_Screening = National_Screening + if_else(famhist_T2D == 'family diabetes', 1, 0)) |> 
+      mutate(National_Screening = National_Screening + if_else((hypertension_now == 'hypertension' | now_BP_meds == 'BP meds'), 1, 0)) |> 
+      mutate(National_Screening = National_Screening + case_when(BMI_Categories == 'Extremely Obese' ~ 3,
+                                                                 BMI_Categories == 'Obese' ~ 2,
+                                                                 BMI_Categories == 'Overweight' ~ 1,
+                                                                 BMI_Categories == 'Not Overweight or Obese' ~ 0)) |> 
+      mutate(National_Screening = National_Screening + if_else(active == 'Yes', -1, 0)) |> 
+      mutate(NS_Score = if_else(National_Screening >= 4, 1, 0)) |> 
+      select(-National_Screening)
+    
+      
+             
+
     ############################
     ##### DESIR RISK SCORE #####
     ############################
@@ -200,7 +233,7 @@ for (ethn in ethnic_group) {
     imp1 <- imp1 |>
       select(survey_weight, SDMVPSU, SDMVSTRA, survey_nr, gender, age, ethnicity,
              diabetic, Risk_Framingham, Risk_DESIR, Risk_EGATS,
-             Risk_ARIC, Risk_Antonio)
+             Risk_ARIC, Risk_Antonio, NS_Score)
     
     # survey design
     nhanes.y <- svydesign(data=imp1, id=~SDMVPSU, strata=~SDMVSTRA, weights=~survey_weight, nest=TRUE)
@@ -218,6 +251,7 @@ for (ethn in ethnic_group) {
     pred.y.EGATS <- svymean(~Risk_EGATS, sub.y)
     pred.y.ARIC <- svymean(~Risk_ARIC, sub.y)
     pred.y.Antonio <- svymean(~Risk_Antonio, sub.y)
+    pred.y.NS <- svymean(~NS_Score, sub.y)
     
     # the output svystat object is weird and needs to be coerced 
     # in a data frame before extracting the relevant stats
@@ -231,7 +265,8 @@ for (ethn in ethnic_group) {
     MI.ARIC[m,"se"] <- as.numeric(as.data.frame(pred.y.ARIC)[2])
     MI.Antonio[m,"avg"] <- as.numeric(as.data.frame(pred.y.Antonio)[1])
     MI.Antonio[m,"se"] <- as.numeric(as.data.frame(pred.y.Antonio)[2])
-    
+    MI.National_Screening[m,'avg'] <- as.numeric(as.data.frame(pred.y.NS)[1])
+    MI.National_Screening[m,"se"] <- as.numeric(as.data.frame(pred.y.NS)[2])
   }
   
   # Rubin's rules, and assign to result collection df
@@ -245,7 +280,8 @@ for (ethn in ethnic_group) {
   RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "ARIC","pooled.se"] <- rubin_se(average = MI.ARIC$avg, standard_error = MI.ARIC$se)
   RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Antonio","pooled.avg"] <- rubin_mean(average = MI.Antonio$avg)
   RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "Antonio","pooled.se"] <- rubin_se(average = MI.Antonio$avg, standard_error = MI.Antonio$se)
-  
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == 'National_Screening', 'pooled.avg'] <- rubin_mean(average = MI.National_Screening$avg)
+  RESULTS[RESULTS$Ethnicity == ethn & RESULTS$Model == "National_Screening","pooled.se"] <- rubin_se(average = MI.National_Screening$avg, standard_error = MI.National_Screening$se)
 }
 
 RESULTS_list[[i]] <- RESULTS
@@ -265,13 +301,12 @@ RESULTS_df <- as.data.frame(cbind(RESULTS_df,
 # add model follow up times
 RESULTS_df$year <- NA
 RESULTS_df$year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "Framingham" | RESULTS_df$Model == "Antonio"] + 8
+RESULTS_df$year[RESULTS_df$Model == "National_Screening" | RESULTS_df$Model == "National_Screening"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "National_Screening" | RESULTS_df$Model == 'National_Screening'] + 8
 RESULTS_df$year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "DESIR" | RESULTS_df$Model == "ARIC"] + 9
 RESULTS_df$year[RESULTS_df$Model == "EGATS"] <- RESULTS_df$baseline_year[RESULTS_df$Model == "EGATS"] + 12
 
 # save results
 saveRDS(RESULTS_df, "RESULTS_df.rds")
-
-
 
 
 

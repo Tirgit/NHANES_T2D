@@ -13,7 +13,7 @@ cleaned_full_df_used <- cleaned_full_df[cleaned_full_df$survey_nr %in% c("1999-2
 
 # calculate average missingness in data
 (sum(is.na(cleaned_full_df))/prod(dim(cleaned_full_df)))*100
-# it is 13.9%, which we round up to 15% - so we will make 15 imputed copies
+# it is 11.8%, which we round up to 15% - so we will make 15 imputed copies
 
 # load data per survey (loop)
 for (i in levels(cleaned_full_df$survey_nr)) {
