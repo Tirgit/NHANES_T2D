@@ -353,7 +353,7 @@ df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "Ethnicity"), timevar = c("Model"))
 df_y_wide$ratio <- df_y_wide$estimate.Framingham / df_y_wide$`estimate.8-yr-incidence`
 
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+q1 <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
   ylab("API / CI") +
@@ -370,75 +370,10 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("Framingham_ratio.png", width = 1200, height = 300)
-q
+q1
 dev.off()
 
 writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/Framingham_table.xlsx")
-
-
-
-# visualization National Screening
-df_model <- df[df$Model == "National_Screening" | df$Model == "8-yr-incidence",]
-valid_years <- c(2007,2009,2011,2013,2015,2017)
-df_y <- df_model[df_model$year %in% valid_years,]
-
-# Make this a factor to change the name of the levels
-df_y$Ethnicity <- as.factor(df_y$Ethnicity)
-
-# Change the level names (plurals)
-
-levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
-levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
-
-
-p1 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
-  geom_point(size = 7) +
-  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
-  facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
-  theme_minimal() +    
-  theme(axis.text.y=element_text(size=rel(3)),
-        axis.text.x=element_text(size=rel(3), angle=45),
-        strip.text = element_text(size=rel(3)),
-        axis.title.x = element_text(size=rel(3)),
-        axis.title.y = element_text(size=rel(3)),
-        legend.title = element_text(size=rel(3)),
-        legend.text = element_text(size=rel(3))) + 
-  scale_x_continuous(breaks=valid_years) +
-  scale_y_continuous(limits=c(0,0.6)) +
-  xlab("") + 
-  ylab("Incidence Rate") +
-  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
-                     labels = c('Reported CI', 'USA Screening API'))
-
-png("NS_pred.png", width = 1200, height = 600)
-p1
-dev.off()
-
-df_y_wide <- reshape(df_y, direction = "wide",
-                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
-df_y_wide$ratio <- df_y_wide$estimate.National_Screening / df_y_wide$`estimate.8-yr-incidence`
-
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
-  geom_point(size = 7) +
-  geom_hline(yintercept=c(1), linetype='dashed') +
-  ylab("API / CI") +
-  scale_x_continuous(breaks = valid_years) +
-  theme_minimal() +
-  theme(axis.text.y=element_text(size=rel(3)),
-        axis.text.x=element_text(size=rel(3), angle=45),
-        axis.title.x = element_text(size=rel(3)),
-        axis.title.y = element_text(size=rel(3)),
-        legend.title = element_text(size=rel(3)),
-        legend.text = element_text(size=rel(3))) + 
-  xlab("") + 
-  labs(col = "Race") + 
-  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
-
-png("NS_ratio.png", width = 1200, height = 300)
-q
-dev.off()
-
-writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/NS_table.xlsx")
 
 
 
@@ -490,7 +425,7 @@ df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "Ethnicity"), timevar = c("Model"))
 df_y_wide$ratio <- df_y_wide$`estimate.San Antonio` / df_y_wide$`estimate.8-yr-incidence`
 
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+q2 <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
   ylab("API / CI") +
@@ -507,7 +442,7 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("SanAntonio_ratio.png", width = 1200, height = 300)
-q
+q2
 dev.off()
 
 
@@ -556,7 +491,7 @@ df_y_wide <- reshape(df_y, direction = "wide",
                      idvar = c("year", "Ethnicity"), timevar = c("Model"))
 df_y_wide$ratio <- df_y_wide$estimate.ARIC / df_y_wide$`estimate.9-yr-incidence`
 
-q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+q3 <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
   geom_point(size = 7) +
   geom_hline(yintercept=c(1), linetype='dashed') +
   ylab("API / CI") +
@@ -574,20 +509,87 @@ q <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
 
 
 png("ARIC_ratio.png", width = 1200, height = 300)
-q
+q3
 dev.off()
 
 writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/ARIC_table.xlsx")
 
 
 
+# visualization National Screening
+df_model <- df[df$Model == "National_Screening" | df$Model == "8-yr-incidence",]
+valid_years <- c(2007,2009,2011,2013,2015,2017)
+df_y <- df_model[df_model$year %in% valid_years,]
+
+# Make this a factor to change the name of the levels
+df_y$Ethnicity <- as.factor(df_y$Ethnicity)
+
+# Change the level names (plurals)
+
+levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
+levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
 
-png("Framingham_ARIC_pred.png", width = 1200, height = 1200)
-p1/p3
+p4 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
+  geom_point(size = 7) +
+  geom_errorbar(aes(ymin=estimate_lCI,ymax=estimate_uCI), size = 2, width = 0.5) +
+  facet_grid(~Ethnicity, labeller = label_wrap_gen(width=10)) +
+  theme_minimal() +    
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  scale_x_continuous(breaks=valid_years) +
+  scale_y_continuous(limits=c(0,0.6)) +
+  xlab("") + 
+  ylab("Incidence Rate") +
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
+                     labels = c('Reported CI', 'USA Screening API'))
+
+png("NS_pred.png", width = 1200, height = 600)
+p4
 dev.off()
 
+df_y_wide <- reshape(df_y, direction = "wide",
+                     idvar = c("year", "Ethnicity"), timevar = c("Model"))
+df_y_wide$ratio <- df_y_wide$estimate.National_Screening / df_y_wide$`estimate.8-yr-incidence`
 
+q4 <- ggplot(df_y_wide, aes(x=year, y=ratio, col=Ethnicity)) +
+  geom_point(size = 7) +
+  geom_hline(yintercept=c(1), linetype='dashed') +
+  ylab("API / CI") +
+  scale_x_continuous(breaks = valid_years) +
+  theme_minimal() +
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  xlab("") + 
+  labs(col = "Race") + 
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+
+png("NS_ratio.png", width = 1200, height = 300)
+q4
+dev.off()
+
+writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/NS_table.xlsx")
+
+
+
+
+
+png("Framingham_ARIC_NS_pred.png", width = 1200, height = 1200)
+p1/p3/p4
+dev.off()
+
+png("Framingham_ARIC_NS_ratio.png", width = 1200, height = 1200)
+q1/q3/q4
+dev.off()
 
 
 

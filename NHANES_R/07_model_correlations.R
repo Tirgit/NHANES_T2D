@@ -1,6 +1,7 @@
 # Load needed libraries
 library(tidyverse)
 library(survey)
+library(patchwork)
 
 # Set working directory & load data
 setwd("~/GitHub/NHANES_T2D/Data")
@@ -149,7 +150,15 @@ imps_data <- list()
   }
 
 
-# CORRELATIONS + VISUALIZATIONS
+########################################
+########################################
+############### PLOTTING ###############
+########################################
+########################################
+
+
+# directory to Plots
+setwd("~/GitHub/NHANES_T2D/Plots")
 
 # Framingam: this is the score
 # Risk_Framingham: converted risk
@@ -158,18 +167,51 @@ imps_data <- list()
 # ARIC: this is the score
 # Risk_ARIC: converted 
 
-
 df <- imps_data[[1]]
 
-ggplot(data = df, aes(x=Framingham, y=National_Screening)) +
-  geom_point()
+cor(df$Risk_Framingham, df$National_Screening)
+cor(df$Risk_ARIC, df$National_Screening)
 
 
 df$National_Screening <- as.factor(df$National_Screening)
+df$Ethnicity <- df$ethnicity
+df$ethnicity <- NULL
+df$Ethnicity <- as.factor(df$Ethnicity)
+df$Ethnicity <- droplevels(df$Ethnicity)
+levels(df$Ethnicity)[1] <- 'Non-Hispanic Whites'
+levels(df$Ethnicity)[2] <- 'Non-Hispanic Blacks'
 
-ggplot(data = df, aes(x=Framingham, y=National_Screening)) +
-  geom_boxplot(aes(col = ethnicity))
 
-ggplot(data = df, aes(x=Risk_ARIC, y=National_Screening)) +
-  geom_boxplot(aes(col = ethnicity))
+p1 <- ggplot(data = df, aes(x=Risk_Framingham, y=National_Screening)) +
+  geom_boxplot(aes(col = Ethnicity), outlier.shape = NA, lwd=1.25) +
+  xlab("Framingham predicted risk") +
+  ylab("Prediabetes Risk Score") +
+  theme_minimal() +
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+
+
+p2 <- ggplot(data = df, aes(x=Risk_ARIC, y=National_Screening)) +
+  geom_boxplot(aes(col = Ethnicity), outlier.shape = NA, lwd=1.25) +
+  xlab("ARIC predicted risk") +
+  ylab("Prediabetes Risk Score") +
+  theme_minimal() +
+  theme(axis.text.y=element_text(size=rel(3)),
+        axis.text.x=element_text(size=rel(3), angle=45),
+        strip.text = element_text(size=rel(3)),
+        axis.title.x = element_text(size=rel(3)),
+        axis.title.y = element_text(size=rel(3)),
+        legend.title = element_text(size=rel(3)),
+        legend.text = element_text(size=rel(3))) + 
+  scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
+
+png("NS_boxplots.png", width = 1200, height = 1200)
+p1/p2
+dev.off()
 
