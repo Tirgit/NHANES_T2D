@@ -194,6 +194,7 @@ p1 <- ggplot(data = df, aes(x=Risk_Framingham, y=National_Screening)) +
         axis.title.y = element_text(size=rel(3)),
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
+  geom_hline(yintercept = 6.5, lwd = 1.25, linetype = "dotted", color = "#7570B3") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 
@@ -209,9 +210,17 @@ p2 <- ggplot(data = df, aes(x=Risk_ARIC, y=National_Screening)) +
         axis.title.y = element_text(size=rel(3)),
         legend.title = element_text(size=rel(3)),
         legend.text = element_text(size=rel(3))) + 
+  geom_hline(yintercept = 6.5, lwd = 1.25, linetype = "dotted", color = "#7570B3") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"))
 
 png("NS_boxplots.png", width = 1200, height = 1200)
 p1/p2
 dev.off()
+
+
+
+
+
+
+
 
