@@ -322,6 +322,7 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
+levels(df_y$Ethnicity)[1] <- 'Combined'
 levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
 levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
@@ -389,6 +390,7 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
+levels(df_y$Ethnicity)[1] <- 'Combined'
 levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
 levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
@@ -460,6 +462,7 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
+levels(df_y$Ethnicity)[1] <- 'Combined'
 levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
 levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
@@ -516,7 +519,7 @@ writexl::write_xlsx(df_y_wide, "~/GitHub/NHANES_T2D/Manuscript_items/ARIC_table.
 
 
 
-# visualization National Screening
+# visualization PRT
 df_model <- df[df$Model == "National_Screening" | df$Model == "8-yr-incidence",]
 valid_years <- c(2007,2009,2011,2013,2015,2017)
 df_y <- df_model[df_model$year %in% valid_years,]
@@ -526,6 +529,7 @@ df_y$Ethnicity <- as.factor(df_y$Ethnicity)
 
 # Change the level names (plurals)
 
+levels(df_y$Ethnicity)[1] <- 'Combined'
 levels(df_y$Ethnicity)[2] <- 'Non-Hispanic Blacks'
 levels(df_y$Ethnicity)[3] <- 'Non-Hispanic Whites'
 
@@ -547,7 +551,7 @@ p4 <- ggplot(df_y, aes(x=year, y=estimate, col=Model)) +
   xlab("") + 
   ylab("Incidence Rate") +
   scale_color_manual(values=c("#1B9E77","#D95F02","#7570B3","#E7298A"),
-                     labels = c('Reported CI', 'USA Screening API'))
+                     labels = c('Reported CI', 'PRT API'))
 
 png("NS_pred.png", width = 1200, height = 600)
 p4
